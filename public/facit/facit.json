@@ -1,0 +1,151 @@
+{
+  "mk_01": {
+    "id": "mk_01",
+    "source": "NP 2018",
+    "correct": "B",
+    "criteria": {
+      "E": "Eleven anger att järn transporterar syre.",
+      "C": "Eleven anger att järn ingår i hemoglobin och binder syre i blodet.",
+      "A": "Eleven förklarar att järn är en del av hemoglobin i röda blodkroppar, binder syre i lungorna och transporterar det till vävnaderna."
+    }
+  },
+  "mk_02": {
+    "id": "mk_02",
+    "source": "NP 2018",
+    "answers": ["Binder och transporterar syre", "Reglerar vätskebalansen", "Bygger upp muskler", "Underlättar tarmarnas arbete"],
+    "criteria": {
+      "E": "Eleven parar ihop minst 2 av 4 korrekt.",
+      "C": "Eleven parar ihop minst 3 av 4 korrekt.",
+      "A": "Eleven parar ihop alla 4 korrekt."
+    }
+  },
+  "mk_03": {
+    "id": "mk_03",
+    "source": "NP 2015",
+    "correct": "A",
+    "criteria": {
+      "E": "Eleven väljer äggledaren.",
+      "note": "Enkel faktafråga — rätt eller fel."
+    }
+  },
+  "mk_04": {
+    "id": "mk_04",
+    "source": "NP 2019",
+    "criteria": {
+      "E": "Eleven anger en funktion (t.ex. transporterar näring eller syre).",
+      "C": "Eleven anger en tydlig funktion med förklaring av hur den gynnar fostret.",
+      "A": "Eleven anger en funktion med utförlig biologisk förklaring, t.ex. diffusion av syre/näring och bortförsel av avfallsprodukter."
+    },
+    "nyckelbegrepp": ["näring", "syre", "avfallsprodukter", "koldioxid", "hormoner", "navelsträng"]
+  },
+  "mk_05": {
+    "id": "mk_05",
+    "source": "NP 2017",
+    "criteria": {
+      "E": "Eleven beskriver att lungorna tar upp syre och att hjärtat pumpar blodet.",
+      "C": "Eleven förklarar hur syre diffunderar till blodet, transporteras av hemoglobin och hur hjärtat pumpar det till cellerna. Nämner även koldioxid.",
+      "A": "Eleven ger en fullständig förklaring av samspelet: syre in via lungorna → hemoglobin → hjärtat pumpar → celler använder syre i cellandning → koldioxid tillbaka → lungorna andas ut. Använder biologiska begrepp korrekt."
+    },
+    "nyckelbegrepp": ["diffusion", "hemoglobin", "röda blodkroppar", "hjärtat", "cellandning", "koldioxid", "syre"]
+  },
+  "mk_06": {
+    "id": "mk_06",
+    "source": "NP 2019",
+    "criteria": {
+      "E": "Eleven anger att hjärtat pumpar mer blod eller att mer syre når musklerna.",
+      "C": "Eleven förklarar ett av de två (starkare hjärta eller ökad blodvolym) med tydlig koppling till kondition.",
+      "A": "Eleven förklarar båda: (1) starkare hjärta → större slagvolym → mer effektiv syreleverans, och (2) ökad blodvolym → mer syre och näring till musklerna → bättre uthållighet."
+    },
+    "nyckelbegrepp": ["slagvolym", "syre", "muskler", "blodvolym", "hemoglobin", "uthållighet"]
+  },
+  "mk_07": {
+    "id": "mk_07",
+    "source": "NP 2016",
+    "criteria": {
+      "E": "Eleven anger att vaccinet gör kroppen immun/att kroppen bildar antikroppar.",
+      "C": "Eleven förklarar att vaccinet innehåller försvagat smittämne som aktiverar immunförsvaret och att antikroppar bildas.",
+      "A": "Eleven förklarar hela förloppet: vaccin → immunsystem känner igen → antikroppar bildas → minnes-B-celler lagras → vid framtida infektion snabb respons → sjukdomen förhindras."
+    },
+    "nyckelbegrepp": ["antikroppar", "immunförsvar", "minnes-B-celler", "försvagat smittämne", "immunitet"]
+  },
+  "mk_08": {
+    "id": "mk_08",
+    "source": "NP 2015",
+    "criteria": {
+      "E": "Eleven anger att bakterier orsakar infektioner (a) och att resistens utvecklas (b).",
+      "C": "Eleven förklarar a) korrekt och b) att bakterier med resistens överlever och förökar sig.",
+      "A": "Eleven förklarar a) korrekt och b) hela selektionsprocessen: variation → antibiotika dödar känsliga → resistenta överlever → reproducerar sig → resistens sprids."
+    },
+    "nyckelbegrepp": ["bakterier", "resistens", "naturligt urval", "variation", "selektion"]
+  },
+  "mk_09": {
+    "id": "mk_09",
+    "source": "NP 2018",
+    "criteria": {
+      "E": "Eleven namnger ett organ och anger att det skadas av alkohol.",
+      "C": "Eleven förklarar hur skadan påverkar organets funktion.",
+      "A": "Eleven förklarar tydligt vilket organ, hur skadan uppstår och vilka konsekvenser det får för organets funktion och hälsan."
+    },
+    "nyckelbegrepp": ["lever", "levercirros", "hjärna", "nervceller", "bukspottkörteln", "insulin"]
+  },
+  "mk_10": {
+    "id": "mk_10",
+    "source": "NP 2015",
+    "criteria": {
+      "E": "Eleven anger kondom (a) och nämner STI eller graviditet (b).",
+      "C": "Eleven förklarar varför kondom fungerar för båda paren (a) och nämner både kortsiktiga och långsiktiga följder (b).",
+      "A": "Eleven förklarar fullständigt: kondom skyddar mot STI och graviditet (a); kortsiktiga STI-risker och långsiktiga konsekvenser som kronisk infektion och infertilitet (b)."
+    },
+    "nyckelbegrepp": ["kondom", "STI", "klamydia", "HIV", "graviditet", "infertilitet"]
+  },
+  "mk_11": {
+    "id": "mk_11",
+    "source": "NP 2018",
+    "criteria": {
+      "E": "Eleven ger ett relevant exempel.",
+      "C": "Eleven ger ett exempel med kort förklaring av varför det minskar smittspridning.",
+      "A": "Eleven ger ett tydligt exempel med biologisk förklaring av hur smittkedjan bryts."
+    },
+    "nyckelbegrepp": ["handtvätt", "smittkedja", "mikroorganismer", "vaccination", "flockimmunitet"]
+  },
+  "mk_12": {
+    "id": "mk_12",
+    "source": "NP 2016",
+    "criteria": {
+      "E": "Eleven nämner ett organ och att rökning skadar det.",
+      "C": "Eleven förklarar hur rökning påverkar organet och vad det leder till.",
+      "A": "Eleven ger en fullständig förklaring med biologiska begrepp om hur rökning skadar organet och vilka sjukdomar/konsekvenser det kan leda till."
+    },
+    "nyckelbegrepp": ["lungor", "cilierna", "KOL", "lungcancer", "nikotin", "åderförfettning", "hjärtinfarkt"]
+  },
+  "mk_13": {
+    "id": "mk_13",
+    "source": "NP 2015",
+    "criteria": {
+      "E": "Eleven anger en möjlighet eller en risk med stamceller.",
+      "C": "Eleven anger en möjlighet och en risk med koppling till levnadsvillkor.",
+      "A": "Eleven resonerar i flera led om möjligheter och risker med biologisk förankring."
+    },
+    "nyckelbegrepp": ["stamceller", "differentiering", "transplantation", "immunförkastning", "embryo", "etik"]
+  },
+  "mk_14": {
+    "id": "mk_14",
+    "source": "NP 2018",
+    "criteria": {
+      "E": "Eleven nämner blodgrupper.",
+      "C": "Eleven förklarar att blodgrupper måste matcha och varför.",
+      "A": "Eleven förklarar ABO-systemet och/eller Rh-faktorn med biologisk förklaring om varför felmatchning är farlig (immunreaktion)."
+    },
+    "nyckelbegrepp": ["blodgrupp", "ABO-systemet", "Rh-faktorn", "antikroppar", "immunreaktion", "agglutination"]
+  },
+  "mk_15": {
+    "id": "mk_15",
+    "source": "Anpassad",
+    "criteria": {
+      "E": "Eleven ger ett exempel på reflex.",
+      "C": "Eleven förklarar reflexbågen med stimulus → nerv → respons.",
+      "A": "Eleven förklarar hela reflexbågen: receptor → sensorisk nerv → ryggmärgen (ej hjärnan) → motorisk nerv → muskel, och nämner att det sker utan medveten styrning för att det ska gå snabbt."
+    },
+    "nyckelbegrepp": ["reflex", "reflexbåge", "receptor", "sensorisk nerv", "motorisk nerv", "ryggmärgen", "stimulus"]
+  }
+}
