@@ -1,19 +1,15 @@
-// Loads and manages questions from JSON
+// Manages questions — data inlined from questions-data.js
 const Questions = (() => {
-  let all = [];
   let filtered = [];
   let used = new Set();
-  let currentArea = "all";
 
-  async function load() {
-    const res = await fetch(CONFIG.questionsPath);
-    all = await res.json();
+  function init() {
     buildAreaTabs();
-    filtered = [...all];
+    filtered = [...QUESTIONS_DATA];
   }
 
   function buildAreaTabs() {
-    const areas = ["all", ...new Set(all.map(q => q.area))];
+    const areas = ["all", ...new Set(QUESTIONS_DATA.map(q => q.area))];
     const nav = document.getElementById("area-tabs");
     nav.innerHTML = "";
     areas.forEach(area => {
@@ -25,21 +21,20 @@ const Questions = (() => {
         document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
         btn.classList.add("active");
         setArea(area);
+        App.restart();
       });
       nav.appendChild(btn);
     });
   }
 
   function setArea(area) {
-    currentArea = area;
-    filtered = area === "all" ? [...all] : all.filter(q => q.area === area);
+    filtered = area === "all" ? [...QUESTIONS_DATA] : QUESTIONS_DATA.filter(q => q.area === area);
     used.clear();
   }
 
   function next() {
     const pool = filtered.filter(q => !used.has(q.id));
     if (pool.length === 0) {
-      // All used — reset and start over
       used.clear();
       return filtered[Math.floor(Math.random() * filtered.length)];
     }
@@ -48,11 +43,7 @@ const Questions = (() => {
     return q;
   }
 
-  function reset() {
-    used.clear();
-  }
+  function reset() { used.clear(); }
 
-  function count() { return filtered.length; }
-
-  return { load, next, reset, setArea, count };
+  return { init, next, reset, setArea };
 })();
