@@ -1,18 +1,7 @@
-// Loads and provides access to grading criteria (facit)
+// Provides access to grading criteria — data inlined from facit-data.js
 const Facit = (() => {
-  let data = {};
-
-  async function load() {
-    try {
-      const res = await fetch(CONFIG.facitPath);
-      data = await res.json();
-    } catch (e) {
-      console.warn("Facit could not be loaded:", e);
-    }
-  }
-
   function get(id) {
-    return data[id] || null;
+    return FACIT_DATA[id] || null;
   }
 
   function buildCriteriaHTML(id) {
@@ -26,5 +15,5 @@ const Facit = (() => {
     return `<div class="criteria-box">${rows}${note}</div>`;
   }
 
-  return { load, get, buildCriteriaHTML };
+  return { get, buildCriteriaHTML };
 })();
