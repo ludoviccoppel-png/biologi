@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Människokroppen – NP Träning Åk 9</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-label">Nationella provet · Biologi åk 9</div>
+    <h1 class="site-title">Människokroppen <em>&amp; Hälsa</em></h1>
+    <p class="site-sub">Träna inför NP med riktiga provfrågor och AI-återkoppling</p>
+  </div>
+</header>
+
+<main>
+  <!-- Area filter tabs -->
+  <nav class="area-tabs" id="area-tabs">
+    <button class="tab active" data-area="all">Alla områden</button>
+  </nav>
+
+  <!-- Score bar -->
+  <div class="scorebar" id="scorebar" style="display:none">
+    <div class="score-info">
+      <span>Fråga <strong id="q-num">0</strong></span>
+      <span>Poäng: <strong id="q-score">0</strong><span class="muted"> / </span><strong id="q-max">0</strong></span>
+    </div>
+    <div class="pips" id="pips"></div>
+    <button class="btn-ghost" id="restart-btn">↺ Börja om</button>
+  </div>
+
+  <!-- Question card -->
+  <div class="q-card" id="q-card" style="display:none">
+    <div class="q-meta">
+      <span class="q-type-tag" id="q-type-tag"></span>
+      <span class="q-source" id="q-source"></span>
+      <span class="q-area-tag" id="q-area-tag"></span>
+    </div>
+
+    <div class="q-image-wrap" id="q-image-wrap" style="display:none">
+      <img id="q-image" src="" alt="Provbild">
+    </div>
+
+    <div class="q-text" id="q-text"></div>
+
+    <div id="q-body"></div>
+
+    <div class="hint-box" id="hint-box" style="display:none">
+      <span class="hint-label">💡 Tips</span>
+      <p id="hint-text"></p>
+    </div>
+
+    <div class="feedback-box" id="feedback-box" style="display:none"></div>
+
+    <!-- Chat follow-up -->
+    <div class="chat-section" id="chat-section" style="display:none">
+      <div class="chat-label">Ställ en följdfråga</div>
+      <div class="chat-log" id="chat-log"></div>
+      <div class="chat-row">
+        <textarea id="chat-input" placeholder="Skriv din fråga…" rows="2"></textarea>
+        <button class="btn-send" id="chat-send">Skicka</button>
+      </div>
+    </div>
+
+    <div class="q-actions" id="q-actions"></div>
+  </div>
+
+  <!-- Start screen -->
+  <div class="start-screen" id="start-screen">
+    <p class="start-hint">Välj ett delområde ovan eller starta med alla frågor.</p>
+    <button class="btn-start" id="start-btn">Starta träning</button>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-overlay" id="loading" style="display:none">
+    <div class="spinner"></div>
+    <span id="loading-text">Hämtar fråga…</span>
+  </div>
+</main>
+
+<script src="src/config.js"></script>
+<script src="src/questions.js"></script>
+<script src="src/facit.js"></script>
+<script src="src/api.js"></script>
+<script src="src/app.js"></script>
+</body>
+</html>
