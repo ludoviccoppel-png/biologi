@@ -7,10 +7,12 @@ let answered = false;
 let currentQ = null;
 let chatHistory = [];
 
-// ── Boot ─────────────────────────────────────────────
-document.addEventListener("DOMContentLoaded", async () => {
-  await Promise.all([Questions.load(), Facit.load()]);
+// Expose restart for Questions module
+const App = { restart };
 
+// ── Boot ─────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  Questions.init();
   document.getElementById("start-btn").addEventListener("click", startSession);
   document.getElementById("restart-btn").addEventListener("click", restart);
   document.getElementById("chat-send").addEventListener("click", sendChat);
@@ -21,11 +23,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // ── Session control ───────────────────────────────────
 function startSession() {
-  document.getElementById("start-screen").style.display = "none";
+  hide("start-screen");
   score = 0; total = 0; maxScore = 0; pipData = [];
   renderScorebar();
-  document.getElementById("scorebar").style.display = "";
-  document.getElementById("q-card").style.display = "";
+  show("scorebar");
+  show("q-card");
   nextQuestion();
 }
 
@@ -34,7 +36,14 @@ function restart() {
   score = 0; total = 0; maxScore = 0; pipData = [];
   answered = false;
   renderScorebar();
-  nextQuestion();
+  hide("feedback-box");
+  hide("hint-box");
+  hide("chat-section");
+  el("q-body").innerHTML = "";
+  el("chat-log").innerHTML = "";
+  if (el("start-screen").style.display === "none") {
+    nextQuestion();
+  }
 }
 
 // ── Question flow ─────────────────────────────────────
@@ -43,21 +52,18 @@ function nextQuestion() {
   chatHistory = [];
   currentQ = Questions.next();
 
-  // Reset UI
   hide("feedback-box");
   hide("hint-box");
   hide("chat-section");
-  document.getElementById("chat-log").innerHTML = "";
+  hide("loading");
+  el("chat-log").innerHTML = "";
 
-  // Meta tags
   el("q-type-tag").textContent = typeLabel(currentQ.type);
-  el("q-source").textContent = currentQ.source || "";
+  el("q-source").textContent  = currentQ.source || "";
   el("q-area-tag").textContent = currentQ.area || "";
 
-  // Image
   if (currentQ.image) {
-    el("q-image").src = CONFIG.imagesPath + currentQ.image;
-    el("q-image").alt = currentQ.area || "Provbild";
+    el("q-image").src = "public/images/" + currentQ.image;
     show("q-image-wrap");
   } else {
     hide("q-image-wrap");
@@ -65,17 +71,16 @@ function nextQuestion() {
 
   el("q-text").textContent = currentQ.text;
 
-  // Render body by type
   const body = el("q-body");
   body.innerHTML = "";
 
-  if (currentQ.type === "mc")    renderMC(body);
+  if (currentQ.type === "mc")         renderMC(body);
   else if (currentQ.type === "match") renderMatch(body);
-  else                           renderOpen(body);
+  else                                renderOpen(body);
 }
 
-function typeLabel(type) {
-  return type === "mc" ? "Flerval" : type === "match" ? "Para ihop" : "Öppen fråga";
+function typeLabel(t) {
+  return { mc: "Flerval", match: "Para ihop", open: "Öppen fråga" }[t] || t;
 }
 
 // ── MC ────────────────────────────────────────────────
@@ -83,18 +88,18 @@ function renderMC(body) {
   const list = document.createElement("div");
   list.className = "opts-list";
   ["A","B","C","D"].forEach(k => {
-    if (!currentQ.opts[k]) return;
+    if (!currentQ.opts?.[k]) return;
     const btn = document.createElement("button");
     btn.className = "opt-btn";
     btn.innerHTML = `<strong>${k}.</strong> ${currentQ.opts[k]}`;
-    btn.addEventListener("click", () => checkMC(k, btn));
+    btn.addEventListener("click", () => checkMC(k));
     list.appendChild(btn);
   });
   body.appendChild(list);
   renderActions({ type: "mc" });
 }
 
-function checkMC(chosen, btn) {
+function checkMC(chosen) {
   if (answered) return;
   answered = true;
   total++;
@@ -108,17 +113,14 @@ function checkMC(chosen, btn) {
     if (k === chosen && !isCorrect) b.classList.add("wrong");
   });
 
-  const pts = isCorrect ? 1 : 0;
-  score += pts;
+  score += isCorrect ? 1 : 0;
   maxScore += 1;
   addPip(isCorrect ? "hit" : "miss");
   renderScorebar();
 
-  // Show explanation + facit criteria
-  const facit = Facit.get(currentQ.facit_id);
   const expl = document.createElement("div");
   expl.className = "expl-box";
-  expl.innerHTML = currentQ.expl + Facit.buildCriteriaHTML(currentQ.facit_id);
+  expl.innerHTML = (currentQ.expl || "") + Facit.buildCriteriaHTML(currentQ.facit_id);
   el("q-body").appendChild(expl);
 
   renderActions({ type: "mc", done: true });
@@ -161,7 +163,6 @@ function checkMatch() {
       correct++;
     } else {
       sel.classList.add("wrong");
-      // Mark the correct option
       Array.from(sel.options).forEach(opt => {
         if (opt.value === currentQ.answers[i]) opt.textContent += " ✓";
       });
@@ -177,7 +178,7 @@ function checkMatch() {
 
   const expl = document.createElement("div");
   expl.className = "expl-box";
-  expl.innerHTML = currentQ.expl + Facit.buildCriteriaHTML(currentQ.facit_id);
+  expl.innerHTML = (currentQ.expl || "") + Facit.buildCriteriaHTML(currentQ.facit_id);
   el("q-body").appendChild(expl);
 
   renderActions({ type: "match", done: true });
@@ -196,20 +197,19 @@ function renderOpen(body) {
 
 async function checkOpen() {
   const ta = el("open-ta");
-  const input = ta.value.trim();
+  const input = ta?.value.trim();
   if (!input || answered) return;
-
   answered = true;
   ta.disabled = true;
   total++;
   maxScore += 3;
 
   setLoading(true, "Bedömer ditt svar…");
+  renderActions({ type: "open", done: false, loading: true });
 
   try {
     const facit = Facit.get(currentQ.facit_id);
     const text = await API.gradeOpen(currentQ, input, facit?.criteria);
-
     const ptMatch = text.match(/POÄNG:\s*([0-3])/);
     const pts = ptMatch ? parseInt(ptMatch[1]) : 0;
     const fbText = text.replace(/POÄNG:[^\n]*\n?/, "").replace("ÅTERKOPPLING:", "").trim();
@@ -251,31 +251,35 @@ async function checkOpen() {
 }
 
 async function getHint() {
-  setLoading(true, "Hämtar tips…");
+  const btn = event.currentTarget;
+  btn.disabled = true;
+  btn.textContent = "Hämtar…";
   try {
     const text = await API.getHint(currentQ);
     el("hint-text").textContent = text;
     show("hint-box");
+    btn.textContent = "💡 Nytt tips";
+    btn.disabled = false;
   } catch(e) {
     el("hint-text").textContent = "Kunde inte hämta tips.";
     show("hint-box");
+    btn.disabled = false;
+    btn.textContent = "💡 Tips";
   }
-  setLoading(false);
 }
 
 function skipQuestion() {
   if (answered) return;
   answered = true;
   total++;
-  if (currentQ.type === "open") maxScore += 3;
-  else maxScore += 1;
+  maxScore += currentQ.type === "open" ? 3 : 1;
 
   const ta = el("open-ta");
   if (ta) ta.disabled = true;
 
   const fb = el("feedback-box");
   fb.className = "feedback-box skip";
-  fb.innerHTML = `<div class="grade-badge"><span>–</span><span>Hoppade över (0 poäng)</span></div>`;
+  fb.innerHTML = `<div class="grade-badge"><span>–</span><span style="margin-left:8px">Hoppade över (0 poäng)</span></div>`;
   show("feedback-box");
 
   addPip("miss");
@@ -283,21 +287,22 @@ function skipQuestion() {
   renderActions({ type: currentQ.type, done: true });
 }
 
-// ── Actions renderer ──────────────────────────────────
-function renderActions({ type, done = false }) {
+// ── Actions ───────────────────────────────────────────
+function renderActions({ type, done = false, loading = false }) {
   const wrap = el("q-actions");
   wrap.innerHTML = "";
 
   if (!done) {
-    if (type === "mc") {
-      // MC: no buttons needed — clicking option triggers check
-    } else if (type === "match") {
+    if (type === "match") {
       wrap.appendChild(mkBtn("Kontrollera svar", "btn-primary", checkMatch));
-    } else {
-      wrap.appendChild(mkBtn("Bedöm mitt svar", "btn-primary", checkOpen));
+    } else if (type === "open") {
+      const checkBtn = mkBtn("Bedöm mitt svar", "btn-primary", checkOpen);
+      if (loading) checkBtn.disabled = true;
+      wrap.appendChild(checkBtn);
       wrap.appendChild(mkBtn("💡 Tips", "btn-secondary", getHint));
       wrap.appendChild(mkBtn("Hoppa över →", "btn-skip", skipQuestion));
     }
+    // mc: clicking option triggers check directly
   } else {
     wrap.appendChild(mkBtn("Nästa fråga →", "btn-primary", nextQuestion));
   }
@@ -316,15 +321,10 @@ async function sendChat() {
   const ta = el("chat-input");
   const msg = ta.value.trim();
   if (!msg) return;
-
   const send = el("chat-send");
-  ta.value = "";
-  ta.disabled = true;
-  send.disabled = true;
-
+  ta.value = ""; ta.disabled = true; send.disabled = true;
   appendChatMsg(msg, "student");
   chatHistory.push({ role: "user", content: msg });
-
   try {
     const reply = await API.chat(chatHistory, currentQ.text);
     chatHistory.push({ role: "assistant", content: reply });
@@ -332,10 +332,7 @@ async function sendChat() {
   } catch(e) {
     appendChatMsg("Kunde inte svara just nu.", "teacher");
   }
-
-  ta.disabled = false;
-  send.disabled = false;
-  ta.focus();
+  ta.disabled = false; send.disabled = false; ta.focus();
 }
 
 function appendChatMsg(text, role) {
@@ -352,23 +349,15 @@ function renderScorebar() {
   el("q-num").textContent = total;
   el("q-score").textContent = Number.isInteger(score) ? score : score.toFixed(1);
   el("q-max").textContent = maxScore;
-  el("pips").innerHTML = pipData.map(p =>
-    `<div class="pip ${p}"></div>`
-  ).join("");
+  el("pips").innerHTML = pipData.map(p => `<div class="pip ${p}"></div>`).join("");
 }
 
-function addPip(state) {
-  pipData.push(state);
-}
+function addPip(state) { pipData.push(state); }
 
 // ── Loading ───────────────────────────────────────────
 function setLoading(on, text = "Laddar…") {
-  if (on) {
-    el("loading-text").textContent = text;
-    show("loading");
-  } else {
-    hide("loading");
-  }
+  el("loading-text").textContent = text;
+  el("loading").style.display = on ? "flex" : "none";
 }
 
 // ── Helpers ───────────────────────────────────────────
