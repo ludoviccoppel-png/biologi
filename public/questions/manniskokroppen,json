@@ -1,0 +1,164 @@
+[
+  {
+    "id": "mk_01",
+    "type": "mc",
+    "area": "Organsystem",
+    "source": "NP 2018",
+    "text": "Människokroppen behöver flera olika näringsämnen för att fungera. Vilket av alternativen beskriver järnets funktion i kroppen?",
+    "opts": {
+      "A": "Reglerar vätskebalansen",
+      "B": "Binder och transporterar syre i blodet",
+      "C": "Bygger upp muskler och vävnader",
+      "D": "Underlättar tarmarnas arbete"
+    },
+    "correct": "B",
+    "expl": "Järn är en viktig del av hemoglobin i de röda blodkropparna. Hemoglobin binder syre i lungorna och transporterar det till kroppens alla celler.",
+    "facit_id": "mk_01"
+  },
+  {
+    "id": "mk_02",
+    "type": "match",
+    "area": "Organsystem",
+    "source": "NP 2018",
+    "text": "Kombinera ihop vart och ett av näringsämnena med rätt funktion i kroppen.",
+    "left": ["Järn", "Salt", "Proteiner", "Fibrer"],
+    "right": [
+      "Underlättar tarmarnas arbete",
+      "Reglerar vätskebalansen",
+      "Bygger upp muskler",
+      "Binder och transporterar syre"
+    ],
+    "answers": [
+      "Binder och transporterar syre",
+      "Reglerar vätskebalansen",
+      "Bygger upp muskler",
+      "Underlättar tarmarnas arbete"
+    ],
+    "expl": "Järn → binder syre (hemoglobin). Salt → reglerar vätskebalansen. Proteiner → bygger upp muskler och vävnader. Fibrer → underlättar tarmarnas arbete och förebygger förstoppning.",
+    "facit_id": "mk_02"
+  },
+  {
+    "id": "mk_03",
+    "type": "mc",
+    "area": "Reproduktion",
+    "source": "NP 2015",
+    "text": "Befruktning sker när ett ägg och en spermie förenas. Vilket av alternativen A–D beskriver bäst var i kvinnans underliv som ett ägg och en spermie förenas?",
+    "opts": {
+      "A": "I äggledaren",
+      "B": "I livmodern",
+      "C": "I äggstocken",
+      "D": "I slidan"
+    },
+    "correct": "A",
+    "expl": "Befruktning sker normalt i äggledaren (tuba uterina). Ägget lossnar från äggstocken och vandrar mot livmodern i äggledaren — det är här spermien möter och befruktar ägget. Det befruktade ägget vandrar sedan vidare till livmodern för implantation.",
+    "image": "reproduktion_underliv.png",
+    "facit_id": "mk_03"
+  },
+  {
+    "id": "mk_04",
+    "type": "open",
+    "area": "Reproduktion",
+    "source": "NP 2019",
+    "text": "En människa är gravid i cirka 40 veckor. I början på graviditeten bildas en moderkaka som sitter ihop med fostret via en navelsträng. Uppge en funktion som moderkakan har.",
+    "modelAnswer": "Transporterar syre och näring från modern till fostret|avlägsnar koldioxid och avfallsprodukter från fostret|fungerar som filter/skydd mot skadliga ämnen|producerar hormoner som upprätthåller graviditeten",
+    "facit_id": "mk_04"
+  },
+  {
+    "id": "mk_05",
+    "type": "open",
+    "area": "Cirkulation & Andning",
+    "source": "NP 2017",
+    "text": "Människokroppen består av flera organsystem som måste samverka för att kroppen ska fungera. Förklara hur andningssystemet och cirkulationssystemet samverkar för att kroppens celler ska fungera.",
+    "modelAnswer": "Lungorna tar upp syre från inandningsluften via diffusion till blodet|röda blodkroppar binder syret med hjälp av hemoglobin|hjärtat pumpar det syrerika blodet till kroppens alla celler via blodkärlen|cellerna använder syret för cellandning och bildar koldioxid|koldioxiden transporteras tillbaka i blodet till lungorna|lungorna andas ut koldioxiden",
+    "facit_id": "mk_05"
+  },
+  {
+    "id": "mk_06",
+    "type": "open",
+    "area": "Cirkulation & Andning",
+    "source": "NP 2019",
+    "text": "Regelbunden pulshöjande aktivitet, som att cykla till skolan, ger ett starkare hjärta och en ökad volym blod i kroppen. Detta leder till att konditionen förbättras. Förklara varför konditionen förbättras av ett starkare hjärta och en ökad volym blod i kroppen.",
+    "modelAnswer": "Starkare hjärta: pumpar mer blod per slag (ökad slagvolym) → musklerna får mer syre per pumpning → kroppen arbetar mer effektivt|Ökad blodvolym: mer blod kan transporteras → mer syre och näring levereras till musklerna → musklerna klarar längre och hårdare arbete utan att bli trötta",
+    "facit_id": "mk_06"
+  },
+  {
+    "id": "mk_07",
+    "type": "open",
+    "area": "Immunförsvar",
+    "source": "NP 2016",
+    "text": "Vid slutet av 1700-talet kom engelsmannen Edward Jenner på att man kunde vaccinera människor mot smittkoppor och de blev därigenom immuna mot sjukdomen. Idag finns det vaccin mot många olika sjukdomar. Förklara hur det går till när en vaccination ger immunitet.",
+    "modelAnswer": "Vaccinet innehåller försvagat, dött eller delar av smittämnet|immunsystemet känner igen det som ett hot och bildar antikroppar|minnes-B-celler bildas som kommer ihåg smittämnet|vid framtida infektion reagerar immunsystemet snabbt och kraftfullt|sjukdomen hinner inte utvecklas",
+    "facit_id": "mk_07"
+  },
+  {
+    "id": "mk_08",
+    "type": "open",
+    "area": "Immunförsvar",
+    "source": "NP 2015",
+    "text": "Antibiotika är ett läkemedel som kan behandla en viss sorts infektioner i kroppen. a) Vilken typ av organism orsakar dessa infektioner? b) Förklara varför antibiotika blir mindre verksam ju oftare den används.",
+    "modelAnswer": "a) Bakterier|b) Bakterier varierar naturligt — vissa har anlag för resistens|antibiotika dödar känsliga bakterier men resistenta överlever|resistenta bakterier förökar sig och för resistensen vidare|vid upprepad antibiotikaanvändning selekteras allt mer resistenta stammar fram",
+    "facit_id": "mk_08"
+  },
+  {
+    "id": "mk_09",
+    "type": "open",
+    "area": "Alkohol & Hälsa",
+    "source": "NP 2018",
+    "text": "Om en person dricker mycket alkohol under lång tid kan det skada flera organ i kroppen. Uppge ett organ som kan ta skada om en person dricker mycket alkohol under lång tid och förklara hur skadan påverkar organets funktion.",
+    "modelAnswer": "Levern: bryter ned alkohol men skadas av stora mängder → levercirros: frisk levervävnad ersätts av ärrvävnad → levern kan inte längre rena blodet från gifter, producera proteiner eller lagra glukos|Hjärnan: nervceller skadas → minnesförlust, koordinationsproblem|Bukspottkörteln: inflammation → försämrad produktion av matsmältningsenzymer och insulin",
+    "facit_id": "mk_09"
+  },
+  {
+    "id": "mk_10",
+    "type": "open",
+    "area": "Sexuell hälsa",
+    "source": "NP 2015",
+    "text": "Två killar är tillsammans och en tjej och en kille är tillsammans. De två paren diskuterar med varandra om olika preventivmedel för att ha säkert sex och kring möjliga följder om de inte skyddar sig. a) Vilket preventivmedel kan båda paren använda för att ha säkert sex? Förklara varför. b) Resonera kring möjliga följder av oskyddat sex för de två paren. Ta upp både kortsiktiga och långsiktiga följder.",
+    "modelAnswer": "a) Kondom — det enda preventivmedel som skyddar mot både graviditet och sexuellt överförbara infektioner (STI)|b) Kortsiktiga: risk för STI som klamydia, gonorré, HIV|Långsiktiga: oönskad graviditet (för det heterosexuella paret), kronisk STI-infektion, ofrivillig barnlöshet",
+    "facit_id": "mk_10"
+  },
+  {
+    "id": "mk_11",
+    "type": "open",
+    "area": "Smittspridning",
+    "source": "NP 2018",
+    "text": "Smittsamma sjukdomar sprids mellan människor bland annat via luften och olika kroppsvätskor. Vad kan du som individ göra för att minska spridning av sjukdomar? Ge ett exempel.",
+    "modelAnswer": "Tvätta händerna regelbundet|stanna hemma vid sjukdom|hosta/nysa i armvecket|vaccinera sig|använda kondom|undvika nära kontakt med sjuka personer",
+    "facit_id": "mk_11"
+  },
+  {
+    "id": "mk_12",
+    "type": "open",
+    "area": "Tobak & Hälsa",
+    "source": "NP 2016",
+    "text": "Tobaksrökning är beroendeframkallande och påverkar människors hälsa negativt på en mängd olika sätt. Uppge hur tobaksrökning kan påverka ett av kroppens organ och organets funktion. Förklara vad det kan leda till.",
+    "modelAnswer": "Lungorna: tjära och kemikalier fastnar i lungorna → cilierna (flimmerhåren) slutar fungera → slem och smuts kan inte rensas bort → kronisk bronkit, KOL, lungcancer|Hjärtat: nikotin ökar blodtrycket och hjärtfrekvensen → ökad risk för hjärtinfarkt och stroke|Kärl: åderförfettning → förträngning av blodkärlen → dålig blodcirkulation",
+    "facit_id": "mk_12"
+  },
+  {
+    "id": "mk_13",
+    "type": "open",
+    "area": "Stamceller",
+    "source": "NP 2015",
+    "text": "I kroppen finns stamceller. Det är omogna celler som kan utvecklas till olika typer av celler. Utgå från ett av de två exemplen (transplantera stamceller / odla vävnader) för att förklara vad användningen av stamceller inom sjukvården kan ha för betydelse för människors levnadsvillkor. Uppge både en möjlighet och en risk i din förklaring.",
+    "modelAnswer": "Möjlighet: stamceller kan ersätta skadad vävnad (t.ex. vid leukemi, ryggmärgsskador) → fler människor kan botas från sjukdomar som tidigare var obotliga|Risk: etiska frågor kring användning av embryonala stamceller|risk för att transplanterade celler förkastas av immunsystemet|risk för att celler börjar dela sig okontrollerat → tumör",
+    "facit_id": "mk_13"
+  },
+  {
+    "id": "mk_14",
+    "type": "open",
+    "area": "Blod & Blodtransfusion",
+    "source": "NP 2018",
+    "text": "En människa som behöver blod, till exempel efter en olycka, kan få en blodtransfusion. På 1800-talet upptäckte läkare att blodet som ges vid en blodtransfusion måste komma från människor. Uppge en annan naturvetenskaplig upptäckt om blod som har gjort att fler människor överlever efter en blodtransfusion. Förklara hur denna upptäckt har bidragit till att fler människor överlever.",
+    "modelAnswer": "Blodgrupper (ABO-systemet): man måste matcha blodgrupp mellan givare och mottagare → annars angriper immunsystemet det givna blodet|Rhesus-faktorn: Rh-positiv/negativ måste matchas|Koagulationsfaktorer och konservering av blod möjliggör blodbanker",
+    "facit_id": "mk_14"
+  },
+  {
+    "id": "mk_15",
+    "type": "open",
+    "area": "Nervsystem",
+    "source": "NP 2019 (anpassad)",
+    "text": "Människokroppen reagerar på omgivningen via nervsystemet. Ge ett exempel på en reflex och förklara hur reflexbågen fungerar i det exemplet.",
+    "modelAnswer": "Exempel: dra undan handen från hett föremål|Stimulus (hetta) → receptor i huden tar emot signalen|sensorisk nerv leder signalen till ryggmärgen|i ryggmärgen kopplas signalen direkt till motorisk nerv (utan att gå via hjärnan)|motorisk nerv aktiverar muskel → handen dras undan|signalen når sedan hjärnan och vi känner smärta"
+  }
+]
