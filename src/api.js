@@ -1,28 +1,25 @@
-// Handles all Anthropic API calls
+// Hanterar all kommunikation — anropar vår serverless funktion /api/chat
+// API-nyckeln hanteras säkert på servern via Vercels miljövariabel
+
 const API = (() => {
 
-  async function call(messages, systemPrompt = "", maxTokens = CONFIG.maxTokens) {
+  async function call(messages, systemPrompt = "", maxTokens = 800) {
     const body = {
-      model: CONFIG.model,
+      model: "claude-haiku-4-5-20251001",
       max_tokens: maxTokens,
       messages,
     };
     if (systemPrompt) body.system = systemPrompt;
 
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
+    const res = await fetch("/api/chat", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": API_KEY,
-        "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err?.error?.message || `HTTP ${res.status}`);
+      throw new Error(err?.error?.message || err?.error || `HTTP ${res.status}`);
     }
 
     const data = await res.json();
