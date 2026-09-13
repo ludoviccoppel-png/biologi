@@ -164,6 +164,7 @@ const QUESTIONS_DATA = [
     "area": "Nervsystem",
     "source": "NP 2019 (anpassad)",
     "text": "Människokroppen reagerar på omgivningen via nervsystemet. Ge ett exempel på en reflex och förklara hur reflexbågen fungerar i det exemplet.",
-    "modelAnswer": "Exempel: dra undan handen från hett föremål|Stimulus (hetta) → receptor i huden tar emot signalen|sensorisk nerv leder signalen till ryggmärgen|i ryggmärgen kopplas signalen direkt till motorisk nerv (utan att gå via hjärnan)|motorisk nerv aktiverar muskel → handen dras undan|signalen når sedan hjärnan och vi känner smärta"
+    "modelAnswer": "Exempel: dra undan handen från hett föremål|Stimulus (hetta) → receptor i huden tar emot signalen|sensorisk nerv leder signalen till ryggmärgen|i ryggmärgen kopplas signalen direkt till motorisk nerv (utan att gå via hjärnan)|motorisk nerv aktiverar muskel → handen dras undan|signalen når sedan hjärnan och vi känner smärta",
+    "facit_id": "mk_15"
   }
 ];
