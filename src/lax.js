@@ -271,6 +271,10 @@ POÄNG: [0, 1, 2 eller 3]
 })();
 
 // Exposed globally for onclick in HTML
-function closeLax() { Lax.init && document.getElementById("lax-panel").style.display = "none"; }
+function closeLax() {
+  if (Lax.init) {
+    document.getElementById("lax-panel").style.display = "none";
+  }
+}
 
 document.addEventListener("DOMContentLoaded", () => Lax.init());
