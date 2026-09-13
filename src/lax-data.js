@@ -440,27 +440,6 @@ const LAX_DATA = {
         "(t.ex. till hud- eller muskelceller) genom att stänga av vissa gener — detta kallas genreglering, och " +
         "förklarar varför olika celler tillverkar olika proteiner trots att alla har samma DNA.",
     },
-    {
-      id: "genetik-14",
-      type: "open",
-      text: "Vad är bioteknik? Ge tre exempel på tillämpningar.",
-      modelAnswer:
-        "Bioteknik är teknik som utnyttjar biologiska system, organismer eller delar av dem för att utveckla " +
-        "produkter eller lösa problem. Exempel: genmodifierade grödor (GMO), insulinproduktion med hjälp av " +
-        "bakterier, fosterdiagnostik/DNA-tester, antibiotikaframställning, kloning av djur.",
-    },
-    {
-      id: "genetik-15",
-      type: "open",
-      text:
-        "Vad kan man göra med genteknik? Diskutera (i flera led) möjligheter och risker med a) GMO och b) fosterdiagnostik.",
-      modelAnswer:
-        "GMO — möjligheter: högre skördar, sjukdoms- och skadedjursresistenta grödor, mer näringsrik mat. " +
-        "Risker: minskad biologisk mångfald, oförutsedda ekologiska effekter, etiska/ekonomiska frågor kring " +
-        "patent och stora företags kontroll över utsäde. " +
-        "Fosterdiagnostik — möjligheter: tidig upptäckt av genetiska sjukdomar, möjlighet att förbereda vård eller " +
-        "behandling i tid. Risker: etiska dilemman kring abort och selektering av foster, frågor om integritet och " +
-        "vem som ska ha tillgång till informationen.",
-    },
+    
   ],
 };
