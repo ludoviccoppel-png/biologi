@@ -7,6 +7,7 @@ const Lax = (() => {
   let used = new Set();
   let score = 0;
   let total = 0;
+  let maxPoints = 0;
   let answered = false;
   let currentQ = null;
 
@@ -32,7 +33,7 @@ const Lax = (() => {
     currentTopic = topic;
     questions = [...LAX_DATA[topic]];
     used.clear();
-    score = 0; total = 0; answered = false;
+    score = 0; total = 0; maxPoints = 0; answered = false;
 
     document.getElementById("lax-area-tag").textContent =
       card.querySelector(".lax-name").textContent;
@@ -57,6 +58,7 @@ const Lax = (() => {
     currentQ = refreshed[Math.floor(Math.random() * refreshed.length)];
     used.add(currentQ.id);
     total++;
+    maxPoints += currentQ.type === "open" ? 3 : 1;
 
     el("lax-type-tag").textContent = typeLabel(currentQ.type);
     el("lax-q-text").textContent = currentQ.text;
@@ -210,7 +212,7 @@ POÄNG: [0, 1, 2 eller 3]
       const pts = ptMatch ? parseInt(ptMatch[1]) : 0;
       const fbText = text.replace(/POÄNG:[^\n]*\n?/, "").replace("ÅTERKOPPLING:", "").trim();
 
-      score += pts >= 2 ? 1 : 0;
+      score += pts;
       addPip(pts >= 2 ? "hit" : pts === 1 ? "part" : "miss");
       renderScorebar();
 
@@ -255,7 +257,7 @@ POÄNG: [0, 1, 2 eller 3]
   function renderScorebar() {
     el("lax-q-num").textContent = total;
     el("lax-score").textContent = score;
-    el("lax-max").textContent = total;
+    el("lax-max").textContent = maxPoints;
   }
 
   // ── Helpers ──────────────────────────────────────────
