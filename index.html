@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Människokroppen – NP Träning Åk 9</title>
+<title>Människokroppen – Biologi 7-9</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="src/style.css">
@@ -12,76 +12,161 @@
 
 <header class="site-header">
   <div class="header-inner">
-    <div class="header-label">Nationella provet · Biologi åk 9</div>
+    <div class="header-label">Biologi 7-9</div>
     <h1 class="site-title">Människokroppen <em>&amp; Hälsa</em></h1>
-    <p class="site-sub">Träna inför NP med riktiga provfrågor och AI-återkoppling</p>
   </div>
 </header>
 
 <main>
-  <nav class="area-tabs" id="area-tabs"></nav>
 
-  <div class="scorebar" id="scorebar" style="display:none">
-    <div class="score-info">
-      <span>Fråga <strong id="q-num">0</strong></span>
-      <span>Poäng: <strong id="q-score">0</strong><span class="muted"> / </span><strong id="q-max">0</strong></span>
-    </div>
-    <div class="pips" id="pips"></div>
-    <button class="btn-ghost" id="restart-btn">↺ Börja om</button>
-  </div>
-
-  <div class="q-card" id="q-card" style="display:none">
-    <div class="q-meta">
-      <span class="q-type-tag" id="q-type-tag"></span>
-      <span class="q-source" id="q-source"></span>
-      <span class="q-area-tag" id="q-area-tag"></span>
+  <!-- ── NATIONELLA PROVET ─────────────────────────── -->
+  <section class="section-block" id="section-np">
+    <div class="section-header">
+      <div class="section-label-tag">📋 Nationella provet</div>
+      <p class="section-desc">Träna med riktiga provfrågor från Skolverkets NP 2015–2019</p>
     </div>
 
-    <div class="q-image-wrap" id="q-image-wrap" style="display:none">
-      <img id="q-image" src="" alt="Provbild">
+    <nav class="area-tabs" id="area-tabs"></nav>
+
+    <div class="scorebar" id="scorebar" style="display:none">
+      <div class="score-info">
+        <span>Fråga <strong id="q-num">0</strong></span>
+        <span>Poäng: <strong id="q-score">0</strong><span class="muted"> / </span><strong id="q-max">0</strong></span>
+      </div>
+      <div class="pips" id="pips"></div>
+      <button class="btn-ghost" id="restart-btn">↺ Börja om</button>
     </div>
 
-    <div class="q-text" id="q-text"></div>
-    <div id="q-body"></div>
+    <div class="q-card" id="q-card" style="display:none">
+      <div class="q-meta">
+        <span class="q-type-tag" id="q-type-tag"></span>
+        <span class="q-source" id="q-source"></span>
+        <span class="q-area-tag" id="q-area-tag"></span>
+      </div>
 
-    <div class="hint-box" id="hint-box" style="display:none">
-      <span class="hint-label">💡 Tips</span>
-      <p id="hint-text"></p>
+      <div class="q-image-wrap" id="q-image-wrap" style="display:none">
+        <img id="q-image" src="" alt="Provbild">
+      </div>
+
+      <div class="q-text" id="q-text"></div>
+      <div id="q-body"></div>
+
+      <div class="hint-box" id="hint-box" style="display:none">
+        <span class="hint-label">💡 Tips</span>
+        <p id="hint-text"></p>
+      </div>
+
+      <div class="feedback-box" id="feedback-box" style="display:none"></div>
+
+      <div class="chat-section" id="chat-section" style="display:none">
+        <div class="chat-label">Ställ en följdfråga</div>
+        <div class="chat-log" id="chat-log"></div>
+        <div class="chat-row">
+          <textarea id="chat-input" placeholder="Skriv din fråga…" rows="2"></textarea>
+          <button class="btn-send" id="chat-send">Skicka</button>
+        </div>
+      </div>
+
+      <div class="q-actions" id="q-actions"></div>
     </div>
 
-    <div class="feedback-box" id="feedback-box" style="display:none"></div>
+    <div class="start-screen" id="start-screen">
+      <p class="start-hint">Välj ett delområde ovan eller starta med alla frågor.</p>
+      <button class="btn-start" id="start-btn">Starta träning</button>
+    </div>
 
-    <div class="chat-section" id="chat-section" style="display:none">
-      <div class="chat-label">Ställ en följdfråga</div>
-      <div class="chat-log" id="chat-log"></div>
-      <div class="chat-row">
-        <textarea id="chat-input" placeholder="Skriv din fråga…" rows="2"></textarea>
-        <button class="btn-send" id="chat-send">Skicka</button>
+    <div class="loading-overlay" id="loading" style="display:none">
+      <div class="spinner"></div>
+      <span id="loading-text">Laddar…</span>
+    </div>
+  </section>
+
+  <!-- ── LÄXFÖRHÖR ──────────────────────────────────── -->
+  <section class="section-block" id="section-laxforhör">
+    <div class="section-header">
+      <div class="section-label-tag">📚 Läxförhör</div>
+      <p class="section-desc">Välj ett område och testa dina kunskaper</p>
+    </div>
+
+    <div class="lax-grid">
+      <div class="lax-card" data-topic="cellen">
+        <div class="lax-icon">🔬</div>
+        <div class="lax-name">Cellen</div>
+        <div class="lax-status">Kommer snart</div>
+      </div>
+      <div class="lax-card" data-topic="skelett">
+        <div class="lax-icon">🦴</div>
+        <div class="lax-name">Skelett &amp; muskler</div>
+        <div class="lax-status">Kommer snart</div>
+      </div>
+      <div class="lax-card" data-topic="hud">
+        <div class="lax-icon">🧴</div>
+        <div class="lax-name">Hud</div>
+        <div class="lax-status">Kommer snart</div>
+      </div>
+      <div class="lax-card" data-topic="andning">
+        <div class="lax-icon">🫁</div>
+        <div class="lax-name">Andning</div>
+        <div class="lax-status">Kommer snart</div>
+      </div>
+      <div class="lax-card" data-topic="blodlopp">
+        <div class="lax-icon">🫀</div>
+        <div class="lax-name">Blodomloppet</div>
+        <div class="lax-status">Kommer snart</div>
+      </div>
+      <div class="lax-card" data-topic="blod">
+        <div class="lax-icon">🩸</div>
+        <div class="lax-name">Blod &amp; blodgrupper</div>
+        <div class="lax-status">Kommer snart</div>
+      </div>
+      <div class="lax-card" data-topic="forsvar">
+        <div class="lax-icon">🛡️</div>
+        <div class="lax-name">Kroppens försvar</div>
+        <div class="lax-status">Kommer snart</div>
+      </div>
+      <div class="lax-card" data-topic="matspjalk">
+        <div class="lax-icon">🍎</div>
+        <div class="lax-name">Matspjälkning</div>
+        <div class="lax-status">Kommer snart</div>
       </div>
     </div>
 
-    <div class="q-actions" id="q-actions"></div>
-  </div>
+    <!-- Quiz-panel för läxförhör (aktiveras när frågor finns) -->
+    <div id="lax-panel" style="display:none">
+      <div class="scorebar" style="margin-top:20px">
+        <div class="score-info">
+          <span>Fråga <strong id="lax-q-num">0</strong></span>
+          <span>Rätt: <strong id="lax-score">0</strong><span class="muted"> / </span><strong id="lax-max">0</strong></span>
+        </div>
+        <div class="pips" id="lax-pips"></div>
+        <button class="btn-ghost" onclick="closeLax()">✕ Stäng</button>
+      </div>
+      <div class="q-card" id="lax-q-card">
+        <div class="q-meta">
+          <span class="q-type-tag" id="lax-type-tag"></span>
+          <span class="q-area-tag" id="lax-area-tag"></span>
+        </div>
+        <div class="q-text" id="lax-q-text"></div>
+        <div id="lax-q-body"></div>
+        <div class="feedback-box" id="lax-feedback" style="display:none"></div>
+        <div class="q-actions" id="lax-actions"></div>
+      </div>
+    </div>
 
-  <div class="start-screen" id="start-screen">
-    <p class="start-hint">Välj ett delområde ovan eller starta med alla frågor.</p>
-    <button class="btn-start" id="start-btn">Starta träning</button>
-  </div>
+  </section>
 
-  <div class="loading-overlay" id="loading" style="display:none">
-    <div class="spinner"></div>
-    <span id="loading-text">Laddar…</span>
-  </div>
 </main>
 
 <!-- Data (inlined so no fetch needed) -->
 <script src="src/questions-data.js"></script>
 <script src="src/facit-data.js"></script>
+<script src="src/lax-data.js"></script>
 <!-- Modules -->
 <script src="src/config.js"></script>
 <script src="src/questions.js"></script>
 <script src="src/facit.js"></script>
 <script src="src/api.js"></script>
 <script src="src/app.js"></script>
+<script src="src/lax.js"></script>
 </body>
 </html>
