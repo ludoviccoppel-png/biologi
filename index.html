@@ -129,36 +129,47 @@
         <div class="lax-name">Matspjälkning</div>
         <div class="lax-status">Kommer snart</div>
       </div>
-      <div class="lax-card" data-topic="genetik">
-        <div class="lax-icon">🧬</div>
-        <div class="lax-name">Genetik</div>
-        <div class="lax-status">Kommer snart</div>
-      </div>
-    </div>
-
-    <!-- Quiz-panel för läxförhör (aktiveras när frågor finns) -->
-    <div id="lax-panel" style="display:none">
-      <div class="scorebar" style="margin-top:20px">
-        <div class="score-info">
-          <span>Fråga <strong id="lax-q-num">0</strong></span>
-          <span>Rätt: <strong id="lax-score">0</strong><span class="muted"> / </span><strong id="lax-max">0</strong></span>
-        </div>
-        <div class="pips" id="lax-pips"></div>
-        <button class="btn-ghost" onclick="closeLax()">✕ Stäng</button>
-      </div>
-      <div class="q-card" id="lax-q-card">
-        <div class="q-meta">
-          <span class="q-type-tag" id="lax-type-tag"></span>
-          <span class="q-area-tag" id="lax-area-tag"></span>
-        </div>
-        <div class="q-text" id="lax-q-text"></div>
-        <div id="lax-q-body"></div>
-        <div class="feedback-box" id="lax-feedback" style="display:none"></div>
-        <div class="q-actions" id="lax-actions"></div>
-      </div>
     </div>
 
   </section>
+
+  <!-- ── LÄXFÖRHÖR GENETIK ÅK 9 ────────────────────── -->
+  <section class="section-block" id="section-genetik-ak9">
+    <div class="section-header">
+      <div class="section-label-tag">🧬 Läxförhör Genetik åk 9</div>
+      <p class="section-desc">Testa dina kunskaper om celler, DNA, kromosomer och nedärvning</p>
+    </div>
+
+    <div class="lax-grid">
+      <div class="lax-card" data-topic="genetik">
+        <div class="lax-icon">🧬</div>
+        <div class="lax-name">Genetik åk 9</div>
+        <div class="lax-status">Kommer snart</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Delad quiz-panel för läxförhör (aktiveras när frågor finns) -->
+  <div id="lax-panel" style="display:none">
+    <div class="scorebar" style="margin-top:20px">
+      <div class="score-info">
+        <span>Fråga <strong id="lax-q-num">0</strong></span>
+        <span>Rätt: <strong id="lax-score">0</strong><span class="muted"> / </span><strong id="lax-max">0</strong></span>
+      </div>
+      <div class="pips" id="lax-pips"></div>
+      <button class="btn-ghost" onclick="closeLax()">✕ Stäng</button>
+    </div>
+    <div class="q-card" id="lax-q-card">
+      <div class="q-meta">
+        <span class="q-type-tag" id="lax-type-tag"></span>
+        <span class="q-area-tag" id="lax-area-tag"></span>
+      </div>
+      <div class="q-text" id="lax-q-text"></div>
+      <div id="lax-q-body"></div>
+      <div class="feedback-box" id="lax-feedback" style="display:none"></div>
+      <div class="q-actions" id="lax-actions"></div>
+    </div>
+  </div>
 
 </main>
 
