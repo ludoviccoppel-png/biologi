@@ -440,6 +440,103 @@ const LAX_DATA = {
         "(t.ex. till hud- eller muskelceller) genom att stänga av vissa gener — detta kallas genreglering, och " +
         "förklarar varför olika celler tillverkar olika proteiner trots att alla har samma DNA.",
     },
-    
+    {
+      id: "genetik-14",
+      type: "open",
+      text: "Vad är bioteknik? Ge tre exempel på tillämpningar.",
+      modelAnswer:
+        "Bioteknik är teknik som utnyttjar biologiska system, organismer eller delar av dem för att utveckla " +
+        "produkter eller lösa problem. Exempel: genmodifierade grödor (GMO), insulinproduktion med hjälp av " +
+        "bakterier, fosterdiagnostik/DNA-tester, antibiotikaframställning, kloning av djur.",
+    },
+    {
+      id: "genetik-15",
+      type: "open",
+      text:
+        "Vad kan man göra med genteknik? Diskutera (i flera led) möjligheter och risker med a) GMO och b) fosterdiagnostik.",
+      modelAnswer:
+        "GMO — möjligheter: högre skördar, sjukdoms- och skadedjursresistenta grödor, mer näringsrik mat. " +
+        "Risker: minskad biologisk mångfald, oförutsedda ekologiska effekter, etiska/ekonomiska frågor kring " +
+        "patent och stora företags kontroll över utsäde. " +
+        "Fosterdiagnostik — möjligheter: tidig upptäckt av genetiska sjukdomar, möjlighet att förbereda vård eller " +
+        "behandling i tid. Risker: etiska dilemman kring abort och selektering av foster, frågor om integritet och " +
+        "vem som ska ha tillgång till informationen.",
+    },
+  ],
+
+  evolution7: [
+    {
+      id: "evolution7-1",
+      type: "open",
+      text: "Vad är biologi?",
+      modelAnswer: "Biologi är läran om allt levande.",
+    },
+    {
+      id: "evolution7-2",
+      type: "open",
+      text: "Redogör kort för de grundläggande egenskaperna för det som är levande.",
+      modelAnswer:
+        "Levande organismer får i sig energi och näring, förändras över flera generationer så att nya arter kan " +
+        "bildas, kan föröka sig (fortplanta sig, få avkomma) och är uppbyggda av celler.",
+    },
+    {
+      id: "evolution7-3",
+      type: "open",
+      text: "Beskriv kortfattat hur jorden och senare livet blev till.",
+      modelAnswer:
+        "Universum bildades för ca 14 miljarder år sedan genom en kraftig expansion. Solsystemet och jorden " +
+        "bildades för knappt 5 miljarder år sedan av partiklar som slogs samman på grund av gravitationskraften. " +
+        "Jorden var först ett glödande klot som träffades av kometer med is, vilket blev till vattenånga. När " +
+        "temperaturen sjönk kondenserade vattnet och bildade hav. En teori är att enkla kemiska ämnen i vattnet, " +
+        "med hjälp av mycket energi (t.ex. blixtar), kunde bygga den första självkopierande molekylen — och livet " +
+        "var igång.",
+    },
+    {
+      id: "evolution7-4",
+      type: "open",
+      text:
+        "Beskriv fotosyntes och cellandning. Redogör för energiomvandlingar inom fotosyntes och cellandning samt för kolets kretslopp.",
+      modelAnswer:
+        "Fotosyntes: koldioxid + vatten + solenergi → socker + syre. Cellandning: socker + syre → energi + " +
+        "koldioxid + vatten. Energiomvandling: solenergin lagras som kemisk energi i sockermolekyler vid " +
+        "fotosyntesen, och frigörs sedan vid cellandningen när sockret bränns med syre och omvandlas till t.ex. " +
+        "rörelseenergi eller värmeenergi. Kolets kretslopp: i fotosyntesen tas kolatomer från koldioxid i " +
+        "atmosfären upp och bygger sockermolekyler; i cellandningen avges kolatomerna tillbaka som koldioxid " +
+        "till atmosfären.",
+    },
+    {
+      id: "evolution7-5",
+      type: "open",
+      text: "Redogör kortfattat för evolutionsteorin.",
+      modelAnswer:
+        "Evolution är en process där alla organismer förändras över generationer, vilket ger upphov till nya " +
+        "arter. Förändringarna drivs bland annat av mutationer samt naturligt och sexuellt urval — de individer " +
+        "som har egenskaper som är bäst anpassade för sin miljö har större chans att överleva och föra vidare " +
+        "sina egenskaper till kommande generationer.",
+    },
+    {
+      id: "evolution7-6",
+      type: "open",
+      text: "Förklara kort följande begrepp: naturligt urval, sexuellt urval, mutationer, anpassning.",
+      modelAnswer:
+        "Naturligt urval: individer med egenskaper som är bäst anpassade för den miljö de lever i har större " +
+        "chans att överleva och föra vidare sina egenskaper. Sexuellt urval: avgör vilka individer som får " +
+        "avkomma — vissa egenskaper ökar chansen att hitta en partner och sprida sina egenskaper vidare. " +
+        "Mutation: en felkopiering som sker när en cell delas; sker felet i en könscell förändras egenskaperna " +
+        "hos avkomman, vilket kan ge en nackdel eller en fördel. Anpassning: förmågan att klara sig i en viss " +
+        "miljö, t.ex. att skaffa föda, skydd eller partner.",
+    },
+    {
+      id: "evolution7-7",
+      type: "open",
+      text: "Beskriv två observationer som stärker (bevisar) evolutionsteorin.",
+      modelAnswer:
+        "Exempel på bevis: (1) Fossil — avtryck från döda växter och djur; ju äldre fossil, desto enklare " +
+        "organismer, vilket visar att organismer utvecklats till mer komplicerade strukturer över tid. " +
+        "(2) Likheter i anatomi — stora likheter i kroppskonstruktion inom djurgrupper visar på gemensamt " +
+        "ursprung, t.ex. har alla däggdjur tydliga likheter i skelettet. Andra godtagbara exempel: likheter i " +
+        "fosterutveckling (tidiga foster hos fisk, höna, gris, kanin och människa är svåra att skilja åt) och " +
+        "likheter i DNA (visar hur nära släkt olika organismer är).",
+    },
   ],
 };
