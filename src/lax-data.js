@@ -630,9 +630,11 @@ const LAX_DATA = {
       type: "open",
       text: "Varför riskerar toppkonsumenter att drabbas av miljögifter?",
       modelAnswer:
-        "Toppkonsumenter löper stor risk att drabbas av miljögifter eftersom stabila och fettlösliga ämnen ofta " +
-        "anrikas i allt högre grad uppåt i näringskedjan. Till slut, hos toppkonsumenter, kan halterna bli " +
-        "skadligt höga.",
+        "Toppkonsumenter drabbas hårdast eftersom miljögifter inte försvinner ur kroppen, utan lagras i djurens " +
+        "fett. När ett djur äter många mindre djur tar det över allt gift som de mindre djuren har samlat på sig " +
+        "under sina liv. Giftet förs på så sätt vidare uppåt i näringskedjan och lagras i allt större mängder för " +
+        "varje steg. Eftersom toppkonsumenten äter väldigt mycket mat från ledet under sig, hamnar till slut " +
+        "gigantiska mängder gift i dess kropp, vilket kan göra djuret sjukt.",
     },
   ],
 };
