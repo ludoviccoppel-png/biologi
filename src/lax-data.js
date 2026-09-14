@@ -539,4 +539,100 @@ const LAX_DATA = {
         "likheter i DNA (visar hur nära släkt olika organismer är).",
     },
   ],
+
+  ekologi7: [
+    {
+      id: "ekologi7-1",
+      type: "open",
+      text: "Vad skiljer en biotop från ett habitat?",
+      modelAnswer:
+        "En biotop är i princip en viss naturtyp, t.ex. en äng, med typiska växt- och djursamhällen. Ett habitat är " +
+        "den livsmiljö en viss organism behöver för att kunna utvecklas. Biotopen och habitatet kan ofta " +
+        "sammanfalla, men en art kan behöva olika habitat under olika tider (t.ex. ålen eller flyttfåglar).",
+    },
+    {
+      id: "ekologi7-2",
+      type: "open",
+      text: "Varför råder det ständig konkurrens i ett ekosystem?",
+      modelAnswer:
+        "Det råder ständig konkurrens eftersom alla organismer vill föröka sig och därmed ta så mycket resurser som " +
+        "möjligt i anspråk, och resurserna är begränsade.",
+    },
+    {
+      id: "ekologi7-3",
+      type: "open",
+      text: "Varför kan två arter inte dela samma ekologiska nisch någon längre tid?",
+      modelAnswer:
+        "Om två arter delade samma ekologiska nisch skulle de ha exakt samma krav på sin omgivning, och till slut " +
+        "skulle den ena arten konkurrera ut den andra.",
+    },
+    {
+      id: "ekologi7-4",
+      type: "open",
+      text: "Varför växer tallen oftare på hällmarker och myrar än på bördigare mark?",
+      modelAnswer:
+        "Tallen växer helst på magra hällmarker och myrar. Den skulle gärna växa på näringsrika sluttningar också, " +
+        "men där konkurreras den ut av granen.",
+    },
+    {
+      id: "ekologi7-5",
+      type: "open",
+      text: "Vilka fördelar finns det med att vara opportunist, specialist respektive pionjär?",
+      modelAnswer:
+        "Opportunisten kan dra fördel av okända miljöer (t.ex. kråkfåglar som lätt anpassar sig till ett liv i " +
+        "städer). Specialisten är stark i den miljö arten är anpassad för och tränger undan konkurrenterna där. " +
+        "Pionjären är mästare på att utnyttja tillfälliga störningar som skogsbränder eller jordskred. Ingen av " +
+        "strategierna är generellt bättre än de andra.",
+    },
+    {
+      id: "ekologi7-6",
+      type: "open",
+      text: "Hur bidrar konkurrensen till att evolutionen ständigt pågår?",
+      modelAnswer:
+        "Konkurrensen gynnar alltid de individer som utvecklar nya egenskaper som ökar deras konkurrenskraft. På så " +
+        "vis förändras arterna ständigt under evolutionen, och på lång sikt bildas nya arter medan andra går under.",
+    },
+    {
+      id: "ekologi7-7",
+      type: "open",
+      text: "Varför är fotosyntesen basen för näringsförsörjningen i nästan alla ekosystem?",
+      modelAnswer:
+        "Fotosyntesen är basen för näringsförsörjningen eftersom de gröna växterna är födan för alla växtätare, " +
+        "som i sin tur är födan för alla rovdjur.",
+    },
+    {
+      id: "ekologi7-8",
+      type: "open",
+      text: "Hur samspelar producenter och konsumenter i ett ekosystem?",
+      modelAnswer:
+        "Ju mer producenterna (de gröna växterna) kan tillverka föda, desto fler blir konsumenterna. Då kan de beta " +
+        "växterna så hårt att produktionen minskar igen. På så sätt samspelar producenter och konsumenter hela " +
+        "tiden i ett ekosystem.",
+    },
+    {
+      id: "ekologi7-9",
+      type: "open",
+      text: "Vilken roll spelar nedbrytarna i en näringskedja?",
+      modelAnswer:
+        "Nedbrytarna bryter ner spillning och döda djur- och växtdelar till ämnen som de gröna växterna kan ta upp " +
+        "och använda igen, till exempel vid sin fotosyntes.",
+    },
+    {
+      id: "ekologi7-10",
+      type: "open",
+      text: "Varför förlorar näringskedjan nästan 90 % av energin och näringen mellan trofinivåerna?",
+      modelAnswer:
+        "Näringskedjan förlorar nästan 90 % av energin och näringen mellan två trofinivåer eftersom merparten av " +
+        "energin och näringen behövs för att organismen själv ska kunna leva och röra på sig.",
+    },
+    {
+      id: "ekologi7-11",
+      type: "open",
+      text: "Varför riskerar toppkonsumenter att drabbas av miljögifter?",
+      modelAnswer:
+        "Toppkonsumenter löper stor risk att drabbas av miljögifter eftersom stabila och fettlösliga ämnen ofta " +
+        "anrikas i allt högre grad uppåt i näringskedjan. Till slut, hos toppkonsumenter, kan halterna bli " +
+        "skadligt höga.",
+    },
+  ],
 };
