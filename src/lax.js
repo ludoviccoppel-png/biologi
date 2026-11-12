@@ -58,7 +58,7 @@ const Lax = (() => {
     currentQ = refreshed[Math.floor(Math.random() * refreshed.length)];
     used.add(currentQ.id);
     total++;
-    maxPoints += currentQ.type === "open" ? 3 : 1;
+    maxPoints += maxFor(currentQ);
 
     el("lax-type-tag").textContent = typeLabel(currentQ.type);
     el("lax-q-text").textContent = currentQ.text;
@@ -70,6 +70,11 @@ const Lax = (() => {
     else                                 renderOpen();
 
     renderScorebar();
+  }
+
+  // Max poäng för en fråga: eget "points"-fält i datan, annars 3 för öppna frågor och 1 för övriga
+  function maxFor(q) {
+    return q.points || (q.type === "open" ? 3 : 1);
   }
 
   function typeLabel(t) {
@@ -186,6 +191,9 @@ const Lax = (() => {
     const btn = el("lax-check-btn");
     if (btn) { btn.disabled = true; btn.textContent = "Bedömer…"; }
 
+    const maxQ = maxFor(currentQ);
+    const scaleText = Array.from({ length: maxQ + 1 }, (_, i) => i).join(", ");
+
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -195,32 +203,33 @@ const Lax = (() => {
           max_tokens: 600,
           messages: [{
             role: "user",
-            content: `Du är en biologilärare. Bedöm elevens svar med poäng 0-3.
+            content: `Du är en biologilärare. Bedöm elevens svar med poäng 0-${maxQ} (frågan är värd högst ${maxQ} poäng).
 Fråga: ${currentQ.text}
-Nyckelbegrepp: ${currentQ.modelAnswer || ""}
+Nyckelbegrepp / facit: ${currentQ.modelAnswer || ""}
 Elevens svar: ${input}
 
 Svara EXAKT:
-POÄNG: [0, 1, 2 eller 3]
+POÄNG: [ett heltal: ${scaleText}]
 ÅTERKOPPLING: [2-4 meningar på svenska]`
           }]
         })
       });
       const data = await res.json();
       const text = data.content.map(c => c.text || "").join("");
-      const ptMatch = text.match(/POÄNG:\s*([0-3])/);
-      const pts = ptMatch ? parseInt(ptMatch[1]) : 0;
+      const ptMatch = text.match(/POÄNG:\s*(\d+)/);
+      const pts = ptMatch ? Math.min(parseInt(ptMatch[1]), maxQ) : 0;
       const fbText = text.replace(/POÄNG:[^\n]*\n?/, "").replace("ÅTERKOPPLING:", "").trim();
 
+      const ratio = pts / maxQ;
       score += pts;
-      addPip(pts >= 2 ? "hit" : pts === 1 ? "part" : "miss");
+      addPip(ratio >= 0.66 ? "hit" : pts > 0 ? "part" : "miss");
       renderScorebar();
 
-      const gradeClass = pts === 3 ? "good" : pts >= 1 ? "part" : "poor";
-      const stars = ["☆☆☆","★☆☆","★★☆","★★★"][pts];
+      const gradeClass = pts === maxQ ? "good" : pts > 0 ? "part" : "poor";
+      const stars = "★".repeat(pts) + "☆".repeat(maxQ - pts);
       const fb = el("lax-feedback");
       fb.className = "feedback-box " + gradeClass;
-      fb.innerHTML = `<div class="grade-badge"><span class="grade-stars">${stars}</span><span>${pts} poäng</span></div>${fbText}`;
+      fb.innerHTML = `<div class="grade-badge"><span class="grade-stars">${stars}</span><span>${pts} / ${maxQ} poäng</span></div>${fbText}`;
       fb.style.display = "";
     } catch(e) {
       const fb = el("lax-feedback");

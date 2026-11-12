@@ -637,4 +637,152 @@ const LAX_DATA = {
         "gigantiska mängder gift i dess kropp, vilket kan göra djuret sjukt.",
     },
   ],
+
+  // Prov biologi åk 8 – frågorna är uppdelade i delfrågor (a, b, c…) med provets poäng i "points".
+  // modelAnswer innehåller facit inklusive poängsättning, som AI-bedömningen utgår från.
+  biologi8: [
+    // ── 13. Blodet och blodomloppet (5 p) ──────────────────────────
+    {
+      id: "biologi8-13a",
+      type: "open",
+      points: 2,
+      text:
+        "13a) Blodet och blodomloppet: Blodet består av fyra delar. Nämn dem och beskriv vad var och en gör. (2 p)",
+      modelAnswer:
+        "Blodplasma: en vätska som mest består av vatten och transporterar näring och andra ämnen. " +
+        "Röda blodkroppar: transporterar syre. Vita blodkroppar: bekämpar bakterier och virus. " +
+        "Blodplättar: hjälper till vid sårläkning. " +
+        "Poängsättning: 1 p om två delar är rätt nämnda och beskrivna, 2 p om alla fyra delar är rätt nämnda och beskrivna.",
+    },
+    {
+      id: "biologi8-13b",
+      type: "open",
+      points: 2,
+      text:
+        "13b) Beskriv blodets väg i det lilla och det stora kretsloppet. Berätta vad som händer med blodet i lungorna och i kapillärerna ute i kroppen. (2 p)",
+      modelAnswer:
+        "1 p – lilla kretsloppet: hjärtat pumpar blodet till lungorna, där blodet tar upp syre och lämnar koldioxid, " +
+        "och blodet går sedan tillbaka till hjärtat. " +
+        "1 p – stora kretsloppet: hjärtat pumpar ut det syrerika blodet i artärerna till kroppen. I kapillärerna " +
+        "lämnar syre och näring blodet och går till cellerna, och koldioxid och avfall tas upp. Blodet går tillbaka " +
+        "till hjärtat i venerna.",
+    },
+    {
+      id: "biologi8-13c",
+      type: "open",
+      points: 1,
+      text:
+        "13c) Lisa har blodgrupp A och har förlorat mycket blod i en olycka. Förklara varför hon inte kan få blod från vem som helst. (1 p)",
+      modelAnswer:
+        "Blodgruppen avgörs av proteiner på de röda blodkropparna. Om Lisa får blod som inte passar ihop med hennes " +
+        "blodgrupp kan kroppen reagera mot blodet, och det kan vara livsfarligt. Givarens och mottagarens " +
+        "blodgrupper måste passa ihop.",
+    },
+
+    // ── 14. Vaccination och antibiotika (4 p) ──────────────────────
+    {
+      id: "biologi8-14a",
+      type: "open",
+      points: 1,
+      text: "14a) Vaccination och antibiotika: Förklara skillnaden mellan bakterier och virus. (1 p)",
+      modelAnswer:
+        "Bakterier är encelliga levande organismer. Virus räknas inte som levande, eftersom de måste ta över en " +
+        "levande cell för att föröka sig. Antibiotika hjälper mot bakterier men inte mot virus.",
+    },
+    {
+      id: "biologi8-14b",
+      type: "open",
+      points: 2,
+      text:
+        "14b) Förklara hur en vaccination gör att man blir immun mot en sjukdom. Använd begreppen smittämne, B-celler, antikroppar och minne. (2 p)",
+      modelAnswer:
+        "1 p: Vid vaccination sprutas en liten mängd av ett smittämne in i kroppen. Immunförsvaret lär sig känna " +
+        "igen det, och B-cellerna börjar tillverka antikroppar. " +
+        "1 p: Kroppen skapar ett minne (med hjälp av T- och B-celler). Om man senare möter det riktiga smittämnet är " +
+        "försvaret redo direkt, och man blir inte sjuk. Då är man immun.",
+    },
+    {
+      id: "biologi8-14c",
+      type: "open",
+      points: 1,
+      text: "14c) Ge två orsaker till att allt fler bakterier blir resistenta mot antibiotika. (1 p)",
+      modelAnswer:
+        "Två av följande: antibiotika skrivs ut i onödan, till exempel mot virusinfektioner; djur får antibiotika i " +
+        "fodret för att växa snabbare; fabriker som tillverkar antibiotika släpper ut rester i naturen. " +
+        "För 1 p ska två orsaker vara rätt angivna.",
+    },
+
+    // ── 15. Pubertet och graviditet (4 p) ──────────────────────────
+    {
+      id: "biologi8-15a",
+      type: "open",
+      points: 1,
+      text:
+        "15a) Pubertet och graviditet: Vad startar puberteten, och vilka hormoner gör att kroppen förändras? (1 p)",
+      modelAnswer:
+        "Puberteten startar med hormoner från hypofysen. De gör att könshormonerna testosteron och östrogen börjar " +
+        "bildas, och de sätter igång kroppens förändringar.",
+    },
+    {
+      id: "biologi8-15b",
+      type: "open",
+      points: 1,
+      text: "15b) Beskriv spermiernas väg efter ett samlag och var befruktningen sker. (1 p)",
+      modelAnswer:
+        "Spermierna simmar från slidan, genom livmodern och upp i äggledarna. Befruktningen sker i äggledaren, där " +
+        "en spermie kan möta ett moget ägg.",
+    },
+    {
+      id: "biologi8-15c",
+      type: "open",
+      points: 2,
+      text:
+        "15c) Beskriv hur fostret får näring och skydd under graviditeten. Använd begreppen moderkaka, navelsträng och fostervatten. (2 p)",
+      modelAnswer:
+        "1 p: Fostret får näring och syre från moderkakan via navelsträngen. " +
+        "1 p: Fostret svävar i fostervatten innanför fosterhinnorna, som skyddar det.",
+    },
+
+    // ── 16. Droger, relationer och samtycke (4 p) ──────────────────
+    {
+      id: "biologi8-16a",
+      type: "open",
+      points: 1,
+      text:
+        "16a) Droger, relationer och samtycke: Sam och Robin träffas på en fest. Robin har druckit mycket alkohol. Förklara hur alkohol påverkar nervsystemet och omdömet. (1 p)",
+      modelAnswer:
+        "Alkohol bedövar nervsystemet genom att förstärka bromsande signaler. Omdömet och minnet blir sämre, och " +
+        "risken för olyckor ökar.",
+    },
+    {
+      id: "biologi8-16b",
+      type: "open",
+      points: 1,
+      text:
+        "16b) Sam och Robin träffas på en fest och Robin har druckit mycket alkohol. Sam vill ha sex med Robin. Förklara med hjälp av samtyckeslagen varför Sam inte kan anta att Robin samtycker. (1 p)",
+      modelAnswer:
+        "Enligt samtyckeslagen ska sex vara frivilligt, och båda måste vilja och visa det. Den som är kraftigt " +
+        "berusad kan inte ge ett riktigt samtycke, och tystnad eller passivitet är inte ett ja.",
+    },
+    {
+      id: "biologi8-16c",
+      type: "open",
+      points: 1,
+      text:
+        "16c) En person på en fest har haft sex utan kondom med en ny partner, men har inga symtom. Förklara varför hen ändå bör testa sig, och vad smittskyddslagen säger. (1 p)",
+      modelAnswer:
+        "Många könssjukdomar ger inga symtom, så man kan vara smittad och sprida smittan utan att veta om det. " +
+        "Enligt smittskyddslagen måste man testa sig vid misstanke om smitta, och vården kontaktar dem man haft sex " +
+        "med så att smittspridningen stoppas.",
+    },
+    {
+      id: "biologi8-16d",
+      type: "open",
+      points: 1,
+      text: "16d) Ge två exempel på vad som kännetecknar en bra relation. (1 p)",
+      modelAnswer:
+        "Två exempel, till exempel: man respekterar varandra, man litar på varandra, man kan säga vad man tycker " +
+        "och känner, ingen kontrollerar eller pressar den andra.",
+    },
+  ],
 };
