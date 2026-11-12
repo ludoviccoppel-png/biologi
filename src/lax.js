@@ -214,7 +214,11 @@ POÄNG: [ett heltal: ${scaleText}]
           }]
         })
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !Array.isArray(data.content)) {
+        const apiMsg = typeof data.error === "string" ? data.error : data.error?.message;
+        throw new Error(`Servern svarade ${res.status}${apiMsg ? ": " + apiMsg : ""}`);
+      }
       const text = data.content.map(c => c.text || "").join("");
       const ptMatch = text.match(/POÄNG:\s*(\d+)/);
       const pts = ptMatch ? Math.min(parseInt(ptMatch[1]), maxQ) : 0;
@@ -236,6 +240,11 @@ POÄNG: [ett heltal: ${scaleText}]
       fb.className = "feedback-box poor";
       fb.textContent = "Kunde inte bedöma: " + e.message;
       fb.style.display = "";
+      // Lås upp så eleven kan försöka igen (svaret finns kvar i rutan)
+      answered = false;
+      ta.disabled = false;
+      renderActions({ type: "open" });
+      return;
     }
     renderActions({ type: "open", done: true });
   }
