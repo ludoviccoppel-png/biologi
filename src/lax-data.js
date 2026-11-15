@@ -856,10 +856,466 @@ const LAX_DATA = {
   ],
 
   // ── Prov ──────────────────────────────────────────────────────────
-  // Biologi åk 7 och åk 9: inga frågor inlagda ännu. Korten i index.html visar
-  // "Kommer snart" tills listan fylls på (samma frågeformat som biologi8 nedan).
-  biologi7: [],
-  biologi9: [],
+  // ── Prov Biologi åk 7 – Ekologi och evolution (29 p) ──
+  // Del A: 12 kryssfrågor (1 p, 0,5 p vid högst ett fel). Del B: skrivfrågor med provets poäng.
+  biologi7: [
+    // ── Del A ──
+    {
+      id: "biologi7-k1",
+      type: "multi",
+      halfCredit: true,
+      text: "Ekologiska begrepp: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Alla gäddor i en sjö bildar tillsammans en population.",
+        B: "Ett samhälle är alla individer av en och samma art.",
+        C: "Ett ekosystem kan vara så litet som en stubbe eller ett akvarium.",
+        D: "En art består av individer som kan få ungar som själva kan få ungar.",
+        E: "Ekologi är läran om hur man tillverkar mediciner av växter.",
+      },
+      correct: ["A", "C", "D"],
+    },
+    {
+      id: "biologi7-k2",
+      type: "multi",
+      halfCredit: true,
+      text: "Vilka av följande är biotiska faktorer? Kryssa i alla som stämmer.",
+      opts: {
+        A: "Nederbörd",
+        B: "Maskar",
+        C: "Vind",
+        D: "Salthalt i havet",
+        E: "Mineralämnen i berggrunden",
+      },
+      correct: ["B"],
+    },
+    {
+      id: "biologi7-k3",
+      type: "multi",
+      halfCredit: true,
+      text: "Konkurrens och nisch: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Konkurrens uppstår eftersom resurser som mat och boplatser är begränsade.",
+        B: "Konkurrens betyder alltid att djuren slåss med varandra.",
+        C: "Två arter med olika nischer kan leva sida vid sida i samma ekosystem.",
+        D: "Arter som lätt hittar nya boplatser och anpassar sig till nya miljöer kallas specialister.",
+        E: "Konkurrens finns bara mellan olika arter, aldrig inom samma art.",
+      },
+      correct: ["A", "C"],
+    },
+    {
+      id: "biologi7-k4",
+      type: "multi",
+      halfCredit: true,
+      text: "Fotosyntes: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Syret som bildas vid fotosyntesen släpps ut i luften.",
+        B: "Växten tar upp vattnet till fotosyntesen från luften genom bladen.",
+        C: "Sockret används av växten både som byggmaterial och som energi.",
+        D: "Fotosyntes kan ske i totalt mörker.",
+        E: "Det är kolet från luftens koldioxid som bygger upp trädstammar och löv.",
+      },
+      correct: ["A", "C", "E"],
+    },
+    {
+      id: "biologi7-k5",
+      type: "multi",
+      halfCredit: true,
+      text: "Cellandning och energi: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Vid cellandningen omvandlas kemisk energi i socker till till exempel rörelseenergi och värmeenergi.",
+        B: "Vid cellandningen tar kroppen upp koldioxid.",
+        C: "Vi andas in syre för att kunna förbränna socker i cellerna.",
+        D: "Vid cellandningen tillverkas socker.",
+        E: "Solenergi omvandlas direkt till rörelseenergi i våra muskler.",
+      },
+      correct: ["A", "C"],
+    },
+    {
+      id: "biologi7-k6",
+      type: "multi",
+      halfCredit: true,
+      text: "Näringskedjor och näringsvävar: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "En näringsväv består av många näringskedjor som hänger ihop.",
+        B: "Ett djur kan bara ha en roll i en näringsväv, antingen växtätare eller rovdjur.",
+        C: "Toppkonsumenter är de djur som kommer sist i en näringskedja.",
+        D: "Växterna är konsumenter i en näringskedja.",
+        E: "Pilarna i en näringskedja visar åt vilket håll näringen går.",
+      },
+      correct: ["A", "C", "E"],
+    },
+    {
+      id: "biologi7-k7",
+      type: "multi",
+      halfCredit: true,
+      text: "Näringspyramiden och miljögifter: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Halten av miljögifter är oftast högst längst ner i näringskedjan.",
+        B: "Miljögifter lagras ofta i djurens fett.",
+        C: "Det krävs mycket växter för att försörja ett litet antal rovdjur.",
+        D: "Energi och miljögifter försvinner på samma sätt mellan nivåerna i en näringskedja.",
+        E: "Människor kan vara toppkonsumenter.",
+      },
+      correct: ["B", "C", "E"],
+    },
+    {
+      id: "biologi7-k8",
+      type: "multi",
+      halfCredit: true,
+      text: "Kolets och vattnets kretslopp: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "När vi eldar ved släpps kolet i veden tillbaka till luften som koldioxid.",
+        B: "Olja, stenkol och naturgas har bildats av växter och djur som dog för miljontals år sedan.",
+        C: "När havsvatten avdunstar följer saltet med upp i molnen.",
+        D: "Kolets snabba kretslopp tar alltid miljontals år.",
+        E: "Växterna tar upp mineralämnen ur luften.",
+      },
+      correct: ["A", "B"],
+    },
+    {
+      id: "biologi7-k9",
+      type: "multi",
+      halfCredit: true,
+      text: "Biologisk mångfald och ekosystemtjänster: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Våtmarker som renar vatten är ett exempel på en ekosystemtjänst.",
+        B: "Genetisk variation uppstår bland annat genom sexuell förökning och mutationer.",
+        C: "En regnskog har oftast låg biologisk mångfald.",
+        D: "Om en art försvinner påverkar det aldrig andra arter.",
+        E: "Fisk och trä från naturen räknas inte som ekosystemtjänster.",
+      },
+      correct: ["A", "B"],
+    },
+    {
+      id: "biologi7-k10",
+      type: "multi",
+      halfCredit: true,
+      text: "Livet och dess uppkomst: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Alla organismer är uppbyggda av celler.",
+        B: "När en organism växer är det samma sak som evolution.",
+        C: "Flytande vatten är en förutsättning för att liv ska kunna uppstå.",
+        D: "De första organismerna på jorden var flercelliga djur.",
+        E: "Jorden ligger på lagom avstånd från solen, vilket ger en temperatur som passar liv.",
+      },
+      correct: ["A", "C", "E"],
+    },
+    {
+      id: "biologi7-k11",
+      type: "multi",
+      halfCredit: true,
+      text: "Naturligt och sexuellt urval: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "De flesta arter får fler ungar än det finns resurser för att alla ska överleva.",
+        B: "En individ kan ändra sina gener genom att träna mycket.",
+        C: "Påfågelhanens stora och färggranna stjärt kan förklaras med sexuellt urval.",
+        D: "De flesta mutationer är till fördel för individen.",
+        E: "Evolutionen strävar efter att arterna ska bli så perfekta som möjligt.",
+      },
+      correct: ["A", "C"],
+    },
+    {
+      id: "biologi7-k12",
+      type: "multi",
+      halfCredit: true,
+      text: "Vilka av följande är bevis för evolution? Kryssa i alla som stämmer.",
+      opts: {
+        A: "Människan har en svanskota, en rest av en kroppsdel som hade en funktion hos våra förfäder.",
+        B: "Likheter i DNA visar hur nära släkt olika organismer är med varandra.",
+        C: "En katt kan få ungar med olika pälsfärg i samma kull.",
+        D: "Människor kan lära sig nya saker under livet.",
+        E: "Vissa djur sover på vintern.",
+      },
+      correct: ["A", "B"],
+    },
+    // ── Del B ──
+    {
+      id: "biologi7-13",
+      type: "open",
+      points: 4,
+      text: "Kolets kretslopp (4 p): En gammal tall i skogen dör och faller omkull. Beskriv vad som händer med kolet i trädet efter att det har dött, och hur kolet sedan kan bli en del av ett nytt träd. Förklara också varför ved som eldas räknas till kolets snabba kretslopp, medan olja räknas till det långsamma kretsloppet.",
+      modelAnswer:
+        "1 p: Nedbrytare (svampar, bakterier, maskar) bryter ner det döda trädet. 1 p: Vid nedbrytningen andas nedbrytarna ut kolet som koldioxid till luften. 1 p: Ett nytt träd tar upp koldioxiden vid fotosyntesen och bygger socker, stam och löv av kolet. 1 p: Ved har nyss tagit upp kolet från luften (snabba kretsloppet, upp till ca 100 år). Olja bildades av växter och djur för miljontals år sedan, så kolet har varit fastlåst länge (långsamma kretsloppet).",
+    },
+    {
+      id: "biologi7-14",
+      type: "open",
+      points: 4,
+      text: "Evolution (4 p): Fjällharen har brun päls på sommaren och vit päls på vintern. Förklara hur det kan ha gått till när fjällharen under många generationer fick vit vinterpäls. Använd begreppen variation, mutation, naturligt urval och anpassning. Beskriv också vad som kan hända med fjällharen om snön kommer allt senare på hösten på grund av ett varmare klimat.",
+      modelAnswer:
+        "1 p: Det finns variation i pälsfärg mellan harar, bland annat genom mutationer. 1 p: Harar med ljusare vinterpäls syntes sämre i snön och blev mer sällan tagna av rovdjur (naturligt urval). 1 p: De överlevde, fick fler ungar och förde vidare generna. Efter många generationer blev arten anpassad med vit vinterpäls. 1 p: Om snön kommer senare syns de vita hararna på den bruna marken och blir lättare byten. Arten kan minska, eller så gynnas harar som byter päls senare om den variationen finns.",
+    },
+    {
+      id: "biologi7-15",
+      type: "open",
+      points: 3,
+      text: "Näringsväv (3 p): I en sjö finns denna näringsväv: växtplankton äts av djurplankton. Djurplankton äts av både mört och abborre. Abborren äter också mört. Gäddan äter både mört och abborre. Fiskgjusen fångar gädda och abborre. Tänk dig att människor fiskar upp nästan alla gäddor i sjön. Beskriv minst två saker som kan hända med de andra arterna och förklara varför.",
+      modelAnswer:
+        "1 p: Mört och abborre blir fler, eftersom färre gäddor äter dem. 1 p: Fler mörtar och abborrar äter mer djurplankton. Djurplankton minskar och växtplankton kan öka. 1 p: Fiskgjusen får färre gäddor att fånga, men kan äta fler abborrar. Förklaring: arterna hänger ihop i flera näringskedjor, så förändringen sprider sig i väven.",
+    },
+    {
+      id: "biologi7-16",
+      type: "open",
+      points: 3,
+      text: "Miljögifter och bioackumulering (3 p): I en sjö har det kommit ut en liten mängd miljögift. Anna äter ofta gädda från sjön. Erik äter mest grönsaker som odlats vid sjön. Vem av dem riskerar att få i sig mest miljögift? Förklara varför, och förklara varför miljögiftet inte försvinner på vägen genom näringskedjan på samma sätt som energin gör.",
+      modelAnswer:
+        "1 p: Anna riskerar mest, eftersom gäddan är en toppkonsument högt upp i näringskedjan. 1 p: Varje djur äter många byten och samlar på sig allt deras gift, så halten ökar för varje steg. 1 p: Energin förbrukas när djuren rör sig och håller värmen, men miljögiftet kan inte förbrännas eller kissas ut. Det lagras i fettet.",
+    },
+    {
+      id: "biologi7-17",
+      type: "open",
+      points: 3,
+      text: "Toppkonsumenter och område (3 p): Ett lodjur behöver ett mycket större område att leva i än en skogshare. Förklara varför toppkonsumenter behöver större områden än växtätare. Använd näringspyramiden och det du vet om hur mycket energi som går förlorad mellan nivåerna i en näringskedja.",
+      modelAnswer:
+        "1 p: Ungefär 90 % av energin går förlorad mellan varje nivå, eftersom djuren använder den till att röra sig och hålla värmen. 1 p: Därför finns det mycket mindre energi kvar högst upp i näringspyramiden, och det finns färre rovdjur än växtätare. 1 p: Lodjuret måste äta många harar för att få tillräckligt med energi, och hararna behöver i sin tur mycket växter. Det kräver ett stort område.",
+    },
+  ],
+  // ── Prov Biologi åk 9 – Genetik, evolution och människokroppen (29 p) ──
+  // Del A: 12 kryssfrågor (1 p, 0,5 p vid högst ett fel). Del B: skrivfrågor med provets poäng.
+  biologi9: [
+    // ── Del A ──
+    {
+      id: "biologi9-k1",
+      type: "multi",
+      halfCredit: true,
+      text: "DNA, gener och kromosomer: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "En gen är en del av en DNA-molekyl som innehåller instruktioner för att tillverka ett visst protein.",
+        B: "I DNA kan alla kvävebaser binda till varandra.",
+        C: "En kromosom består av tätt packat DNA.",
+        D: "En människas könsceller innehåller 46 kromosomer.",
+        E: "En gen är uppbyggd av aminosyror.",
+      },
+      correct: ["A", "C"],
+    },
+    {
+      id: "biologi9-k2",
+      type: "multi",
+      halfCredit: true,
+      text: "Celldelning: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Vid vanlig celldelning (mitos) får de två dottercellerna samma genetiska information som ursprungscellen.",
+        B: "Reduktionsdelning (meios) sker när kroppen växer och när sår läker.",
+        C: "Vid reduktionsdelning halveras antalet kromosomer.",
+        D: "Innan en cell delar sig öppnas DNA-molekylen som ett blixtlås, och varje sträng används som mall för en ny sträng.",
+        E: "En mutation i en hudcell förs vidare till personens barn.",
+      },
+      correct: ["A", "C", "D"],
+    },
+    {
+      id: "biologi9-k3",
+      type: "multi",
+      halfCredit: true,
+      text: "Dominanta och recessiva anlag: Brun ögonfärg (B) dominerar över blå (b). Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "En person med anlagen Bb har bruna ögon.",
+        B: "Två blåögda föräldrar kan få ett brunögt barn.",
+        C: "Två brunögda föräldrar kan få ett blåögt barn.",
+        D: "En person med blå ögon har anlagen bb.",
+        E: "Ett recessivt anlag syns alltid, även om personen bara har det i enkel uppsättning.",
+      },
+      correct: ["A", "C", "D"],
+    },
+    {
+      id: "biologi9-k4",
+      type: "multi",
+      halfCredit: true,
+      text: "Könsbundet arv: Kryssa i alla påståenden som stämmer om röd-grön färgblindhet.",
+      opts: {
+        A: "Anlaget för färgblindhet sitter på X-kromosomen.",
+        B: "Färgblindhet är vanligare hos män, eftersom män bara har en X-kromosom.",
+        C: "En kvinna som har anlaget på en av sina X-kromosomer är alltid färgblind.",
+        D: "En son ärver alltid sin X-kromosom från sin pappa.",
+        E: "En färgblind pappa för alltid över färgblindhet till sina söner.",
+      },
+      correct: ["A", "B"],
+    },
+    {
+      id: "biologi9-k5",
+      type: "multi",
+      halfCredit: true,
+      text: "Proteinsyntesen: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "En kopia av genen i form av RNA förs ut från cellkärnan till ribosomerna.",
+        B: "Två kvävebaser i rad motsvarar en aminosyra.",
+        C: "Proteiner tillverkas inne i mitokondrierna.",
+        D: "Alla celler i kroppen tillverkar exakt samma proteiner hela tiden.",
+        E: "Proteinets form avgör vilken uppgift det får i kroppen, till exempel som enzym eller hormon.",
+      },
+      correct: ["A", "E"],
+    },
+    {
+      id: "biologi9-k6",
+      type: "multi",
+      halfCredit: true,
+      text: "Genteknik och epigenetik: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "En GMO är en organism vars DNA har förändrats med genteknik.",
+        B: "Bakterier kan med genteknik fås att tillverka mänskligt insulin.",
+        C: "Epigenetik innebär att ordningen på kvävebaserna i DNA ändras.",
+        D: "Livsstil som kost, rökning och stress kan påverka vilka gener som är påslagna.",
+        E: "Enäggstvillingar har olika DNA.",
+      },
+      correct: ["A", "B", "D"],
+    },
+    {
+      id: "biologi9-k7",
+      type: "multi",
+      halfCredit: true,
+      text: "Evolutionens drivkrafter: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Naturligt urval innebär att de individer som är bäst anpassade till miljön har störst chans att överleva och få ungar.",
+        B: "En individ kan få nya egenskaper som går i arv genom att anstränga sig mycket.",
+        C: "Genetisk variation uppstår genom mutationer och sexuell förökning.",
+        D: "Evolutionen har ett mål och strävar mot mer komplicerade varelser.",
+        E: "Sexuellt urval kan förklara egenskaper som inte hjälper individen att överleva, som påfågelns stora stjärt.",
+      },
+      correct: ["A", "C", "E"],
+    },
+    {
+      id: "biologi9-k8",
+      type: "multi",
+      halfCredit: true,
+      text: "Bevis för evolution och artbildning: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Människans arm, valens fena och fågelns vinge har liknande skelett, vilket tyder på ett gemensamt ursprung.",
+        B: "Ju mer lika två arters DNA är, desto närmare släkt är de.",
+        C: "En ny art bildas oftast när två populationer av samma art lever tillsammans och parar sig med varandra.",
+        D: "Svanskotan hos människan är en rest av en kroppsdel som hade en funktion hos våra förfäder.",
+        E: "Yngre fossil ligger oftast djupare i marken än äldre fossil.",
+      },
+      correct: ["A", "B", "D"],
+    },
+    {
+      id: "biologi9-k9",
+      type: "multi",
+      halfCredit: true,
+      text: "Fotosyntes och cellandning: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Fotosyntesen sker i kloroplasterna, och cellandningen sker i mitokondrierna.",
+        B: "Växter har bara fotosyntes, inte cellandning.",
+        C: "Ämnena som bildas vid fotosyntesen används vid cellandningen, och tvärtom.",
+        D: "Vid cellandningen omvandlas solenergi direkt till rörelseenergi.",
+        E: "Djur hade inte kunnat finnas på jorden innan det fanns organismer med fotosyntes.",
+      },
+      correct: ["A", "C", "E"],
+    },
+    {
+      id: "biologi9-k10",
+      type: "multi",
+      halfCredit: true,
+      text: "Människokroppens organsystem: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Flera liknande celler som samarbetar bildar en vävnad, och flera vävnader kan bilda ett organ.",
+        B: "De röda blodkropparna transporterar syre till kroppens celler.",
+        C: "Gasutbytet mellan luft och blod sker i lungblåsorna.",
+        D: "Hjärtmuskeln styrs med viljan, precis som skelettmusklerna.",
+        E: "Näringsämnena från maten tas främst upp i tjocktarmen.",
+      },
+      correct: ["A", "B", "C"],
+    },
+    {
+      id: "biologi9-k11",
+      type: "multi",
+      halfCredit: true,
+      text: "Näringspyramiden: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Ungefär 90 % av energin går förlorad mellan varje nivå i näringspyramiden.",
+        B: "Energin går främst förlorad som värme och rörelse.",
+        C: "Det finns oftast fler toppkonsumenter än växtätare i ett ekosystem.",
+        D: "Det krävs mycket växter för att försörja ett litet antal rovdjur.",
+        E: "Toppkonsumenterna får mest energi av alla nivåer i näringspyramiden.",
+      },
+      correct: ["A", "B", "D"],
+    },
+    {
+      id: "biologi9-k12",
+      type: "multi",
+      halfCredit: true,
+      text: "Miljögifter och bioackumulering: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Stabila miljögifter bryts inte ner, utan lagras i djurens fettvävnad.",
+        B: "Halten av miljögifter är högst hos producenterna.",
+        C: "Toppkonsumenter får högst halt, eftersom de äter många byten som redan innehåller gift.",
+        D: "Miljögifter försvinner som värme mellan nivåerna i näringskedjan, precis som energi.",
+        E: "Människor som ofta äter rovfisk kan få i sig mer miljögifter än människor som mest äter växter.",
+      },
+      correct: ["A", "C", "E"],
+    },
+    // ── Del B ──
+    {
+      id: "biologi9-13a",
+      type: "open",
+      points: 2,
+      text: "Genetik – albinism (2 p): Albinism innebär att kroppen inte kan tillverka färgpigment, så att hud, hår och ögon blir mycket ljusa. Anlaget för albinism (a) är recessivt, och anlaget för normalt pigment (A) är dominant. Emma och Jonas har båda normalt pigment. De får en son som har albinism. Vilka anlag måste Emma och Jonas ha? Förklara hur du vet det.",
+      modelAnswer:
+        "1 p: Båda är Aa (bärare). 1 p: Förklaringen: de har normalt pigment, så de har minst ett A. Sonen är aa och har fått ett a från var och en av dem, så båda måste bära på a.",
+    },
+    {
+      id: "biologi9-13b",
+      type: "open",
+      points: 2,
+      text: "Genetik – albinism (2 p): Albinism innebär att kroppen inte kan tillverka färgpigment, så att hud, hår och ögon blir mycket ljusa. Anlaget för albinism (a) är recessivt, och anlaget för normalt pigment (A) är dominant. Emma och Jonas har båda normalt pigment. De får en son som har albinism. Beskriv i text hur ett korsningsschema för deras barn ser ut och hur stor sannolikheten är att deras nästa barn också får albinism.",
+      modelAnswer:
+        "1 p: Korsningsschema Aa × Aa med utfallen AA, Aa, Aa och aa. 1 p: Sannolikheten för albinism är 1 av 4, alltså 25 %, vid varje graviditet. (Anpassad för appen: originalet ber eleven rita korsningsschemat.)",
+    },
+    {
+      id: "biologi9-13c",
+      type: "open",
+      points: 1,
+      text: "Genetik – albinism (1 p): Albinism innebär att kroppen inte kan tillverka färgpigment, så att hud, hår och ögon blir mycket ljusa. Anlaget för albinism (a) är recessivt, och anlaget för normalt pigment (A) är dominant. Emma och Jonas har båda normalt pigment. De får en son som har albinism. Emma och Jonas får också en dotter som har normalt pigment. Vilka anlag kan hon ha? Hur stor är sannolikheten för vart och ett av alternativen?",
+      modelAnswer:
+        "1 p: Dottern kan vara AA eller Aa. Bland barnen utan albinism är sannolikheten 1 av 3 för AA och 2 av 3 för Aa (bärare). Godta även svaret 25 % AA och 50 % Aa, räknat på alla fyra rutorna i korsningsschemat, om eleven förklarar det.",
+    },
+    {
+      id: "biologi9-14",
+      type: "open",
+      points: 3,
+      text: "Evolution – antibiotikaresistens (3 p): När antibiotika används mycket, till exempel när det skrivs ut i onödan eller ges till friska djur, blir allt fler bakterier resistenta. Det betyder att antibiotikan inte längre dödar dem. Förklara med hjälp av evolutionsteorin hur en bakteriepopulation kan bli resistent. Använd begreppen mutation, variation, naturligt urval och arv.",
+      modelAnswer:
+        "1 p: Det finns variation mellan bakterierna. Genom slumpmässiga mutationer får några få bakterier en egenskap som gör dem motståndskraftiga mot antibiotikan. 1 p: När antibiotika används dör de känsliga bakterierna, medan de resistenta överlever. Det är naturligt urval. 1 p: De resistenta bakterierna förökar sig och för anlaget vidare till sina avkommor (arv). Ju mer antibiotika som används, desto större andel av populationen blir resistent. Svar som säger att bakterierna \"vänjer sig\" eller \"lär sig tåla\" antibiotikan ger inte poäng. Det är samma missförstånd som Lamarcks giraff.",
+    },
+    {
+      id: "biologi9-15a",
+      type: "open",
+      points: 2,
+      text: "Organsystemens samarbete vid muskelarbete (2 p): I labben om muskelarbete mätte tre elever sin puls och hur länge det tog för BTB-lösningen att byta färg när de blåste i den. BTB byter färg från blå till grön/gul när det kommer koldioxid i lösningen. Resultat – i vila: puls 70, 72 och 94 slag/min, tid för färgbyte 16, 11 och 9 s (elev 1, 2, 3). Efter dynamiskt arbete (springa i trappan): puls 128, 180 och 151 slag/min, tid för färgbyte 13, 7 och 8 s. Förklara varför pulsen och mängden koldioxid i utandningsluften ökar vid muskelarbete. Koppla din förklaring till cellandningen.",
+      modelAnswer:
+        "1 p: Musklerna behöver mer energi vid arbete och får den genom cellandning i muskelcellernas mitokondrier: druvsocker + syre → koldioxid + vatten + energi. Mer cellandning ger större behov av syre och mer koldioxid. 1 p: Hjärtat slår snabbare så att blodet hinner transportera mer syre och druvsocker till musklerna och föra bort mer koldioxid till lungorna, där den andas ut.",
+    },
+    {
+      id: "biologi9-15b",
+      type: "open",
+      points: 3,
+      text: "Organsystemens samarbete vid muskelarbete (3 p): Beskriv hur minst fyra av kroppens organsystem samarbetar när musklerna arbetar. Berätta vad varje organsystem gör. Följ sedan vägen för syre och druvsocker fram till muskelcellerna, och vägen för koldioxiden ut ur kroppen.",
+      modelAnswer:
+        "1 p: Eleven beskriver minst fyra organsystem med korrekt uppgift, till exempel: Rörelseorganen: skelettmusklerna drar ihop sig och rör skelettet i lederna. Nervsystemet: hjärnan skickar signaler till musklerna och ökar puls och andning, utan att vi behöver tänka på det. Andningsorganen: vi andas snabbare och djupare, så att mer syre tas upp och mer koldioxid vädras ut i lungblåsorna. Blodomloppet: hjärtat pumpar blodet, och de röda blodkropparna transporterar syre till muskelcellerna. Matspjälkningsorganen: bryter ner maten till druvsocker, som är bränslet i cellandningen. Levern lagrar socker. Huden: svettas och vidgar blodkärlen så att kroppen kyls ner, eftersom muskelarbetet ger värme. 1 p: Vägen för syre och druvsocker: syre tas upp i lungblåsorna och druvsocker i tunntarmen, och blodet transporterar båda till muskelcellerna där de används i cellandningen. 1 p: Vägen för koldioxiden: den bildas i muskelcellerna, förs med blodet tillbaka till lungorna och andas ut.",
+    },
+    {
+      id: "biologi9-16a",
+      type: "open",
+      points: 1,
+      text: "Näringspyramid och bioackumulering (1 p): I Östersjön finns en näringskedja: växtplankton → djurplankton → strömming → gråsäl. På 1970-talet hade sälarna så höga halter av miljögiftet PCB att många honor inte kunde få ungar, trots att halten i vattnet var mycket låg. Förklara med hjälp av näringspyramiden varför det finns mycket färre sälar än strömmingar i Östersjön.",
+      modelAnswer:
+        "1 p: Ungefär 90 % av energin går förlorad mellan varje nivå, främst som värme och rörelse. Högst upp finns så lite energi kvar att den bara räcker till få sälar, och varje säl måste äta många strömmingar.",
+    },
+    {
+      id: "biologi9-16b",
+      type: "open",
+      points: 2,
+      text: "Näringspyramid och bioackumulering (2 p): I Östersjön finns en näringskedja: växtplankton → djurplankton → strömming → gråsäl. På 1970-talet hade sälarna så höga halter av miljögiftet PCB att många honor inte kunde få ungar, trots att halten i vattnet var mycket låg. Förklara varför sälarna hade så mycket högre halt av PCB än vattnet och planktonen.",
+      modelAnswer:
+        "1 p: PCB är ett stabilt miljögift som inte bryts ner eller utsöndras, utan lagras i fettvävnaden. 1 p: Varje djur äter många byten och samlar på sig allt gift som de innehöll. Halten ökar för varje steg i näringskedjan (anrikning/bioackumulering), så sälen som toppkonsument får högst halt.",
+    },
+    {
+      id: "biologi9-16c",
+      type: "open",
+      points: 1,
+      text: "Näringspyramid och bioackumulering (1 p): Jämför hur energi och miljögifter förflyttas genom näringskedjan. Vad är skillnaden, och varför?",
+      modelAnswer:
+        "1 p: Energin minskar för varje steg, eftersom den används och försvinner som värme. Miljögiftet försvinner inte utan stannar kvar i kroppen, så det koncentreras i stället. Energin minskar uppåt medan halten gift ökar uppåt.",
+    },
+  ],
 
   // Övningsprov åk 8.
   // Del A: 12 kryssfrågor (type "multi") – kryssa i ALLA rätta påståenden. 1 p per fråga om alla

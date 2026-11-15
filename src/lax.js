@@ -152,7 +152,10 @@ const Lax = (() => {
 
     const n = buttons.length;
     const allRight = classifiedRight === n;
-    if (allRight) score += maxFor(currentQ);
+    const half = !allRight && currentQ.halfCredit && classifiedRight === n - 1;
+    const full = maxFor(currentQ);
+    if (allRight) score += full;
+    else if (half) score += full / 2;
     addPip(allRight ? "hit" : classifiedRight >= n - 1 ? "part" : "miss");
     renderScorebar();
 
@@ -160,7 +163,9 @@ const Lax = (() => {
     fb.className = "feedback-box " + (allRight ? "good" : classifiedRight >= n - 1 ? "part" : "poor");
     fb.textContent = allRight
       ? `Alla ${n} påståenden rätt – full poäng!`
-      : `${classifiedRight} av ${n} påståenden bedömda rätt. Ingen poäng den här gången.`;
+      : half
+        ? `${classifiedRight} av ${n} påståenden bedömda rätt – ett missat eller felaktigt kryss ger ${fmt(full / 2)} poäng.`
+        : `${classifiedRight} av ${n} påståenden bedömda rätt. Ingen poäng den här gången.`;
     fb.style.display = "";
 
     if (currentQ.expl) {
@@ -370,9 +375,10 @@ POÄNG: [ett heltal: ${scaleText}]
   }
   function renderScorebar() {
     el("lax-q-num").textContent = total;
-    el("lax-score").textContent = score;
-    el("lax-max").textContent = maxPoints;
+    el("lax-score").textContent = fmt(score);
+    el("lax-max").textContent = fmt(maxPoints);
   }
+  function fmt(n) { return String(n).replace(".", ","); }
 
   // ── Helpers ──────────────────────────────────────────
   function mkBtn(label, cls, fn) {
