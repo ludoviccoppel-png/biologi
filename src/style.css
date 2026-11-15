@@ -234,6 +234,21 @@ main {
   background: rgba(90,176,232,.07);
 }
 
+/* Ikryssat påstående i kryssfråga (ligger före .correct/.wrong så de vinner efter rättning) */
+.opt-btn.selected {
+  border-color: var(--blue);
+  background: rgba(90,176,232,.12);
+}
+
+.opt-btn .opt-box { font-size: 15px; }
+
+.opt-btn .opt-note {
+  display: block;
+  margin-top: 5px;
+  font-size: 11px;
+  opacity: .9;
+}
+
 .opt-btn.correct {
   border-color: var(--green);
   background: rgba(94,207,160,.1);

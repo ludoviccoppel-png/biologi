@@ -66,6 +66,7 @@ const Lax = (() => {
     el("lax-feedback").style.display = "none";
 
     if (currentQ.type === "mc")          renderMC();
+    else if (currentQ.type === "multi")  renderMulti();
     else if (currentQ.type === "match")  renderMatch();
     else                                 renderOpen();
 
@@ -78,7 +79,97 @@ const Lax = (() => {
   }
 
   function typeLabel(t) {
-    return { mc: "Flerval", match: "Para ihop", open: "Öppen fråga" }[t] || t;
+    return { mc: "Flerval", multi: "Kryssfråga", match: "Para ihop", open: "Öppen fråga" }[t] || t;
+  }
+
+  // ── Multi (kryssfråga: kryssa i ALLA rätta påståenden) ───────────────
+  // Datafält: opts {A..E: påstående}, correct: ["B","C",...], expl: "Varför…" (valfritt)
+  // Poäng: full poäng (1 p, eller eget "points") bara om alla påståenden bedömts rätt.
+  let multiSel = new Set();
+
+  function renderMulti() {
+    multiSel = new Set();
+    const list = document.createElement("div");
+    list.className = "opts-list";
+    Object.keys(currentQ.opts).sort().forEach(k => {
+      const btn = document.createElement("button");
+      btn.className = "opt-btn";
+      btn.dataset.key = k;
+      btn.setAttribute("aria-pressed", "false");
+
+      const box = document.createElement("span");
+      box.className = "opt-box";
+      box.textContent = "☐ ";
+      const key = document.createElement("strong");
+      key.textContent = k + ". ";
+      btn.append(box, key, document.createTextNode(currentQ.opts[k]));
+
+      btn.addEventListener("click", () => {
+        if (answered) return;
+        const on = !multiSel.has(k);
+        if (on) multiSel.add(k); else multiSel.delete(k);
+        btn.classList.toggle("selected", on);
+        btn.setAttribute("aria-pressed", String(on));
+        box.textContent = on ? "☒ " : "☐ ";
+        const check = el("lax-check-btn");
+        if (check) check.disabled = multiSel.size === 0;
+      });
+      list.appendChild(btn);
+    });
+    el("lax-q-body").appendChild(list);
+    renderActions({ type: "multi" });
+  }
+
+  function checkMulti() {
+    if (answered || multiSel.size === 0) return;
+    answered = true;
+    const right = new Set(currentQ.correct);
+    const buttons = el("lax-q-body").querySelectorAll(".opt-btn");
+    let classifiedRight = 0;
+
+    buttons.forEach(b => {
+      b.disabled = true;
+      const k = b.dataset.key;
+      const picked = multiSel.has(k);
+      const isRight = right.has(k);
+      if (picked === isRight) classifiedRight++;
+
+      let note = "";
+      if (isRight) {
+        b.classList.add("correct");
+        if (!picked) note = "✓ Rätt påstående – du kryssade inte i det";
+      } else if (picked) {
+        b.classList.add("wrong");
+        note = "✗ Fel påstående";
+      }
+      if (note) {
+        const tag = document.createElement("span");
+        tag.className = "opt-note";
+        tag.textContent = note;
+        b.appendChild(tag);
+      }
+    });
+
+    const n = buttons.length;
+    const allRight = classifiedRight === n;
+    if (allRight) score += maxFor(currentQ);
+    addPip(allRight ? "hit" : classifiedRight >= n - 1 ? "part" : "miss");
+    renderScorebar();
+
+    const fb = el("lax-feedback");
+    fb.className = "feedback-box " + (allRight ? "good" : classifiedRight >= n - 1 ? "part" : "poor");
+    fb.textContent = allRight
+      ? `Alla ${n} påståenden rätt – full poäng!`
+      : `${classifiedRight} av ${n} påståenden bedömda rätt. Ingen poäng den här gången.`;
+    fb.style.display = "";
+
+    if (currentQ.expl) {
+      const expl = document.createElement("div");
+      expl.className = "expl-box";
+      expl.textContent = currentQ.expl;
+      el("lax-q-body").appendChild(expl);
+    }
+    renderActions({ type: "multi", done: true });
   }
 
   // ── MC ──────────────────────────────────────────────
@@ -256,6 +347,11 @@ POÄNG: [ett heltal: ${scaleText}]
     if (!done) {
       if (type === "match") {
         wrap.appendChild(mkBtn("Kontrollera svar", "btn-primary", checkMatch));
+      } else if (type === "multi") {
+        const b = mkBtn("Kontrollera svar", "btn-primary", checkMulti);
+        b.id = "lax-check-btn";
+        b.disabled = true; // aktiveras när minst ett påstående är ikryssat
+        wrap.appendChild(b);
       } else if (type === "open") {
         const b = mkBtn("Bedöm mitt svar", "btn-primary", checkOpen);
         b.id = "lax-check-btn";

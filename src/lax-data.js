@@ -638,16 +638,210 @@ const LAX_DATA = {
     },
   ],
 
-  // Prov biologi åk 8 – frågorna är uppdelade i delfrågor (a, b, c…) med provets poäng i "points".
-  // modelAnswer innehåller facit inklusive poängsättning, som AI-bedömningen utgår från.
+  // Övningsprov åk 8.
+  // Del A: 12 kryssfrågor (type "multi") – kryssa i ALLA rätta påståenden. 1 p per fråga om alla
+  //        påståenden bedöms rätt. "correct" = lista med rätta bokstäver, "expl" = "Varför" ur facit.
+  // Del B: skrivfrågor (type "open") med provets poäng i "points". modelAnswer innehåller facit
+  //        inklusive poängsättning, som AI-bedömningen utgår från.
   biologi8: [
+    // ══ DEL A – KRYSSFRÅGOR ═══════════════════════════════════════
+    {
+      id: "biologi8-k1",
+      type: "multi",
+      text: "Cellen: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Cellmembranet finns bara i växtceller.",
+        B: "Mitokondrierna är cellens kraftverk, där cellandningen sker.",
+        C: "Allt liv är uppbyggt av celler.",
+        D: "Vid cellandningen bildas syre och socker.",
+        E: "Växtceller har kloroplaster, där fotosyntesen sker.",
+      },
+      correct: ["B", "C", "E"],
+      expl:
+        "Varför: Alla celler har cellmembran. Vid cellandningen förbrukas socker och syre, och det bildas " +
+        "energi, koldioxid och vatten.",
+    },
+    {
+      id: "biologi8-k2",
+      type: "multi",
+      text: "Skelett, muskler och hud: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Skelettet skyddar inre organ, till exempel skyddar skallen hjärnan.",
+        B: "Glatt muskulatur finns främst i armar och ben.",
+        C: "Huden är kroppens största organ.",
+        D: "Vi svettas för att värma upp kroppen.",
+        E: "Skelettet består av döda celler utan blodkärl.",
+      },
+      correct: ["A", "C"],
+      expl:
+        "Varför: Glatt muskulatur finns i till exempel tarmar och blodkärl. Svett kyler kroppen. Skelettet är " +
+        "levande och bildar blodkroppar i benmärgen.",
+    },
+    {
+      id: "biologi8-k3",
+      type: "multi",
+      text: "Andning: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Luften går genom luftstrupen direkt in i hjärtat.",
+        B: "Lungblåsorna är omgivna av tunna blodkärl som kallas kapillärer.",
+        C: "Syre och koldioxid transporteras i blodet av blodplättarna.",
+        D: "När vi andas ut lämnar koldioxid kroppen.",
+        E: "Andningens viktigaste uppgift är att ge cellerna socker.",
+      },
+      correct: ["B", "D"],
+      expl:
+        "Varför: Luften går till lungorna. Syre transporteras av de röda blodkropparna. Andningen ger cellerna " +
+        "syre och för bort koldioxid.",
+    },
+    {
+      id: "biologi8-k4",
+      type: "multi",
+      text: "Blodomloppet: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Hjärtat pumpar runt ungefär 5 liter blod i kroppen.",
+        B: "Kapillärerna är kroppens största blodkärl.",
+        C: "Det lilla kretsloppet går mellan hjärtat och lungorna.",
+        D: "I det stora kretsloppet transporterar blodet syre, näring och hormoner ut till kroppens celler.",
+        E: "Hjärtat är en enkel pump med bara ett kretslopp.",
+      },
+      correct: ["A", "C", "D"],
+      expl: "Varför: Kapillärerna är de minsta blodkärlen. Hjärtat är en dubbelpump med två kretslopp.",
+    },
+    {
+      id: "biologi8-k5",
+      type: "multi",
+      text: "Blod och blodgrupper: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "De vita blodkropparna ingår i immunförsvaret.",
+        B: "Blodplasman består mest av röda blodkroppar.",
+        C: "De röda blodkropparna hjälper till när ett sår ska läka.",
+        D: "En person som är Rh− har Rh-proteinet på sina röda blodkroppar.",
+        E: "Blodgrupp AB har både A- och B-proteiner på de röda blodkropparna.",
+      },
+      correct: ["A", "E"],
+      expl:
+        "Varför: Blodplasman består mest av vatten. Det är blodplättarna som hjälper vid sårläkning. Rh− betyder " +
+        "att man saknar proteinet.",
+    },
+    {
+      id: "biologi8-k6",
+      type: "multi",
+      text: "Bakterier, virus och kroppens försvar: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Bakterier är encelliga organismer, och de flesta är ofarliga eller till och med nyttiga.",
+        B: "Alla bakterier orsakar sjukdomar.",
+        C: "Virus kan föröka sig på egen hand, utan att ta över en levande cell.",
+        D: "Vaccination fungerar genom att döda alla bakterier i kroppen.",
+        E: "Flimmerhår och slemhinnor hör till kroppens inre försvar.",
+      },
+      correct: ["A"],
+      expl:
+        "Varför: De flesta bakterier är ofarliga. Virus måste ta över en cell för att föröka sig. Vaccin lär " +
+        "immunförsvaret att känna igen ett smittämne. Flimmerhår och slemhinnor är en del av det yttre försvaret.",
+    },
+    {
+      id: "biologi8-k7",
+      type: "multi",
+      text: "Njurar, lever och lymfsystem: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Lymfsystemet tar upp överskottsvätska från vävnaderna och för tillbaka den till blodet.",
+        B: "Urinen samlas i urinblåsan innan den lämnar kroppen.",
+        C: "Levern tillverkar urin.",
+        D: "Njurarna tillverkar galla som finfördelar fettet i maten.",
+        E: "I lymfkörtlarna renas lymfan av vita blodkroppar.",
+      },
+      correct: ["A", "B", "E"],
+      expl: "Varför: Det är njurarna som bildar urin, och det är levern som tillverkar galla.",
+    },
+    {
+      id: "biologi8-k8",
+      type: "multi",
+      text: "Nervsystemet och hormonsystemet: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Storhjärnan tolkar sinnesintryck och styr de rörelser vi gör med viljan.",
+        B: "Hypotalamus reglerar hunger och törst och styr hormonsystemet via hypofysen.",
+        C: "Ryggmärgen ingår inte i nervsystemet.",
+        D: "Hormoner skickas som elektriska signaler genom nerverna.",
+        E: "Hjärnstammen kontrollerar balansen och samordnar rörelserna.",
+      },
+      correct: ["A", "B"],
+      expl:
+        "Varför: Nervsystemet består av hjärnan, ryggmärgen och nerverna. Hormoner sprids med blodet. Det är " +
+        "lillhjärnan som styr balansen.",
+    },
+    {
+      id: "biologi8-k9",
+      type: "multi",
+      text: "Sinnen och droger: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Alkohol förstärker hjärnans signaler, så att man reagerar snabbare.",
+        B: "Smaksinnet kan bara registrera fem grundsmaker: sött, salt, surt, beskt och umami.",
+        C: "Luktsinnet tröttnar aldrig, så man känner alltid lukten i sitt eget hem lika starkt.",
+        D: "Abstinens innebär att man mår dåligt, till exempel blir ångestfylld eller fysiskt sjuk, när drogen går ur kroppen.",
+        E: "Stavarna i ögats näthinna gör att vi ser färger.",
+      },
+      correct: ["B", "D"],
+      expl:
+        "Varför: Alkohol bedövar nervsystemet. Luktsinnet tröttnar (adaptation). Det är tapparna som ser färger, " +
+        "stavarna ser ljus och svartvitt.",
+    },
+    {
+      id: "biologi8-k10",
+      type: "multi",
+      text: "Pubertet och fortplantning: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Vid IVF (konstgjord befruktning) befruktas ägget av spermier i en odlingsskål.",
+        B: "Enäggstvillingar bildas av två olika ägg som befruktas samtidigt.",
+        C: "Könshormonerna testosteron och östrogen sätter igång kroppens förändringar i puberteten.",
+        D: "En graviditet varar ungefär 20 veckor.",
+        E: "När en spermie har trängt in i ägget ändras äggets yta, så att inga fler spermier kommer in.",
+      },
+      correct: ["A", "C", "E"],
+      expl:
+        "Varför: Enäggstvillingar bildas av ett ägg som delar sig. Två ägg ger tvåäggstvillingar. En graviditet " +
+        "varar ungefär 40 veckor.",
+    },
+    {
+      id: "biologi8-k11",
+      type: "multi",
+      text: "Preventivmedel och könssjukdomar: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Spiral och p-stav skyddar inte mot könssjukdomar.",
+        B: "Hiv kan botas med antibiotika.",
+        C: "Klamydia orsakas av bakterier och kan botas med antibiotika.",
+        D: "Att bara ha sex under ”säkra perioder” i menscykeln är en säker metod för att undvika graviditet.",
+        E: "Kondom skyddar inte mot könssjukdomar vid oralsex.",
+      },
+      correct: ["A", "C"],
+      expl:
+        "Varför: Hiv är ett virus, och antibiotika hjälper inte mot virus. Spermier kan leva flera dygn, så " +
+        "”säkra perioder” är en mycket osäker metod. Kondom skyddar vid vaginala, anala och orala samlag.",
+    },
+    {
+      id: "biologi8-k12",
+      type: "multi",
+      text: "Relationer, identitet och samtycke: Kryssa i alla påståenden som är rätta.",
+      opts: {
+        A: "Om man har varit tillsammans länge behöver man inte bry sig om samtycke.",
+        B: "Samtycke betyder att båda vill och visar det.",
+        C: "Om någon är så full att hen inte kan svara räknas det som ett ja.",
+        D: "Att kontrollera sin partners mobil och bestämma vem hen får träffa är tecken på en relation som inte är bra.",
+        E: "Könsidentitet handlar om ens inre upplevelse av vilket kön man har.",
+      },
+      correct: ["B", "D", "E"],
+      expl:
+        "Varför: Samtycke gäller alltid, även i långa relationer. Den som inte kan svara kan inte samtycka, och " +
+        "tystnad eller passivitet är aldrig ett ja.",
+    },
+
+    // ══ DEL B – SKRIVFRÅGOR ═══════════════════════════════════════
     // ── 13. Blodet och blodomloppet (5 p) ──────────────────────────
     {
       id: "biologi8-13a",
       type: "open",
       points: 2,
       text:
-        "13a) Blodet och blodomloppet: Blodet består av fyra delar. Nämn dem och beskriv vad var och en gör. (2 p)",
+        "Blodet består av fyra delar. Nämn dem och beskriv vad var och en gör. (2 p)",
       modelAnswer:
         "Blodplasma: en vätska som mest består av vatten och transporterar näring och andra ämnen. " +
         "Röda blodkroppar: transporterar syre. Vita blodkroppar: bekämpar bakterier och virus. " +
@@ -659,7 +853,7 @@ const LAX_DATA = {
       type: "open",
       points: 2,
       text:
-        "13b) Beskriv blodets väg i det lilla och det stora kretsloppet. Berätta vad som händer med blodet i lungorna och i kapillärerna ute i kroppen. (2 p)",
+        "Beskriv blodets väg i det lilla och det stora kretsloppet. Berätta vad som händer med blodet i lungorna och i kapillärerna ute i kroppen. (2 p)",
       modelAnswer:
         "1 p – lilla kretsloppet: hjärtat pumpar blodet till lungorna, där blodet tar upp syre och lämnar koldioxid, " +
         "och blodet går sedan tillbaka till hjärtat. " +
@@ -672,7 +866,7 @@ const LAX_DATA = {
       type: "open",
       points: 1,
       text:
-        "13c) Lisa har blodgrupp A och har förlorat mycket blod i en olycka. Förklara varför hon inte kan få blod från vem som helst. (1 p)",
+        "Lisa har blodgrupp A och har förlorat mycket blod i en olycka. Förklara varför hon inte kan få blod från vem som helst. (1 p)",
       modelAnswer:
         "Blodgruppen avgörs av proteiner på de röda blodkropparna. Om Lisa får blod som inte passar ihop med hennes " +
         "blodgrupp kan kroppen reagera mot blodet, och det kan vara livsfarligt. Givarens och mottagarens " +
@@ -684,7 +878,7 @@ const LAX_DATA = {
       id: "biologi8-14a",
       type: "open",
       points: 1,
-      text: "14a) Vaccination och antibiotika: Förklara skillnaden mellan bakterier och virus. (1 p)",
+      text: "Förklara skillnaden mellan bakterier och virus. (1 p)",
       modelAnswer:
         "Bakterier är encelliga levande organismer. Virus räknas inte som levande, eftersom de måste ta över en " +
         "levande cell för att föröka sig. Antibiotika hjälper mot bakterier men inte mot virus.",
@@ -694,7 +888,7 @@ const LAX_DATA = {
       type: "open",
       points: 2,
       text:
-        "14b) Förklara hur en vaccination gör att man blir immun mot en sjukdom. Använd begreppen smittämne, B-celler, antikroppar och minne. (2 p)",
+        "Förklara hur en vaccination gör att man blir immun mot en sjukdom. Använd begreppen smittämne, B-celler, antikroppar och minne. (2 p)",
       modelAnswer:
         "1 p: Vid vaccination sprutas en liten mängd av ett smittämne in i kroppen. Immunförsvaret lär sig känna " +
         "igen det, och B-cellerna börjar tillverka antikroppar. " +
@@ -705,7 +899,7 @@ const LAX_DATA = {
       id: "biologi8-14c",
       type: "open",
       points: 1,
-      text: "14c) Ge två orsaker till att allt fler bakterier blir resistenta mot antibiotika. (1 p)",
+      text: "Ge två orsaker till att allt fler bakterier blir resistenta mot antibiotika. (1 p)",
       modelAnswer:
         "Två av följande: antibiotika skrivs ut i onödan, till exempel mot virusinfektioner; djur får antibiotika i " +
         "fodret för att växa snabbare; fabriker som tillverkar antibiotika släpper ut rester i naturen. " +
@@ -718,7 +912,7 @@ const LAX_DATA = {
       type: "open",
       points: 1,
       text:
-        "15a) Pubertet och graviditet: Vad startar puberteten, och vilka hormoner gör att kroppen förändras? (1 p)",
+        "Vad startar puberteten, och vilka hormoner gör att kroppen förändras? (1 p)",
       modelAnswer:
         "Puberteten startar med hormoner från hypofysen. De gör att könshormonerna testosteron och östrogen börjar " +
         "bildas, och de sätter igång kroppens förändringar.",
@@ -727,7 +921,7 @@ const LAX_DATA = {
       id: "biologi8-15b",
       type: "open",
       points: 1,
-      text: "15b) Beskriv spermiernas väg efter ett samlag och var befruktningen sker. (1 p)",
+      text: "Beskriv spermiernas väg efter ett samlag och var befruktningen sker. (1 p)",
       modelAnswer:
         "Spermierna simmar från slidan, genom livmodern och upp i äggledarna. Befruktningen sker i äggledaren, där " +
         "en spermie kan möta ett moget ägg.",
@@ -737,7 +931,7 @@ const LAX_DATA = {
       type: "open",
       points: 2,
       text:
-        "15c) Beskriv hur fostret får näring och skydd under graviditeten. Använd begreppen moderkaka, navelsträng och fostervatten. (2 p)",
+        "Beskriv hur fostret får näring och skydd under graviditeten. Använd begreppen moderkaka, navelsträng och fostervatten. (2 p)",
       modelAnswer:
         "1 p: Fostret får näring och syre från moderkakan via navelsträngen. " +
         "1 p: Fostret svävar i fostervatten innanför fosterhinnorna, som skyddar det.",
@@ -749,7 +943,7 @@ const LAX_DATA = {
       type: "open",
       points: 1,
       text:
-        "16a) Droger, relationer och samtycke: Sam och Robin träffas på en fest. Robin har druckit mycket alkohol. Förklara hur alkohol påverkar nervsystemet och omdömet. (1 p)",
+        "Sam och Robin träffas på en fest. Robin har druckit mycket alkohol. Förklara hur alkohol påverkar nervsystemet och omdömet. (1 p)",
       modelAnswer:
         "Alkohol bedövar nervsystemet genom att förstärka bromsande signaler. Omdömet och minnet blir sämre, och " +
         "risken för olyckor ökar.",
@@ -759,7 +953,7 @@ const LAX_DATA = {
       type: "open",
       points: 1,
       text:
-        "16b) Sam och Robin träffas på en fest och Robin har druckit mycket alkohol. Sam vill ha sex med Robin. Förklara med hjälp av samtyckeslagen varför Sam inte kan anta att Robin samtycker. (1 p)",
+        "Sam och Robin träffas på en fest och Robin har druckit mycket alkohol. Sam vill ha sex med Robin. Förklara med hjälp av samtyckeslagen varför Sam inte kan anta att Robin samtycker. (1 p)",
       modelAnswer:
         "Enligt samtyckeslagen ska sex vara frivilligt, och båda måste vilja och visa det. Den som är kraftigt " +
         "berusad kan inte ge ett riktigt samtycke, och tystnad eller passivitet är inte ett ja.",
@@ -769,7 +963,7 @@ const LAX_DATA = {
       type: "open",
       points: 1,
       text:
-        "16c) En person på en fest har haft sex utan kondom med en ny partner, men har inga symtom. Förklara varför hen ändå bör testa sig, och vad smittskyddslagen säger. (1 p)",
+        "En person på en fest har haft sex utan kondom med en ny partner, men har inga symtom. Förklara varför hen ändå bör testa sig, och vad smittskyddslagen säger. (1 p)",
       modelAnswer:
         "Många könssjukdomar ger inga symtom, så man kan vara smittad och sprida smittan utan att veta om det. " +
         "Enligt smittskyddslagen måste man testa sig vid misstanke om smitta, och vården kontaktar dem man haft sex " +
@@ -779,7 +973,7 @@ const LAX_DATA = {
       id: "biologi8-16d",
       type: "open",
       points: 1,
-      text: "16d) Ge två exempel på vad som kännetecknar en bra relation. (1 p)",
+      text: "Ge två exempel på vad som kännetecknar en bra relation. (1 p)",
       modelAnswer:
         "Två exempel, till exempel: man respekterar varandra, man litar på varandra, man kan säga vad man tycker " +
         "och känner, ingen kontrollerar eller pressar den andra.",
