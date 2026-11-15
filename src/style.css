@@ -124,10 +124,15 @@ main {
 }
 
 .pip {
-  width: 10px; height: 10px;
+  width: 12px; height: 12px;
   border-radius: 50%;
   background: var(--border);
+  border: 0; padding: 0;
+  cursor: pointer;
 }
+.pip:hover { transform: scale(1.25); }
+.pip.active { outline: 2px solid var(--text); outline-offset: 2px; }
+.pip.skip { background: var(--muted); }
 .pip.hit  { background: var(--green); }
 .pip.part { background: var(--accent); }
 .pip.miss { background: var(--red); }

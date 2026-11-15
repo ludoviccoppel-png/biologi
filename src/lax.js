@@ -1,76 +1,72 @@
-// Läxförhör-logik
-// Aktiveras när LAX_DATA för ett ämne innehåller frågor
+// Läxförhör- och provlogik
+// Aktiveras när LAX_DATA för ett ämne innehåller frågor.
+// Varje visad fråga får en "post" (record) som sparar svar, poäng, tips och chatt,
+// så att eleven kan hoppa tillbaka till tidigare frågor via bollarna i poängraden.
 
 const Lax = (() => {
-  let currentTopic = null;
   let questions = [];
   let used = new Set();
-  let score = 0;
-  let total = 0;
-  let maxPoints = 0;
-  let answered = false;
-  let currentQ = null;
+  let records = [];   // en post per visad fråga, i den ordning de visats
+  let view = -1;      // index i records för frågan som visas just nu
 
+  // ── Start / stäng ────────────────────────────────────
   function init() {
     document.querySelectorAll(".lax-card").forEach(card => {
       const topic = card.dataset.topic;
       const hasQuestions = LAX_DATA[topic] && LAX_DATA[topic].length > 0;
-
       if (hasQuestions) {
         card.classList.add("ready");
-        card.querySelector(".lax-status").textContent =
-          LAX_DATA[topic].length + " frågor";
+        card.querySelector(".lax-status").textContent = LAX_DATA[topic].length + " frågor";
         card.addEventListener("click", () => startTopic(topic, card));
       }
-      // Om inga frågor ännu — kort är inte klickbart (visas som "Kommer snart")
+      // Utan frågor är kortet inte klickbart (visas som "Kommer snart")
     });
+    buildExtras();
   }
 
   function startTopic(topic, card) {
     document.querySelectorAll(".lax-card").forEach(c => c.classList.remove("active"));
     card.classList.add("active");
 
-    currentTopic = topic;
     questions = [...LAX_DATA[topic]];
     used.clear();
-    score = 0; total = 0; maxPoints = 0; answered = false;
+    records = [];
+    view = -1;
 
-    document.getElementById("lax-area-tag").textContent =
-      card.querySelector(".lax-name").textContent;
-    document.getElementById("lax-panel").style.display = "";
-    document.getElementById("lax-panel").scrollIntoView({ behavior: "smooth", block: "start" });
-
-    renderScorebar();
-    nextQ();
+    el("lax-area-tag").textContent = card.querySelector(".lax-name").textContent;
+    el("lax-panel").style.display = "";
+    el("lax-panel").scrollIntoView({ behavior: "smooth", block: "start" });
+    newQuestion();
   }
 
-  function closeLax() {
-    document.getElementById("lax-panel").style.display = "none";
+  function close() {
+    el("lax-panel").style.display = "none";
     document.querySelectorAll(".lax-card").forEach(c => c.classList.remove("active"));
-    currentTopic = null;
+    records = []; view = -1;
+  }
+
+  // ── Frågor och navigering ────────────────────────────
+  function newQuestion() {
+    if (questions.every(q => used.has(q.id))) used.clear();
+    const pool = questions.filter(q => !used.has(q.id));
+    const q = pool[Math.floor(Math.random() * pool.length)];
+    used.add(q.id);
+    records.push({
+      q, max: maxFor(q), status: "new", pts: 0, pip: null,
+      sel: [], text: "", matchVals: [], chosen: null,
+      fb: null, hints: [], chat: [], busy: false
+    });
+    renderView(records.length - 1);
+  }
+
+  function goTo(i) {
+    if (i < 0 || i >= records.length || i === view) return;
+    renderView(i);
   }
 
   function nextQ() {
-    answered = false;
-    const pool = questions.filter(q => !used.has(q.id));
-    if (pool.length === 0) { used.clear(); }
-    const refreshed = questions.filter(q => !used.has(q.id));
-    currentQ = refreshed[Math.floor(Math.random() * refreshed.length)];
-    used.add(currentQ.id);
-    total++;
-    maxPoints += maxFor(currentQ);
-
-    el("lax-type-tag").textContent = typeLabel(currentQ.type);
-    el("lax-q-text").textContent = currentQ.text;
-    el("lax-q-body").innerHTML = "";
-    el("lax-feedback").style.display = "none";
-
-    if (currentQ.type === "mc")          renderMC();
-    else if (currentQ.type === "multi")  renderMulti();
-    else if (currentQ.type === "match")  renderMatch();
-    else                                 renderOpen();
-
-    renderScorebar();
+    if (view < records.length - 1) renderView(view + 1);
+    else newQuestion();
   }
 
   // Max poäng för en fråga: eget "points"-fält i datan, annars 3 för öppna frågor och 1 för övriga
@@ -82,305 +78,510 @@ const Lax = (() => {
     return { mc: "Flerval", multi: "Kryssfråga", match: "Para ihop", open: "Öppen fråga" }[t] || t;
   }
 
-  // ── Multi (kryssfråga: kryssa i ALLA rätta påståenden) ───────────────
-  // Datafält: opts {A..E: påstående}, correct: ["B","C",...], expl: "Varför…" (valfritt)
-  // Poäng: full poäng (1 p, eller eget "points") bara om alla påståenden bedömts rätt.
-  let multiSel = new Set();
+  // ── Rendering av en fråga utifrån dess post ──────────
+  function cur() { return records[view]; }
 
-  function renderMulti() {
-    multiSel = new Set();
+  // Sparar pågående, ej bedömt svar (text i rutan, val i rullistor) innan vyn byts
+  function saveDraft() {
+    const r = cur();
+    if (!r || r.status === "done") return;
+    const ta = el("lax-open-ta");
+    if (ta && r.q.type === "open") r.text = ta.value;
+    if (r.q.type === "match") {
+      r.matchVals = r.q.left.map((_, i) => (el("lms-" + i) || {}).value || "");
+    }
+  }
+
+  function renderView(i) {
+    saveDraft();
+    view = i;
+    const r = cur();
+    const q = r.q;
+
+    el("lax-type-tag").textContent = typeLabel(q.type);
+    el("lax-q-text").textContent = q.text;
+    el("lax-q-body").innerHTML = "";
+
+    if (q.type === "mc")         paintMC(r);
+    else if (q.type === "multi") paintMulti(r);
+    else if (q.type === "match") paintMatch(r);
+    else                         paintOpen(r);
+
+    if (r.status === "done" && q.expl) {
+      const expl = document.createElement("div");
+      expl.className = "expl-box";
+      expl.textContent = q.expl;
+      el("lax-q-body").appendChild(expl);
+    }
+
+    const fb = el("lax-feedback");
+    if (r.fb) { fb.className = "feedback-box " + r.fb.cls; fb.innerHTML = r.fb.html; fb.style.display = ""; }
+    else { fb.style.display = "none"; fb.innerHTML = ""; }
+
+    paintHint(r);
+    paintChat(r);
+    paintActions(r);
+    renderPips();
+    renderScorebar();
+  }
+
+  // ── Kryssfråga (kryssa i ALLA rätta påståenden) ──────
+  // Datafält: opts {A..E}, correct: ["B","C",...], expl (valfritt), halfCredit (valfritt)
+  function paintMulti(r) {
+    const done = r.status === "done";
+    const right = new Set(r.q.correct);
     const list = document.createElement("div");
     list.className = "opts-list";
-    Object.keys(currentQ.opts).sort().forEach(k => {
+    Object.keys(r.q.opts).sort().forEach(k => {
+      const picked = r.sel.includes(k);
       const btn = document.createElement("button");
-      btn.className = "opt-btn";
+      btn.className = "opt-btn" + (picked && !done ? " selected" : "");
       btn.dataset.key = k;
-      btn.setAttribute("aria-pressed", "false");
+      btn.setAttribute("aria-pressed", String(picked));
 
       const box = document.createElement("span");
       box.className = "opt-box";
-      box.textContent = "☐ ";
+      box.textContent = picked ? "☒ " : "☐ ";
       const key = document.createElement("strong");
       key.textContent = k + ". ";
-      btn.append(box, key, document.createTextNode(currentQ.opts[k]));
+      btn.append(box, key, document.createTextNode(r.q.opts[k]));
 
-      btn.addEventListener("click", () => {
-        if (answered) return;
-        const on = !multiSel.has(k);
-        if (on) multiSel.add(k); else multiSel.delete(k);
-        btn.classList.toggle("selected", on);
-        btn.setAttribute("aria-pressed", String(on));
-        box.textContent = on ? "☒ " : "☐ ";
-        const check = el("lax-check-btn");
-        if (check) check.disabled = multiSel.size === 0;
-      });
+      if (done) {
+        btn.disabled = true;
+        let note = "";
+        if (right.has(k)) {
+          btn.classList.add("correct");
+          if (!picked) note = "✓ Rätt påstående – du kryssade inte i det";
+        } else if (picked) {
+          btn.classList.add("wrong");
+          note = "✗ Fel påstående";
+        }
+        if (note) {
+          const tag = document.createElement("span");
+          tag.className = "opt-note";
+          tag.textContent = note;
+          btn.appendChild(tag);
+        }
+      } else {
+        btn.addEventListener("click", () => {
+          const on = !r.sel.includes(k);
+          r.sel = on ? [...r.sel, k] : r.sel.filter(x => x !== k);
+          btn.classList.toggle("selected", on);
+          btn.setAttribute("aria-pressed", String(on));
+          box.textContent = on ? "☒ " : "☐ ";
+          const check = el("lax-check-btn");
+          if (check) check.disabled = r.sel.length === 0;
+        });
+      }
       list.appendChild(btn);
     });
     el("lax-q-body").appendChild(list);
-    renderActions({ type: "multi" });
   }
 
   function checkMulti() {
-    if (answered || multiSel.size === 0) return;
-    answered = true;
-    const right = new Set(currentQ.correct);
-    const buttons = el("lax-q-body").querySelectorAll(".opt-btn");
-    let classifiedRight = 0;
+    const r = cur();
+    if (r.status === "done" || r.sel.length === 0) return;
+    const right = new Set(r.q.correct);
+    const keys = Object.keys(r.q.opts);
+    const n = keys.length;
+    const classifiedRight = keys.filter(k => r.sel.includes(k) === right.has(k)).length;
 
-    buttons.forEach(b => {
-      b.disabled = true;
-      const k = b.dataset.key;
-      const picked = multiSel.has(k);
-      const isRight = right.has(k);
-      if (picked === isRight) classifiedRight++;
-
-      let note = "";
-      if (isRight) {
-        b.classList.add("correct");
-        if (!picked) note = "✓ Rätt påstående – du kryssade inte i det";
-      } else if (picked) {
-        b.classList.add("wrong");
-        note = "✗ Fel påstående";
-      }
-      if (note) {
-        const tag = document.createElement("span");
-        tag.className = "opt-note";
-        tag.textContent = note;
-        b.appendChild(tag);
-      }
-    });
-
-    const n = buttons.length;
     const allRight = classifiedRight === n;
-    const half = !allRight && currentQ.halfCredit && classifiedRight === n - 1;
-    const full = maxFor(currentQ);
-    if (allRight) score += full;
-    else if (half) score += full / 2;
-    addPip(allRight ? "hit" : classifiedRight >= n - 1 ? "part" : "miss");
-    renderScorebar();
-
-    const fb = el("lax-feedback");
-    fb.className = "feedback-box " + (allRight ? "good" : classifiedRight >= n - 1 ? "part" : "poor");
-    fb.textContent = allRight
-      ? `Alla ${n} påståenden rätt – full poäng!`
-      : half
-        ? `${classifiedRight} av ${n} påståenden bedömda rätt – ett missat eller felaktigt kryss ger ${fmt(full / 2)} poäng.`
-        : `${classifiedRight} av ${n} påståenden bedömda rätt. Ingen poäng den här gången.`;
-    fb.style.display = "";
-
-    if (currentQ.expl) {
-      const expl = document.createElement("div");
-      expl.className = "expl-box";
-      expl.textContent = currentQ.expl;
-      el("lax-q-body").appendChild(expl);
-    }
-    renderActions({ type: "multi", done: true });
+    const half = !allRight && r.q.halfCredit && classifiedRight === n - 1;
+    const full = r.max;
+    r.pts = allRight ? full : half ? full / 2 : 0;
+    r.pip = allRight ? "hit" : classifiedRight >= n - 1 ? "part" : "miss";
+    r.status = "done";
+    r.fb = {
+      cls: allRight ? "good" : classifiedRight >= n - 1 ? "part" : "poor",
+      html: esc(allRight
+        ? `Alla ${n} påståenden rätt – full poäng!`
+        : half
+          ? `${classifiedRight} av ${n} påståenden bedömda rätt – ett missat eller felaktigt kryss ger ${fmt(full / 2)} poäng.`
+          : `${classifiedRight} av ${n} påståenden bedömda rätt. Ingen poäng den här gången.`)
+    };
+    r.answerText = "Eleven kryssade i: " + r.sel.slice().sort().join(", ");
+    r.facitText = "Rätta påståenden: " + r.q.correct.join(", ") + ". " +
+      keys.map(k => `${k}. ${r.q.opts[k]}`).join(" | ");
+    renderView(view);
   }
 
-  // ── MC ──────────────────────────────────────────────
-  function renderMC() {
+  // ── Flerval ──────────────────────────────────────────
+  function paintMC(r) {
+    const done = r.status === "done";
     const list = document.createElement("div");
     list.className = "opts-list";
-    ["A","B","C","D"].forEach(k => {
-      if (!currentQ.opts?.[k]) return;
+    ["A", "B", "C", "D"].forEach(k => {
+      if (!r.q.opts?.[k]) return;
       const btn = document.createElement("button");
       btn.className = "opt-btn";
-      btn.innerHTML = `<strong>${k}.</strong> ${currentQ.opts[k]}`;
-      btn.addEventListener("click", () => checkMC(k));
+      btn.dataset.key = k;
+      btn.innerHTML = `<strong>${k}.</strong> ${r.q.opts[k]}`;
+      if (done) {
+        btn.disabled = true;
+        if (k === r.q.correct) btn.classList.add("correct");
+        if (k === r.chosen && r.chosen !== r.q.correct) btn.classList.add("wrong");
+      } else {
+        btn.addEventListener("click", () => checkMC(k));
+      }
       list.appendChild(btn);
     });
     el("lax-q-body").appendChild(list);
-    renderActions({ type: "mc" });
   }
 
   function checkMC(chosen) {
-    if (answered) return;
-    answered = true;
-    const correct = currentQ.correct;
-    el("lax-q-body").querySelectorAll(".opt-btn").forEach(b => {
-      b.disabled = true;
-      const k = b.querySelector("strong").textContent.replace(".","").trim();
-      if (k === correct) b.classList.add("correct");
-      if (k === chosen && chosen !== correct) b.classList.add("wrong");
-    });
-    const ok = chosen === correct;
-    if (ok) score++;
-    addPip(ok ? "hit" : "miss");
-    renderScorebar();
-    if (currentQ.expl) {
-      const expl = document.createElement("div");
-      expl.className = "expl-box";
-      expl.textContent = currentQ.expl;
-      el("lax-q-body").appendChild(expl);
-    }
-    renderActions({ type: "mc", done: true });
+    const r = cur();
+    if (r.status === "done") return;
+    r.chosen = chosen;
+    const ok = chosen === r.q.correct;
+    r.pts = ok ? r.max : 0;
+    r.pip = ok ? "hit" : "miss";
+    r.status = "done";
+    r.answerText = `Eleven valde ${chosen}.`;
+    r.facitText = `Rätt svar: ${r.q.correct}. ` + Object.entries(r.q.opts || {}).map(([k, v]) => `${k}. ${v}`).join(" | ");
+    renderView(view);
   }
 
-  // ── Match ────────────────────────────────────────────
-  function renderMatch() {
+  // ── Para ihop ────────────────────────────────────────
+  function paintMatch(r) {
+    const done = r.status === "done";
+    if (!r.shuffled) r.shuffled = [...r.q.right].sort(() => Math.random() - 0.5);
     const grid = document.createElement("div");
     grid.className = "match-grid";
-    const shuffled = [...currentQ.right].sort(() => Math.random() - 0.5);
-    currentQ.left.forEach((l, i) => {
+    r.q.left.forEach((l, i) => {
       const row = document.createElement("div");
       row.className = "match-row";
       row.innerHTML = `
-        <div class="match-left"><strong>${i+1}.</strong> ${l}</div>
+        <div class="match-left"><strong>${i + 1}.</strong> ${l}</div>
         <div class="match-arrow">→</div>
         <select class="match-select" id="lms-${i}">
           <option value="">Välj…</option>
-          ${shuffled.map(r => `<option value="${r}">${r}</option>`).join("")}
+          ${r.shuffled.map(x => `<option value="${x}">${x}</option>`).join("")}
         </select>`;
       grid.appendChild(row);
     });
     el("lax-q-body").appendChild(grid);
-    renderActions({ type: "match" });
+    r.q.left.forEach((l, i) => {
+      const sel = el("lms-" + i);
+      sel.value = r.matchVals[i] || "";
+      if (done) {
+        sel.disabled = true;
+        if (sel.value === r.q.answers[i]) sel.classList.add("correct");
+        else {
+          sel.classList.add("wrong");
+          Array.from(sel.options).forEach(opt => {
+            if (opt.value === r.q.answers[i]) opt.textContent += " ✓";
+          });
+        }
+      }
+    });
   }
 
   function checkMatch() {
-    if (answered) return;
-    answered = true;
-    let correct = 0;
-    currentQ.left.forEach((l, i) => {
-      const sel = document.getElementById("lms-" + i);
-      sel.disabled = true;
-      if (sel.value === currentQ.answers[i]) {
-        sel.classList.add("correct"); correct++;
-      } else {
-        sel.classList.add("wrong");
-        Array.from(sel.options).forEach(opt => {
-          if (opt.value === currentQ.answers[i]) opt.textContent += " ✓";
-        });
-      }
-    });
-    const all = currentQ.left.length;
-    if (correct === all) score++;
-    addPip(correct === all ? "hit" : correct > 0 ? "part" : "miss");
-    renderScorebar();
-    if (currentQ.expl) {
-      const expl = document.createElement("div");
-      expl.className = "expl-box";
-      expl.textContent = currentQ.expl;
-      el("lax-q-body").appendChild(expl);
-    }
-    renderActions({ type: "match", done: true });
+    const r = cur();
+    if (r.status === "done") return;
+    saveDraft();
+    const all = r.q.left.length;
+    const correct = r.q.left.filter((_, i) => r.matchVals[i] === r.q.answers[i]).length;
+    r.pts = correct === all ? r.max : 0;
+    r.pip = correct === all ? "hit" : correct > 0 ? "part" : "miss";
+    r.status = "done";
+    r.answerText = r.q.left.map((l, i) => `${l} → ${r.matchVals[i] || "(inget svar)"}`).join("; ");
+    r.facitText = r.q.left.map((l, i) => `${l} → ${r.q.answers[i]}`).join("; ");
+    renderView(view);
   }
 
-  // ── Open ─────────────────────────────────────────────
-  function renderOpen() {
+  // ── Öppen fråga ──────────────────────────────────────
+  function paintOpen(r) {
     const ta = document.createElement("textarea");
     ta.className = "open-textarea";
     ta.id = "lax-open-ta";
     ta.placeholder = "Skriv ditt svar här…";
     ta.rows = 4;
+    ta.value = r.text;
+    ta.disabled = r.status === "done" || r.busy;
     el("lax-q-body").appendChild(ta);
-    renderActions({ type: "open" });
   }
 
   async function checkOpen() {
+    const r = cur();
     const ta = el("lax-open-ta");
     const input = ta?.value.trim();
-    if (!input || answered) return;
-    answered = true;
-    ta.disabled = true;
+    if (!input || r.status === "done" || r.busy) return;
+    r.text = ta.value;
+    r.busy = true;
+    r.fb = null;
+    renderView(view);
 
-    const btn = el("lax-check-btn");
-    if (btn) { btn.disabled = true; btn.textContent = "Bedömer…"; }
-
-    const maxQ = maxFor(currentQ);
+    const q = r.q;
+    const maxQ = r.max;
     const scaleText = Array.from({ length: maxQ + 1 }, (_, i) => i).join(", ");
 
     try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-haiku-4-5-20251001",
-          max_tokens: 600,
-          messages: [{
-            role: "user",
-            content: `Du är en biologilärare. Bedöm elevens svar med poäng 0-${maxQ} (frågan är värd högst ${maxQ} poäng).
-Fråga: ${currentQ.text}
-Nyckelbegrepp / facit: ${currentQ.modelAnswer || ""}
+      const text = await ask([{
+        role: "user",
+        content: `Du är en biologilärare. Bedöm elevens svar med poäng 0-${maxQ} (frågan är värd högst ${maxQ} poäng).
+Fråga: ${q.text}
+Nyckelbegrepp / facit: ${q.modelAnswer || ""}
 Elevens svar: ${input}
 
 Svara EXAKT:
 POÄNG: [ett heltal: ${scaleText}]
 ÅTERKOPPLING: [2-4 meningar på svenska]`
-          }]
-        })
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !Array.isArray(data.content)) {
-        const apiMsg = typeof data.error === "string" ? data.error : data.error?.message;
-        throw new Error(`Servern svarade ${res.status}${apiMsg ? ": " + apiMsg : ""}`);
-      }
-      const text = data.content.map(c => c.text || "").join("");
+      }], "", 600);
       const ptMatch = text.match(/POÄNG:\s*(\d+)/);
       const pts = ptMatch ? Math.min(parseInt(ptMatch[1]), maxQ) : 0;
       const fbText = text.replace(/POÄNG:[^\n]*\n?/, "").replace("ÅTERKOPPLING:", "").trim();
 
-      const ratio = pts / maxQ;
-      score += pts;
-      addPip(ratio >= 0.66 ? "hit" : pts > 0 ? "part" : "miss");
-      renderScorebar();
-
-      const gradeClass = pts === maxQ ? "good" : pts > 0 ? "part" : "poor";
+      r.pts = pts;
+      r.pip = pts / maxQ >= 0.66 ? "hit" : pts > 0 ? "part" : "miss";
+      r.status = "done";
       const stars = "★".repeat(pts) + "☆".repeat(maxQ - pts);
-      const fb = el("lax-feedback");
-      fb.className = "feedback-box " + gradeClass;
-      fb.innerHTML = `<div class="grade-badge"><span class="grade-stars">${stars}</span><span>${pts} / ${maxQ} poäng</span></div>${fbText}`;
-      fb.style.display = "";
-    } catch(e) {
-      const fb = el("lax-feedback");
-      fb.className = "feedback-box poor";
-      fb.textContent = "Kunde inte bedöma: " + e.message;
-      fb.style.display = "";
+      r.fb = {
+        cls: pts === maxQ ? "good" : pts > 0 ? "part" : "poor",
+        html: `<div class="grade-badge"><span class="grade-stars">${stars}</span><span>${pts} / ${maxQ} poäng</span></div>${esc(fbText)}`
+      };
+      r.answerText = input;
+      r.facitText = q.modelAnswer || "";
+      r.gradeText = `${pts} av ${maxQ} poäng. Återkoppling som eleven fick: ${fbText}`;
+    } catch (e) {
       // Lås upp så eleven kan försöka igen (svaret finns kvar i rutan)
-      answered = false;
-      ta.disabled = false;
-      renderActions({ type: "open" });
-      return;
+      r.fb = { cls: "poor", html: esc("Kunde inte bedöma: " + e.message) };
     }
-    renderActions({ type: "open", done: true });
+    r.busy = false;
+    if (records[view] === r) renderView(view); else renderPips();
+    renderScorebar();
   }
 
-  // ── Actions ──────────────────────────────────────────
-  function renderActions({ type, done = false }) {
+  // ── Hoppa över ───────────────────────────────────────
+  function skip() {
+    const r = cur();
+    if (r.status === "done" || r.busy) return;
+    saveDraft();
+    r.status = "skip";
+    r.pip = "skip";
+    nextQ();
+  }
+
+  // ── Tips ─────────────────────────────────────────────
+  function hintMaterial(r) {
+    const q = r.q;
+    if (q.type === "open") return `Nyckelbegrepp / facit (får inte avslöjas): ${q.modelAnswer || ""}`;
+    if (q.type === "multi") {
+      const opts = Object.keys(q.opts).sort().map(k => `${k}. ${q.opts[k]}`).join("\n");
+      return `Påståenden:\n${opts}\nRätta påståenden (får inte avslöjas): ${q.correct.join(", ")}`;
+    }
+    if (q.type === "mc") {
+      const opts = Object.entries(q.opts || {}).map(([k, v]) => `${k}. ${v}`).join("\n");
+      return `Alternativ:\n${opts}\nRätt svar (får inte avslöjas): ${q.correct}`;
+    }
+    return `Ska paras ihop: ${q.left.join("; ")} med ${q.right.join("; ")}. Facit (får inte avslöjas): ${q.answers.join("; ")}`;
+  }
+
+  async function getHint(ev) {
+    const r = cur();
+    if (r.status === "done" || r.hintBusy) return;
+    const btn = ev.currentTarget;
+    r.hintBusy = true;
+    btn.disabled = true;
+    btn.textContent = "Hämtar…";
+    const prev = r.hints.length
+      ? `\n\nTidigare tips (upprepa inte, ge ett nytt tips från en annan vinkel):\n- ${r.hints.join("\n- ")}`
+      : "";
+    try {
+      const text = await ask([{
+        role: "user",
+        content: `Fråga: ${r.q.text}\n${hintMaterial(r)}${prev}\n\nGe ETT kort tips (1-2 meningar) som hjälper eleven komma igång, utan att avslöja svaret eller vilka alternativ som är rätta. Skriv på svenska.`
+      }], "", 300);
+      r.hints.push(text.trim());
+    } catch (e) {
+      r.hintError = true;
+    }
+    r.hintBusy = false;
+    if (records[view] === r) { paintHint(r); paintActions(r); }
+  }
+
+  function paintHint(r) {
+    const box = el("lax-hint-box");
+    const last = r.hints[r.hints.length - 1];
+    if (r.hintError && !r.hintBusy) {
+      el("lax-hint-text").textContent = "Kunde inte hämta tips.";
+      r.hintError = false;
+      box.style.display = "";
+    } else if (last && r.status !== "done") {
+      el("lax-hint-text").textContent = last;
+      box.style.display = "";
+    } else {
+      box.style.display = "none";
+    }
+  }
+
+  // ── Följdfrågor efter bedömning ──────────────────────
+  function paintChat(r) {
+    const sec = el("lax-chat-section");
+    if (r.status !== "done") { sec.style.display = "none"; return; }
+    sec.style.display = "";
+    const log = el("lax-chat-log");
+    log.innerHTML = "";
+    r.chat.forEach(m => appendChatMsg(m.content, m.role === "user" ? "student" : "teacher"));
+    el("lax-chat-input").value = r.chatDraft || "";
+    setChatBusy(!!r.chatBusy);
+  }
+
+  function setChatBusy(b) {
+    el("lax-chat-input").disabled = b;
+    el("lax-chat-send").disabled = b;
+  }
+
+  function appendChatMsg(text, role) {
+    const div = document.createElement("div");
+    div.className = "chat-msg " + role;
+    div.textContent = text;
+    el("lax-chat-log").appendChild(div);
+    el("lax-chat-log").scrollTop = el("lax-chat-log").scrollHeight;
+  }
+
+  async function sendChat() {
+    const r = cur();
+    const ta = el("lax-chat-input");
+    const msg = ta.value.trim();
+    if (!msg || r.status !== "done" || r.chatBusy) return;
+    ta.value = ""; r.chatDraft = "";
+    r.chat.push({ role: "user", content: msg });
+    r.chatBusy = true;
+    appendChatMsg(msg, "student");
+    setChatBusy(true);
+
+    const system =
+      `Du är en biologilärare i Sverige som just har bedömt en elevs svar. Frågan var: "${r.q.text}". ` +
+      `${r.answerText ? "Elevens svar: " + r.answerText + ". " : ""}` +
+      `${r.facitText ? "Facit: " + r.facitText + ". " : ""}` +
+      `${r.gradeText ? "Bedömning: " + r.gradeText + " " : ""}` +
+      `Svara pedagogiskt och uppmuntrande på elevens följdfrågor. Håll svaren korta (2-4 meningar). Skriv på svenska.`;
+    let ok = true;
+    try {
+      const reply = await ask(r.chat, system, 500);
+      r.chat.push({ role: "assistant", content: reply });
+    } catch (e) {
+      ok = false;
+      r.chat.pop(); // behåll växlande user/assistant i historiken
+    }
+    r.chatBusy = false;
+    if (records[view] === r) {
+      if (ok) appendChatMsg(r.chat[r.chat.length - 1].content, "teacher");
+      else appendChatMsg("Kunde inte svara just nu. Försök igen.", "teacher");
+      setChatBusy(false);
+      el("lax-chat-input").focus();
+    }
+  }
+
+  // ── API ──────────────────────────────────────────────
+  async function ask(messages, system, maxTokens) {
+    const body = { model: "claude-haiku-4-5-20251001", max_tokens: maxTokens, messages };
+    if (system) body.system = system;
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !Array.isArray(data.content)) {
+      const apiMsg = typeof data.error === "string" ? data.error : data.error?.message;
+      throw new Error(`Servern svarade ${res.status}${apiMsg ? ": " + apiMsg : ""}`);
+    }
+    return data.content.map(c => c.text || "").join("");
+  }
+
+  // ── Knappar ──────────────────────────────────────────
+  function paintActions(r) {
     const wrap = el("lax-actions");
     wrap.innerHTML = "";
-    if (!done) {
+    const type = r.q.type;
+    if (r.status !== "done") {
       if (type === "match") {
         wrap.appendChild(mkBtn("Kontrollera svar", "btn-primary", checkMatch));
       } else if (type === "multi") {
         const b = mkBtn("Kontrollera svar", "btn-primary", checkMulti);
         b.id = "lax-check-btn";
-        b.disabled = true; // aktiveras när minst ett påstående är ikryssat
+        b.disabled = r.sel.length === 0;
         wrap.appendChild(b);
       } else if (type === "open") {
-        const b = mkBtn("Bedöm mitt svar", "btn-primary", checkOpen);
+        const b = mkBtn(r.busy ? "Bedömer…" : "Bedöm mitt svar", "btn-primary", checkOpen);
         b.id = "lax-check-btn";
+        b.disabled = r.busy;
         wrap.appendChild(b);
       }
+      const h = mkBtn(r.hintBusy ? "Hämtar…" : r.hints.length ? "💡 Nytt tips" : "💡 Tips", "btn-secondary", getHint);
+      h.disabled = r.busy || !!r.hintBusy;
+      wrap.appendChild(h);
+      const s = mkBtn("Hoppa över →", "btn-skip", skip);
+      s.disabled = r.busy;
+      wrap.appendChild(s);
     } else {
       wrap.appendChild(mkBtn("Nästa fråga →", "btn-primary", nextQ));
     }
   }
 
-  // ── Scorebar ─────────────────────────────────────────
-  let pipData = [];
-  function addPip(state) { pipData.push(state); renderPips(); }
+  // ── Poängrad ─────────────────────────────────────────
   function renderPips() {
-    el("lax-pips").innerHTML = pipData.map(p => `<div class="pip ${p}"></div>`).join("");
+    const box = el("lax-pips");
+    box.innerHTML = "";
+    records.forEach((r, i) => {
+      const p = document.createElement("button");
+      p.type = "button";
+      p.className = "pip" + (r.pip ? " " + r.pip : "") + (i === view ? " active" : "");
+      const st = r.status === "done" ? `${fmt(r.pts)} av ${fmt(r.max)} p` : r.status === "skip" ? "hoppade över" : "ej besvarad";
+      p.title = `Fråga ${i + 1} – ${st}`;
+      p.setAttribute("aria-label", p.title);
+      p.addEventListener("click", () => goTo(i));
+      box.appendChild(p);
+    });
   }
+
   function renderScorebar() {
-    el("lax-q-num").textContent = total;
+    let score = 0, maxPoints = 0;
+    records.forEach(r => {
+      if (r.status === "done") { score += r.pts; maxPoints += r.max; }
+      else if (r.status === "skip") { maxPoints += r.max; }
+    });
+    el("lax-q-num").textContent = view + 1;
     el("lax-score").textContent = fmt(score);
     el("lax-max").textContent = fmt(maxPoints);
   }
-  function fmt(n) { return String(n).replace(".", ","); }
 
-  // ── Helpers ──────────────────────────────────────────
+  // ── Extra element (tips-ruta och chatt) ──────────────
+  function buildExtras() {
+    const card = el("lax-q-card");
+    if (!card || el("lax-hint-box")) return;
+
+    const hint = document.createElement("div");
+    hint.className = "hint-box";
+    hint.id = "lax-hint-box";
+    hint.style.display = "none";
+    hint.innerHTML = `<span class="hint-label">💡 Tips</span><p id="lax-hint-text"></p>`;
+    card.insertBefore(hint, el("lax-feedback"));
+
+    const chat = document.createElement("div");
+    chat.className = "chat-section";
+    chat.id = "lax-chat-section";
+    chat.style.display = "none";
+    chat.innerHTML = `
+      <div class="chat-label">Ställ en följdfråga</div>
+      <div class="chat-log" id="lax-chat-log"></div>
+      <div class="chat-row">
+        <textarea id="lax-chat-input" placeholder="Skriv din fråga…" rows="2"></textarea>
+        <button class="btn-send" id="lax-chat-send" type="button">Skicka</button>
+      </div>`;
+    card.insertBefore(chat, el("lax-actions"));
+
+    el("lax-chat-send").addEventListener("click", sendChat);
+    el("lax-chat-input").addEventListener("keydown", e => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); }
+    });
+    el("lax-chat-input").addEventListener("input", e => { if (cur()) cur().chatDraft = e.target.value; });
+  }
+
+  // ── Hjälpfunktioner ──────────────────────────────────
   function mkBtn(label, cls, fn) {
     const btn = document.createElement("button");
     btn.className = cls; btn.textContent = label;
@@ -388,15 +589,15 @@ POÄNG: [ett heltal: ${scaleText}]
     return btn;
   }
   function el(id) { return document.getElementById(id); }
+  function fmt(n) { return String(n).replace(".", ","); }
+  function esc(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
 
-  return { init };
+  return { init, close };
 })();
 
-// Exposed globally for onclick in HTML
-function closeLax() {
-  if (Lax.init) {
-    document.getElementById("lax-panel").style.display = "none";
-  }
-}
+// Används av onclick i HTML
+function closeLax() { Lax.close(); }
 
 document.addEventListener("DOMContentLoaded", () => Lax.init());
