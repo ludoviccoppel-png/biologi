@@ -786,3 +786,15 @@ const LAX_DATA = {
     },
   ],
 };
+
+// ── Läxförhör Människokroppen åk 8 ─────────────────────────────────
+// De åtta delområdena ovan (cellen … matspjälkning) slås ihop till ETT läxförhör
+// med nyckeln "manniska8", som är det som kortet i index.html använder.
+// Delområdena ligger kvar som separata listor ovan för överskådlighetens skull
+// men tas bort som egna nycklar här, så de inte dyker upp som egna läxförhör.
+const MANNISKA8_DELOMRADEN = [
+  "cellen", "skelett", "hud", "andning",
+  "blodlopp", "blod", "forsvar", "matspjalk",
+];
+LAX_DATA.manniska8 = MANNISKA8_DELOMRADEN.flatMap(k => LAX_DATA[k]);
+MANNISKA8_DELOMRADEN.forEach(k => { delete LAX_DATA[k]; });
