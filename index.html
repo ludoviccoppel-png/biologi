@@ -19,6 +19,132 @@
 
 <main>
 
+  <!-- ── LÄXFÖRHÖR ──────────────────────────────────── -->
+  <section class="section-block" id="section-laxforhör">
+    <div class="section-header">
+      <div class="section-label-tag">📚 Läxförhör</div>
+      <p class="section-desc">Välj ett läxförhör och testa dina kunskaper</p>
+    </div>
+
+    <div class="lax-grid">
+      <div class="lax-card" data-topic="evolution7">
+        <div class="lax-icon">🦎</div>
+        <div class="lax-name">Evolution åk 7</div>
+        <div class="lax-status">Kommer snart</div>
+      </div>
+      <div class="lax-card" data-topic="ekologi7">
+        <div class="lax-icon">🌳</div>
+        <div class="lax-name">Ekologi åk 7</div>
+        <div class="lax-status">Kommer snart</div>
+      </div>
+      <div class="lax-card" data-topic="manniska8">
+        <div class="lax-icon">🫀</div>
+        <div class="lax-name">Människokroppen åk 8</div>
+        <div class="lax-status">Kommer snart</div>
+      </div>
+      <div class="lax-card" data-topic="genetik">
+        <div class="lax-icon">🧬</div>
+        <div class="lax-name">Genetik åk 9</div>
+        <div class="lax-status">Kommer snart</div>
+      </div>
+      <div class="lax-card" data-topic="periodiska9">
+        <div class="lax-icon">⚛️</div>
+        <div class="lax-name">Periodiska systemet åk 9</div>
+        <div class="lax-status">Kommer snart</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROV ──────────────────────────────────────── -->
+  <!-- Kemi och fysik läggs till här senare som egna kort i samma rutnät -->
+  <section class="section-block" id="section-prov">
+    <div class="section-header">
+      <div class="section-label-tag">🧪 Prov</div>
+      <p class="section-desc">Övningsprov med kryssfrågor och skrivfrågor – med provets poängsättning</p>
+    </div>
+
+    <div class="lax-grid">
+      <div class="lax-card" data-topic="biologi7">
+        <div class="lax-icon">🌿</div>
+        <div class="lax-name">Biologi åk 7</div>
+        <div class="lax-status">Kommer snart</div>
+      </div>
+      <div class="lax-card" data-topic="biologi8">
+        <div class="lax-icon">🩺</div>
+        <div class="lax-name">Biologi åk 8</div>
+        <div class="lax-status">Kommer snart</div>
+      </div>
+      <div class="lax-card" data-topic="biologi9">
+        <div class="lax-icon">🔬</div>
+        <div class="lax-name">Biologi åk 9</div>
+        <div class="lax-status">Kommer snart</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Delad quiz-panel för läxförhör (aktiveras när frågor finns) -->
+  <div id="lax-panel" style="display:none">
+    <div class="scorebar" style="margin-top:20px">
+      <div class="score-info">
+        <span>Fråga <strong id="lax-q-num">0</strong></span>
+        <span>Rätt: <strong id="lax-score">0</strong><span class="muted"> / </span><strong id="lax-max">0</strong></span>
+      </div>
+      <div class="pips" id="lax-pips"></div>
+      <button class="btn-ghost" onclick="closeLax()">✕ Stäng</button>
+    </div>
+    <div class="q-card" id="lax-q-card">
+      <div class="q-meta">
+        <span class="q-type-tag" id="lax-type-tag"></span>
+        <span class="q-area-tag" id="lax-area-tag"></span>
+      </div>
+      <div class="q-text" id="lax-q-text"></div>
+      <div id="lax-q-body"></div>
+      <div class="feedback-box" id="lax-feedback" style="display:none"></div>
+      <div class="q-actions" id="lax-actions"></div>
+    </div>
+  </div>
+
+
+  <!-- ── KEMI: INTERAKTIVA ÖVNINGAR ─────────────────── -->
+  <section class="section-block" id="section-kemiappar">
+    <div class="section-header">
+      <div class="section-label-tag">⚗️ Kemi – interaktiva övningar</div>
+      <p class="section-desc">Utforska och experimentera – hör ihop med läxförhöret Periodiska systemet åk 9</p>
+    </div>
+
+    <div class="lax-grid">
+      <div class="lax-card ready app-card" data-app="apps/atombyggare.html" data-title="Atombyggaren">
+        <div class="lax-icon">⚛️</div>
+        <div class="lax-name">Atombyggaren</div>
+        <div class="lax-status">Atomens delar</div>
+      </div>
+      <div class="lax-card ready app-card" data-app="apps/periodiska.html" data-title="Periodiska systemet">
+        <div class="lax-icon">🧪</div>
+        <div class="lax-name">Periodiska systemet</div>
+        <div class="lax-status">Utforska + övning</div>
+      </div>
+      <div class="lax-card ready app-card" data-app="apps/jonbildning.html" data-title="Jonbildning">
+        <div class="lax-icon">🧂</div>
+        <div class="lax-name">Jonbildning</div>
+        <div class="lax-status">Jonföreningar</div>
+      </div>
+      <div class="lax-card ready app-card" data-app="apps/molekyl.html" data-title="Molekylbyggaren">
+        <div class="lax-icon">🔗</div>
+        <div class="lax-name">Molekylbyggaren</div>
+        <div class="lax-status">Molekyler</div>
+      </div>
+    </div>
+
+    <div id="app-panel" style="display:none">
+      <div class="scorebar" style="margin-top:20px">
+        <div class="score-info"><span id="app-title"></span></div>
+        <div class="pips"></div>
+        <button class="btn-ghost" id="app-close">✕ Stäng</button>
+      </div>
+      <iframe id="app-frame" title="Interaktiv övning" style="width:100%;height:760px;border:1px solid var(--border);border-radius:10px;background:#0b0f1a"></iframe>
+    </div>
+  </section>
+
   <!-- ── NATIONELLA PROVET ─────────────────────────── -->
   <section class="section-block" id="section-np">
     <div class="section-header">
@@ -80,131 +206,6 @@
       <span id="loading-text">Laddar…</span>
     </div>
   </section>
-
-  <!-- ── LÄXFÖRHÖR ──────────────────────────────────── -->
-  <section class="section-block" id="section-laxforhör">
-    <div class="section-header">
-      <div class="section-label-tag">📚 Läxförhör</div>
-      <p class="section-desc">Välj ett läxförhör och testa dina kunskaper</p>
-    </div>
-
-    <div class="lax-grid">
-      <div class="lax-card" data-topic="evolution7">
-        <div class="lax-icon">🦎</div>
-        <div class="lax-name">Evolution åk 7</div>
-        <div class="lax-status">Kommer snart</div>
-      </div>
-      <div class="lax-card" data-topic="ekologi7">
-        <div class="lax-icon">🌳</div>
-        <div class="lax-name">Ekologi åk 7</div>
-        <div class="lax-status">Kommer snart</div>
-      </div>
-      <div class="lax-card" data-topic="manniska8">
-        <div class="lax-icon">🫀</div>
-        <div class="lax-name">Människokroppen åk 8</div>
-        <div class="lax-status">Kommer snart</div>
-      </div>
-      <div class="lax-card" data-topic="genetik">
-        <div class="lax-icon">🧬</div>
-        <div class="lax-name">Genetik åk 9</div>
-        <div class="lax-status">Kommer snart</div>
-      </div>
-      <div class="lax-card" data-topic="periodiska9">
-        <div class="lax-icon">⚛️</div>
-        <div class="lax-name">Periodiska systemet åk 9</div>
-        <div class="lax-status">Kommer snart</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── KEMI: INTERAKTIVA ÖVNINGAR ─────────────────── -->
-  <section class="section-block" id="section-kemiappar">
-    <div class="section-header">
-      <div class="section-label-tag">⚗️ Kemi – interaktiva övningar</div>
-      <p class="section-desc">Utforska och experimentera – hör ihop med läxförhöret Periodiska systemet åk 9</p>
-    </div>
-
-    <div class="lax-grid">
-      <div class="lax-card ready app-card" data-app="apps/atombyggare.html" data-title="Atombyggaren">
-        <div class="lax-icon">⚛️</div>
-        <div class="lax-name">Atombyggaren</div>
-        <div class="lax-status">Atomens delar</div>
-      </div>
-      <div class="lax-card ready app-card" data-app="apps/periodiska.html" data-title="Periodiska systemet">
-        <div class="lax-icon">🧪</div>
-        <div class="lax-name">Periodiska systemet</div>
-        <div class="lax-status">Utforska + övning</div>
-      </div>
-      <div class="lax-card ready app-card" data-app="apps/jonbildning.html" data-title="Jonbildning">
-        <div class="lax-icon">🧂</div>
-        <div class="lax-name">Jonbildning</div>
-        <div class="lax-status">Jonföreningar</div>
-      </div>
-      <div class="lax-card ready app-card" data-app="apps/molekyl.html" data-title="Molekylbyggaren">
-        <div class="lax-icon">🔗</div>
-        <div class="lax-name">Molekylbyggaren</div>
-        <div class="lax-status">Molekyler</div>
-      </div>
-    </div>
-
-    <div id="app-panel" style="display:none">
-      <div class="scorebar" style="margin-top:20px">
-        <div class="score-info"><span id="app-title"></span></div>
-        <div class="pips"></div>
-        <button class="btn-ghost" id="app-close">✕ Stäng</button>
-      </div>
-      <iframe id="app-frame" title="Interaktiv övning" style="width:100%;height:760px;border:1px solid var(--border);border-radius:10px;background:#0b0f1a"></iframe>
-    </div>
-  </section>
-
-  <!-- ── PROV ──────────────────────────────────────── -->
-  <!-- Kemi och fysik läggs till här senare som egna kort i samma rutnät -->
-  <section class="section-block" id="section-prov">
-    <div class="section-header">
-      <div class="section-label-tag">🧪 Prov</div>
-      <p class="section-desc">Övningsprov med kryssfrågor och skrivfrågor – med provets poängsättning</p>
-    </div>
-
-    <div class="lax-grid">
-      <div class="lax-card" data-topic="biologi7">
-        <div class="lax-icon">🌿</div>
-        <div class="lax-name">Biologi åk 7</div>
-        <div class="lax-status">Kommer snart</div>
-      </div>
-      <div class="lax-card" data-topic="biologi8">
-        <div class="lax-icon">🩺</div>
-        <div class="lax-name">Biologi åk 8</div>
-        <div class="lax-status">Kommer snart</div>
-      </div>
-      <div class="lax-card" data-topic="biologi9">
-        <div class="lax-icon">🔬</div>
-        <div class="lax-name">Biologi åk 9</div>
-        <div class="lax-status">Kommer snart</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Delad quiz-panel för läxförhör (aktiveras när frågor finns) -->
-  <div id="lax-panel" style="display:none">
-    <div class="scorebar" style="margin-top:20px">
-      <div class="score-info">
-        <span>Fråga <strong id="lax-q-num">0</strong></span>
-        <span>Rätt: <strong id="lax-score">0</strong><span class="muted"> / </span><strong id="lax-max">0</strong></span>
-      </div>
-      <div class="pips" id="lax-pips"></div>
-      <button class="btn-ghost" onclick="closeLax()">✕ Stäng</button>
-    </div>
-    <div class="q-card" id="lax-q-card">
-      <div class="q-meta">
-        <span class="q-type-tag" id="lax-type-tag"></span>
-        <span class="q-area-tag" id="lax-area-tag"></span>
-      </div>
-      <div class="q-text" id="lax-q-text"></div>
-      <div id="lax-q-body"></div>
-      <div class="feedback-box" id="lax-feedback" style="display:none"></div>
-      <div class="q-actions" id="lax-actions"></div>
-    </div>
-  </div>
 
 </main>
 
