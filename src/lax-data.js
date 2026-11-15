@@ -726,18 +726,28 @@ const LAX_DATA = {
       text: "Vad heter de tre första elektronskalen?",
       modelAnswer: "De tre första skalen heter K, L och M.",
     },
+    // Originalet (U2) ber eleven rita elektronkonfiguration. Eleven klickar nu själv ihop elektronerna i skalen
+    // (frågetyp "shells"). Ämnena kol, syre och natrium är valda av Claude – byt z/sym/name för andra ämnen.
     {
-      // ANPASSAD: originalet ber eleven rita elektronkonfiguration (uppgift U2). Det går inte att rita i
-      // appen, så frågan är omformulerad till text. Facit nedan är skrivet av Claude, inte hämtat ur ditt underlag.
-      id: "periodiska9-2c",
-      type: "open",
-      text:
-        "Ange elektronkonfigurationen (antal elektroner i skalen K, L och M) för kol (atomnummer 6), " +
-        "syre (atomnummer 8) och natrium (atomnummer 11).",
-      modelAnswer:
-        "Kol: 2 elektroner i K-skalet och 4 i L-skalet (2, 4). Syre: 2 i K och 6 i L (2, 6). " +
-        "Natrium: 2 i K, 8 i L och 1 i M (2, 8, 1). Elektronerna fyller skalen inifrån och ut: K rymmer högst 2 " +
-        "och L högst 8.",
+      id: "periodiska9-2c-kol",
+      type: "shells",
+      z: 6, sym: "C", name: "kol",
+      text: "Rita elektronerna i skalen för kol (atomnummer 6): lägg till elektroner i skalen K, L och M.",
+      modelAnswer: "Kol: 2 elektroner i K-skalet och 4 i L-skalet (2, 4).",
+    },
+    {
+      id: "periodiska9-2c-syre",
+      type: "shells",
+      z: 8, sym: "O", name: "syre",
+      text: "Rita elektronerna i skalen för syre (atomnummer 8): lägg till elektroner i skalen K, L och M.",
+      modelAnswer: "Syre: 2 elektroner i K-skalet och 6 i L-skalet (2, 6).",
+    },
+    {
+      id: "periodiska9-2c-natrium",
+      type: "shells",
+      z: 11, sym: "Na", name: "natrium",
+      text: "Rita elektronerna i skalen för natrium (atomnummer 11): lägg till elektroner i skalen K, L och M.",
+      modelAnswer: "Natrium: 2 elektroner i K-skalet, 8 i L-skalet och 1 i M-skalet (2, 8, 1).",
     },
 
     // ── Periodiska systemet ──

@@ -75,7 +75,7 @@ const Lax = (() => {
   }
 
   function typeLabel(t) {
-    return { mc: "Flerval", multi: "Kryssfråga", match: "Para ihop", open: "Öppen fråga" }[t] || t;
+    return { mc: "Flerval", multi: "Kryssfråga", shells: "Fyll skalen", match: "Para ihop", open: "Öppen fråga" }[t] || t;
   }
 
   // ── Rendering av en fråga utifrån dess post ──────────
@@ -105,6 +105,7 @@ const Lax = (() => {
     if (q.type === "mc")         paintMC(r);
     else if (q.type === "multi") paintMulti(r);
     else if (q.type === "match") paintMatch(r);
+    else if (q.type === "shells") paintShells(r);
     else                         paintOpen(r);
 
     if (r.status === "done" && q.expl) {
@@ -203,6 +204,122 @@ const Lax = (() => {
     r.answerText = "Eleven kryssade i: " + r.sel.slice().sort().join(", ");
     r.facitText = "Rätta påståenden: " + r.q.correct.join(", ") + ". " +
       keys.map(k => `${k}. ${r.q.opts[k]}`).join(" | ");
+    renderView(view);
+  }
+
+  // ── Fyll skalen (klicka för att lägga elektroner i skalen K, L, M, N) ──
+  // Datafält: z (atomnummer), sym, name. Rätt = elektronerna fördelade 2, 8, 8, 2 inifrån och ut.
+  const SHELL_CAP = [2, 8, 8, 2];
+  const SHELL_NAME = ["K", "L", "M", "N"];
+  function shellsFor(z) {
+    const out = [0, 0, 0, 0];
+    let rem = z;
+    SHELL_CAP.forEach((c, i) => { const t = Math.min(c, rem); out[i] = t; rem -= t; });
+    return out;
+  }
+
+  function paintShells(r) {
+    const done = r.status === "done";
+    const q = r.q;
+    if (!r.shell) r.shell = [0, 0, 0, 0];
+    const right = shellsFor(q.z);
+    const nRings = q.z > 18 ? 4 : 3;
+    const NS = "http://www.w3.org/2000/svg";
+    const mk = (tag, attrs, text) => {
+      const e = document.createElementNS(NS, tag);
+      for (const k in attrs) e.setAttribute(k, attrs[k]);
+      if (text !== undefined) e.textContent = text;
+      return e;
+    };
+    const wrap = document.createElement("div");
+    wrap.className = "shells-wrap";
+    const svg = mk("svg", { viewBox: "0 0 300 300", class: "shells-svg", role: "img", "aria-label": "Atom med elektronskal" });
+    const cx = 150, cy = 150, radii = nRings === 4 ? [50, 80, 110, 138] : [52, 90, 126];
+
+    radii.forEach((rad, i) => {
+      const n = r.shell[i];
+      const ok = done && n === right[i];
+      const stroke = done ? (ok ? "#5ecfa0" : "#e85a5a") : "#3a4a78";
+      const ring = mk("circle", { cx, cy, r: rad, fill: "none", stroke, "stroke-width": 1.6 });
+      svg.appendChild(ring);
+      for (let k = 0; k < SHELL_CAP[i]; k++) {   // tomma platser
+        const a = (Math.PI * 2 * k) / SHELL_CAP[i] - Math.PI / 2;
+        svg.appendChild(mk("circle", { cx: cx + rad * Math.cos(a), cy: cy + rad * Math.sin(a), r: 3, fill: "#263050" }));
+      }
+      for (let k = 0; k < n; k++) {               // elektroner
+        const a = (Math.PI * 2 * k) / SHELL_CAP[i] - Math.PI / 2;
+        svg.appendChild(mk("circle", { cx: cx + rad * Math.cos(a), cy: cy + rad * Math.sin(a), r: 6.5, fill: done ? (ok ? "#5ecfa0" : "#e85a5a") : "#5ab0e8", stroke: "#0b0f1a", "stroke-width": 1.5 }));
+      }
+      svg.appendChild(mk("text", { x: cx + rad * 0.72 + 4, y: cy - rad * 0.72 - 4, "font-size": 11, fill: "#8d9bbb" }, SHELL_NAME[i]));
+      if (!done) {                                // klick på ringen lägger till en elektron
+        const hit = mk("circle", { cx, cy, r: rad, fill: "none", stroke: "transparent", "stroke-width": 20, style: "cursor:pointer" });
+        hit.addEventListener("click", () => shellChange(i, +1));
+        svg.appendChild(hit);
+      }
+    });
+    svg.appendChild(mk("circle", { cx, cy, r: 26, fill: "#2a1f3a", stroke: "#e8845a", "stroke-width": 1.6 }));
+    svg.appendChild(mk("text", { x: cx, y: cy + 5, "text-anchor": "middle", "font-size": 14, fill: "#e8845a" }, q.z + "p"));
+    wrap.appendChild(svg);
+
+    const ctrls = document.createElement("div");
+    ctrls.className = "shells-ctrls";
+    for (let i = 0; i < nRings; i++) {
+      const row = document.createElement("div");
+      row.className = "shells-row";
+      const lab = document.createElement("span");
+      lab.textContent = SHELL_NAME[i] + "-skalet";
+      const minus = mkBtn("−", "btn-secondary shells-btn", () => shellChange(i, -1));
+      minus.setAttribute("aria-label", "Ta bort elektron från " + SHELL_NAME[i] + "-skalet");
+      const cnt = document.createElement("strong");
+      cnt.textContent = r.shell[i];
+      const plus = mkBtn("+", "btn-secondary shells-btn", () => shellChange(i, +1));
+      plus.setAttribute("aria-label", "Lägg till elektron i " + SHELL_NAME[i] + "-skalet");
+      minus.disabled = done || r.shell[i] <= 0;
+      plus.disabled = done || r.shell[i] >= SHELL_CAP[i];
+      row.append(lab, minus, cnt, plus);
+      if (done) {
+        const mark = document.createElement("span");
+        mark.className = "shells-mark";
+        mark.textContent = r.shell[i] === right[i] ? "✓" : "✗ rätt: " + right[i];
+        row.appendChild(mark);
+      }
+      ctrls.appendChild(row);
+    }
+    const total = document.createElement("div");
+    total.className = "shells-total";
+    const sum = r.shell.reduce((a, b) => a + b, 0);
+    total.textContent = `Elektroner placerade: ${sum} (${q.sym} ska ha ${q.z})`;
+    ctrls.appendChild(total);
+    wrap.appendChild(ctrls);
+    el("lax-q-body").appendChild(wrap);
+  }
+
+  function shellChange(i, d) {
+    const r = cur();
+    if (r.status === "done") return;
+    const v = r.shell[i] + d;
+    if (v < 0 || v > SHELL_CAP[i]) return;
+    r.shell[i] = v;
+    renderView(view);
+  }
+
+  function checkShells() {
+    const r = cur();
+    if (r.status === "done") return;
+    const right = shellsFor(r.q.z);
+    const ok = right.every((n, i) => n === r.shell[i]);
+    const fmtCfg = a => a.filter((n, i) => n > 0 || i < 2).join(", ");
+    r.pts = ok ? r.max : 0;
+    r.pip = ok ? "hit" : "miss";
+    r.status = "done";
+    r.fb = {
+      cls: ok ? "good" : "poor",
+      html: esc(ok
+        ? `Rätt! ${r.q.sym} har ${fmtCfg(right)} elektroner i skalen.`
+        : `Inte riktigt. Elektronerna fyller skalen inifrån och ut (K rymmer 2, L rymmer 8, M rymmer 8). ${r.q.sym} ska ha ${fmtCfg(right)}.`)
+    };
+    r.answerText = "Eleven placerade " + r.shell.slice(0, 4).join(", ") + " elektroner i K, L, M, N";
+    r.facitText = r.q.modelAnswer || "";
     renderView(view);
   }
 
@@ -371,6 +488,7 @@ POÄNG: [ett heltal: ${scaleText}]
       const opts = Object.keys(q.opts).sort().map(k => `${k}. ${q.opts[k]}`).join("\n");
       return `Påståenden:\n${opts}\nRätta påståenden (får inte avslöjas): ${q.correct.join(", ")}`;
     }
+    if (q.type === "shells") return `Facit (får inte avslöjas): ${shellsFor(q.z).filter(n => n).join(", ")} elektroner i K, L, M. Elektronerna fyller skalen inifrån och ut.`;
     if (q.type === "mc") {
       const opts = Object.entries(q.opts || {}).map(([k, v]) => `${k}. ${v}`).join("\n");
       return `Alternativ:\n${opts}\nRätt svar (får inte avslöjas): ${q.correct}`;
@@ -500,6 +618,8 @@ POÄNG: [ett heltal: ${scaleText}]
     if (r.status !== "done") {
       if (type === "match") {
         wrap.appendChild(mkBtn("Kontrollera svar", "btn-primary", checkMatch));
+      } else if (type === "shells") {
+        wrap.appendChild(mkBtn("Kontrollera svar", "btn-primary", checkShells));
       } else if (type === "multi") {
         const b = mkBtn("Kontrollera svar", "btn-primary", checkMulti);
         b.id = "lax-check-btn";

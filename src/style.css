@@ -678,3 +678,14 @@ main {
 @media (max-width: 500px) {
   .lax-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ── Fyll skalen ─────────────────────────────────────── */
+.shells-wrap { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
+.shells-svg { width: 280px; max-width: 100%; height: auto; flex: 0 0 auto; }
+.shells-ctrls { flex: 1 1 200px; }
+.shells-row { display: flex; align-items: center; gap: 10px; margin: 6px 0; font-size: 13px; }
+.shells-row > span:first-child { width: 78px; color: var(--muted); }
+.shells-row strong { min-width: 20px; text-align: center; font-size: 16px; }
+.shells-btn { width: 36px; padding: 6px 0 !important; }
+.shells-mark { font-size: 12px; color: var(--muted); }
+.shells-total { margin-top: 10px; font-size: 12px; color: var(--muted); }
