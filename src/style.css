@@ -689,3 +689,8 @@ main {
 .shells-btn { width: 36px; padding: 6px 0 !important; }
 .shells-mark { font-size: 12px; color: var(--muted); }
 .shells-total { margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+/* ── Bygg molekyl ────────────────────────────────────── */
+.mol-wrap { margin-top: 12px; }
+.mol-svg { width: 100%; max-width: 420px; height: auto; display: block; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; }
+.mol-hint { font-size: 12px; color: var(--muted); margin: 8px 0 10px; line-height: 1.5; }

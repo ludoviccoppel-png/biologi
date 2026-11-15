@@ -75,7 +75,7 @@ const Lax = (() => {
   }
 
   function typeLabel(t) {
-    return { mc: "Flerval", multi: "Kryssfråga", shells: "Fyll skalen", match: "Para ihop", open: "Öppen fråga" }[t] || t;
+    return { mc: "Flerval", multi: "Kryssfråga", shells: "Fyll skalen", molecule: "Bygg molekyl", match: "Para ihop", open: "Öppen fråga" }[t] || t;
   }
 
   // ── Rendering av en fråga utifrån dess post ──────────
@@ -106,6 +106,7 @@ const Lax = (() => {
     else if (q.type === "multi") paintMulti(r);
     else if (q.type === "match") paintMatch(r);
     else if (q.type === "shells") paintShells(r);
+    else if (q.type === "molecule") paintMolecule(r);
     else                         paintOpen(r);
 
     if (r.status === "done" && q.expl) {
@@ -323,6 +324,120 @@ const Lax = (() => {
     renderView(view);
   }
 
+  // ── Bygg molekyl (klicka på två atomer för att dra/ändra en bindning) ──
+  // Datafält: name, formula, atoms [[symbol,x,y],...], bonds [[i,j,ordning],...] (facit)
+  const VALENCE = { H: 1, C: 4, N: 5, O: 6, F: 7, Cl: 7 };
+  const bondKey = (i, j) => (i < j ? i + "-" + j : j + "-" + i);
+  const molCounts = (q, bonds) => {
+    const ord = q.atoms.map(() => 0);
+    Object.entries(bonds).forEach(([k, o]) => { const [a, b] = k.split("-").map(Number); ord[a] += o; ord[b] += o; });
+    return ord;
+  };
+
+  function paintMolecule(r) {
+    const done = r.status === "done";
+    const q = r.q;
+    if (!r.bonds) r.bonds = {};
+    const target = {};
+    q.bonds.forEach(([i, j, o]) => { target[bondKey(i, j)] = o; });
+    const NS = "http://www.w3.org/2000/svg";
+    const mk = (tag, attrs, text) => {
+      const e = document.createElementNS(NS, tag);
+      for (const k in attrs) e.setAttribute(k, attrs[k]);
+      if (text !== undefined) e.textContent = text;
+      return e;
+    };
+    const svg = mk("svg", { viewBox: "0 0 400 260", class: "mol-svg", role: "img", "aria-label": "Atomer att binda ihop" });
+    const drawBond = (a, b, order, color, dash) => {
+      const A = q.atoms[a], B = q.atoms[b];
+      const dx = B[1] - A[1], dy = B[2] - A[2], len = Math.hypot(dx, dy), nx = -dy / len, ny = dx / len;
+      for (let k = 0; k < order; k++) {
+        const off = (k - (order - 1) / 2) * 7;
+        const ln = mk("line", { x1: A[1] + nx * off, y1: A[2] + ny * off, x2: B[1] + nx * off, y2: B[2] + ny * off, stroke: color, "stroke-width": 3 });
+        if (dash) ln.setAttribute("stroke-dasharray", "6 5");
+        svg.appendChild(ln);
+      }
+    };
+    const keys = new Set([...Object.keys(r.bonds), ...(done ? Object.keys(target) : [])]);
+    keys.forEach(k => {
+      const [a, b] = k.split("-").map(Number);
+      const mine = r.bonds[k] || 0, want = target[k] || 0;
+      if (!done) { if (mine) drawBond(a, b, mine, "#5ab0e8"); return; }
+      if (mine && mine === want) drawBond(a, b, mine, "#5ecfa0");
+      else { if (mine) drawBond(a, b, mine, "#e85a5a"); if (want) drawBond(a, b, want, "#5ecfa0", true); }
+    });
+
+    const ord = molCounts(q, r.bonds);
+    q.atoms.forEach((A, i) => {
+      const need = A[0] === "H" ? 2 : 8;
+      const tot = VALENCE[A[0]] + ord[i];
+      const color = tot === need ? "#5ecfa0" : tot > need ? "#e85a5a" : "#8d9bbb";
+      const g = mk("g", { style: done ? "" : "cursor:pointer" });
+      g.appendChild(mk("circle", { cx: A[1], cy: A[2], r: 19, fill: r.first === i ? "#24324f" : "#1a2235", stroke: r.first === i ? "#e8c75a" : "#e8845a", "stroke-width": 2 }));
+      g.appendChild(mk("text", { x: A[1], y: A[2] + 1, "text-anchor": "middle", "font-size": 14, fill: "#dde4f0" }, A[0]));
+      g.appendChild(mk("text", { x: A[1], y: A[2] + 13, "text-anchor": "middle", "font-size": 9, fill: color }, tot + "/" + need));
+      if (!done) g.addEventListener("click", () => molClick(i));
+      svg.appendChild(g);
+    });
+
+    const wrap = document.createElement("div");
+    wrap.className = "mol-wrap";
+    wrap.appendChild(svg);
+    const hint = document.createElement("div");
+    hint.className = "mol-hint";
+    hint.textContent = done
+      ? "Grön linje = rätt bindning, röd = fel bindning, streckad grön = bindning som saknades. Siffran i atomen visar elektroner i yttre skalet."
+      : "Klicka på en atom och sedan på en annan för att dra en bindning. Klicka på samma två atomer igen för dubbel- och trippelbindning. Siffran i atomen visar elektroner i yttre skalet (egna + delade).";
+    wrap.appendChild(hint);
+    if (!done) {
+      const reset = mkBtn("Rensa bindningar", "btn-secondary", () => { r.bonds = {}; r.first = null; renderView(view); });
+      reset.disabled = Object.keys(r.bonds).length === 0;
+      wrap.appendChild(reset);
+    }
+    el("lax-q-body").appendChild(wrap);
+  }
+
+  function molClick(i) {
+    const r = cur();
+    if (r.status === "done") return;
+    if (r.first == null) r.first = i;
+    else if (r.first === i) r.first = null;
+    else {
+      const k = bondKey(r.first, i);
+      const o = ((r.bonds[k] || 0) + 1) % 4;   // 0 → 1 → 2 → 3 → 0
+      if (o === 0) delete r.bonds[k]; else r.bonds[k] = o;
+      r.first = null;
+    }
+    renderView(view);
+  }
+
+  function checkMolecule() {
+    const r = cur();
+    if (r.status === "done") return;
+    const q = r.q;
+    const target = {};
+    q.bonds.forEach(([i, j, o]) => { target[bondKey(i, j)] = o; });
+    const all = new Set([...Object.keys(target), ...Object.keys(r.bonds || {})]);
+    const ok = [...all].every(k => (target[k] || 0) === ((r.bonds || {})[k] || 0));
+    r.first = null;
+    r.pts = ok ? r.max : 0;
+    r.pip = ok ? "hit" : "miss";
+    r.status = "done";
+    r.fb = {
+      cls: ok ? "good" : "poor",
+      html: esc(ok
+        ? `Rätt! ${q.name} (${q.formula}): ${q.modelAnswer}`
+        : `Inte riktigt. ${q.name} (${q.formula}): ${q.modelAnswer}`)
+    };
+    const desc = Object.entries(r.bonds || {}).map(([k, o]) => {
+      const [a, b] = k.split("-").map(Number);
+      return `${q.atoms[a][0]}${a + 1}–${q.atoms[b][0]}${b + 1} (${o} streck)`;
+    }).join(", ");
+    r.answerText = "Eleven ritade bindningarna: " + (desc || "inga");
+    r.facitText = q.modelAnswer;
+    renderView(view);
+  }
+
   // ── Flerval ──────────────────────────────────────────
   function paintMC(r) {
     const done = r.status === "done";
@@ -488,6 +603,7 @@ POÄNG: [ett heltal: ${scaleText}]
       const opts = Object.keys(q.opts).sort().map(k => `${k}. ${q.opts[k]}`).join("\n");
       return `Påståenden:\n${opts}\nRätta påståenden (får inte avslöjas): ${q.correct.join(", ")}`;
     }
+    if (q.type === "molecule") return `Facit (får inte avslöjas): ${q.modelAnswer}`;
     if (q.type === "shells") return `Facit (får inte avslöjas): ${shellsFor(q.z).filter(n => n).join(", ")} elektroner i K, L, M. Elektronerna fyller skalen inifrån och ut.`;
     if (q.type === "mc") {
       const opts = Object.entries(q.opts || {}).map(([k, v]) => `${k}. ${v}`).join("\n");
@@ -618,6 +734,8 @@ POÄNG: [ett heltal: ${scaleText}]
     if (r.status !== "done") {
       if (type === "match") {
         wrap.appendChild(mkBtn("Kontrollera svar", "btn-primary", checkMatch));
+      } else if (type === "molecule") {
+        wrap.appendChild(mkBtn("Kontrollera svar", "btn-primary", checkMolecule));
       } else if (type === "shells") {
         wrap.appendChild(mkBtn("Kontrollera svar", "btn-primary", checkShells));
       } else if (type === "multi") {
