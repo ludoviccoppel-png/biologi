@@ -1,0 +1,31 @@
+:root{--bg:#0b0f1a;--surface:#131929;--surface2:#1a2235;--border:#263050;--text:#dde4f0;--muted:#8d9bbb;--accent:#e8845a;--green:#5ecfa0;--red:#e85a5a;--blue:#5ab0e8;--yellow:#e8c75a;--mono:'DM Mono',ui-monospace,Menlo,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--mono);background:var(--bg);color:var(--text);font-size:14px;line-height:1.55;padding:16px}
+.app{max-width:980px;margin:0 auto}
+h1{font-size:17px;font-weight:500;margin-bottom:4px}
+.lead{color:var(--muted);font-size:12px;margin-bottom:14px}
+.row{display:flex;gap:14px;flex-wrap:wrap}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
+.grow{flex:1 1 320px;min-width:0}
+.label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+button{font-family:var(--mono);font-size:13px;color:var(--text);background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer}
+button:hover:not(:disabled){border-color:var(--blue)}
+button:disabled{opacity:.4;cursor:default}
+button.on{border-color:var(--blue);background:rgba(90,176,232,.14);color:var(--blue)}
+button.good{border-color:var(--green);background:rgba(94,207,160,.14);color:var(--green)}
+button.bad{border-color:var(--red);background:rgba(232,90,90,.12);color:var(--red)}
+button.primary{background:var(--blue);color:#0b0f1a;border-color:var(--blue);font-weight:500}
+.ctrl{display:flex;align-items:center;gap:8px;margin:6px 0;flex-wrap:wrap}
+.ctrl .name{width:104px;color:var(--muted);font-size:12px}
+.ctrl .val{min-width:28px;text-align:center;font-size:16px}
+.ctrl button{width:34px;padding:6px 0}
+.stat{display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:5px 0;font-size:13px}
+.stat span:first-child{color:var(--muted)}
+.msg{margin-top:10px;padding:10px 12px;border-radius:8px;font-size:13px;background:var(--surface2);border:1px solid var(--border)}
+.msg.good{border-color:rgba(94,207,160,.4);color:var(--green)}
+.msg.bad{border-color:rgba(232,90,90,.4);color:var(--red)}
+.msg.info{border-color:rgba(90,176,232,.3);color:var(--blue)}
+svg{display:block;width:100%;height:auto}
+.legend{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+sup,sub{font-size:.7em}

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Molekylbyggaren</title>
+<link rel="stylesheet" href="kemi.css"></head><body><div class="app">
+
+<h1>🔗 Molekylbyggaren</h1>
+<p class="lead">Atomer delar elektronpar så att alla får fullt yttre skal (väte 2 elektroner, övriga 8). Varje streck är ett delat elektronpar, prickarna är fria elektronpar.</p>
+<div class="row" style="margin-bottom:12px"><button id="t1" class="on">Utforska molekyler</button><button id="t2">Bygg själv</button></div>
+<div class="row">
+  <div class="panel grow"><svg id="svg" viewBox="0 0 400 260"></svg><div class="legend"><span>Klicka på en atom för att räkna dess elektroner</span></div></div>
+  <div class="panel grow" style="flex-basis:280px">
+    <div id="mode1"><div class="label">Välj molekyl</div><div id="mols" style="display:flex;flex-wrap:wrap;gap:6px"></div></div>
+    <div id="mode2" style="display:none"><div class="label">Välj atom i mitten</div><div id="centers" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+      <div class="ctrl" style="margin-top:12px"><span class="name">Väteatomer</span><button id="h-">−</button><span class="val" id="hv">0</span><button id="h+">+</button></div></div>
+    <div class="label" style="margin-top:14px">Elektroner i yttre skalet</div>
+    <div class="msg info" id="msg"></div>
+    <div class="msg" id="detail" style="display:none"></div>
+  </div>
+</div><script src="kemi.js"></script><script>
+
+// Atomer: [symbol, x, y]; bindningar: [i, j, ordning]
+const V={H:1,C:4,N:5,O:6,F:7,Cl:7};
+const MOL=[
+ {f:"H₂",name:"Väte",a:[["H",140,130],["H",260,130]],b:[[0,1,1]]},
+ {f:"O₂",name:"Syre",a:[["O",140,130],["O",260,130]],b:[[0,1,2]]},
+ {f:"N₂",name:"Kväve",a:[["N",140,130],["N",260,130]],b:[[0,1,3]]},
+ {f:"HCl",name:"Väteklorid",a:[["H",140,130],["Cl",260,130]],b:[[0,1,1]]},
+ {f:"H₂O",name:"Vatten",a:[["O",200,95],["H",125,175],["H",275,175]],b:[[0,1,1],[0,2,1]]},
+ {f:"NH₃",name:"Ammoniak",a:[["N",200,90],["H",115,170],["H",200,205],["H",285,170]],b:[[0,1,1],[0,2,1],[0,3,1]]},
+ {f:"CH₄",name:"Metan",a:[["C",200,130],["H",200,45],["H",200,215],["H",105,130],["H",295,130]],b:[[0,1,1],[0,2,1],[0,3,1],[0,4,1]]},
+ {f:"CO₂",name:"Koldioxid",a:[["O",90,130],["C",200,130],["O",310,130]],b:[[0,1,2],[1,2,2]]}
+];
+let cur=MOL[4],mode=1,center="O",h=0,picked=null;
+const NS="http://www.w3.org/2000/svg";
+const mk=(t,a,x)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(x!==undefined)e.textContent=x;return e};
+function draw(m){
+  const svg=$("svg");svg.innerHTML="";
+  const atoms=m.a.map((a,i)=>({sym:a[0],x:a[1],y:a[2],i,ord:0,dirs:[]}));
+  m.b.forEach(([i,j,o])=>{const A=atoms[i],B=atoms[j];A.ord+=o;B.ord+=o;
+    A.dirs.push(Math.atan2(B.y-A.y,B.x-A.x));B.dirs.push(Math.atan2(A.y-B.y,A.x-B.x));
+    const dx=B.x-A.x,dy=B.y-A.y,len=Math.hypot(dx,dy),nx=-dy/len,ny=dx/len;
+    for(let k=0;k<o;k++){const off=(k-(o-1)/2)*7;
+      svg.appendChild(mk("line",{x1:A.x+nx*off,y1:A.y+ny*off,x2:B.x+nx*off,y2:B.y+ny*off,stroke:"#5ab0e8","stroke-width":3}))}});
+  atoms.forEach(A=>{
+    const v=V[A.sym],lp=(v-A.ord)/2;
+    // fria elektronpar placeras i riktningar som inte pekar mot en bindning
+    const cand=[];for(let k=0;k<12;k++){const ang=k*Math.PI/6;
+      if(A.dirs.every(d=>Math.abs(Math.atan2(Math.sin(ang-d),Math.cos(ang-d)))>0.75))cand.push(ang)}
+    for(let k=0;k<lp&&cand.length;k++){const ang=cand[Math.floor((k+.5)*cand.length/lp)%cand.length];
+      for(const s of [-1,1]){const px=A.x+Math.cos(ang)*30+Math.cos(ang+Math.PI/2)*s*5,py=A.y+Math.sin(ang)*30+Math.sin(ang+Math.PI/2)*s*5;
+        svg.appendChild(mk("circle",{cx:px,cy:py,r:3.4,fill:"#5ecfa0"}))}}
+    const c=mk("g",{style:"cursor:pointer"});
+    c.appendChild(mk("circle",{cx:A.x,cy:A.y,r:19,fill:picked===A.i?"#24324f":"#1a2235",stroke:picked===A.i?"#e8c75a":"#e8845a","stroke-width":2}));
+    c.appendChild(mk("text",{x:A.x,y:A.y+5,"text-anchor":"middle","font-size":15,fill:"#dde4f0"},A.sym));
+    c.onclick=()=>{picked=A.i;draw(m);
+      const need=A.sym==="H"?2:8,tot=v+A.ord;
+      const d=$("detail");d.style.display="";d.className="msg "+(tot===need?"good":"bad");
+      d.innerHTML=`<b>${A.sym}</b>: ${v} egna valenselektroner + ${A.ord} delade från grannar = <b>${tot}</b> i yttre skalet ${tot===need?"✓ fullt skal":"✗"}`};
+    svg.appendChild(c);
+  });
+  return atoms;
+}
+function describe(m){
+  const orders=m.b.map(x=>x[2]);
+  const kinds=[...new Set(orders)].map(o=>({1:"enkelbindning",2:"dubbelbindning",3:"trippelbindning"}[o]));
+  const shared=orders.reduce((s,o)=>s+o,0);
+  $("msg").innerHTML=`<b>${m.name} (${m.f})</b>: ${m.b.length} bindning${m.b.length>1?"ar":""} (${kinds.join(" och ")}), ${shared} delade elektronpar. Alla atomer får fullt yttre skal.`;
+  $("detail").style.display="none";picked=null;
+}
+function mols(){
+  const box=$("mols");MOL.forEach(m=>{const b=document.createElement("button");b.innerHTML=m.f;b.title=m.name;
+    b.onclick=()=>{cur=m;[...box.children].forEach(x=>x.classList.remove("on"));b.classList.add("on");picked=null;draw(m);describe(m)};
+    if(m===cur)b.className="on";box.appendChild(b)});
+}
+function built(){
+  const v=V[center],max=8-v,pos=[];
+  const a=[[center,200,130]];
+  for(let k=0;k<h;k++){const ang=-Math.PI/2+k*2*Math.PI/Math.max(h,1)+(h===2?Math.PI/2*.6+.2:0);
+    a.push(["H",200+Math.cos(ang)*95,130+Math.sin(ang)*85]);}
+  const m={a,b:a.slice(1).map((_,i)=>[0,i+1,1]),name:"",f:""};
+  draw(m);
+  $("hv").textContent=h;$("h+").disabled=h>=max;$("h-").disabled=h<=0;
+  const tot=v+h,msg=$("msg");
+  const names={"C4":"Metan, CH₄","N3":"Ammoniak, NH₃","O2":"Vatten, H₂O","F1":"Fluorväte, HF","Cl1":"Väteklorid, HCl"};
+  if(tot===8){msg.className="msg good";msg.innerHTML=`${center} har ${v} egna + ${h} delade = <b>8</b> elektroner. Fullt skal! Molekylen är <b>${names[center+h]}</b>.`}
+  else{msg.className="msg info";msg.innerHTML=`${center} har ${v} egna + ${h} delade = <b>${tot}</b> elektroner i yttre skalet. Det saknas ${8-tot} för fullt skal – lägg till fler väteatomer.`}
+  $("detail").style.display="none";picked=null;
+}
+function centers(){const box=$("centers");["C","N","O","F","Cl"].forEach(s=>{const b=document.createElement("button");b.textContent=s;
+  b.onclick=()=>{center=s;h=0;[...box.children].forEach(x=>x.classList.toggle("on",x===b));built()};if(s===center)b.className="on";box.appendChild(b)})}
+$("h+").onclick=()=>{h++;built()};$("h-").onclick=()=>{h--;built()};
+function setMode(n){mode=n;$("t1").classList.toggle("on",n===1);$("t2").classList.toggle("on",n===2);
+  $("mode1").style.display=n===1?"":"none";$("mode2").style.display=n===2?"":"none";
+  if(n===1){draw(cur);describe(cur)}else{h=0;built()}}
+$("t1").onclick=()=>setMode(1);$("t2").onclick=()=>setMode(2);
+mols();centers();setMode(1);
+</script></body></html>

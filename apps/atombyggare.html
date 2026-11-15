@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Atombyggaren</title>
+<link rel="stylesheet" href="kemi.css"></head><body><div class="app">
+
+<h1>⚛️ Atombyggaren</h1>
+<p class="lead">Ändra antal protoner, neutroner och elektroner och se vad som händer med atomen. Blå prickar är valenselektroner i det yttersta skalet.</p>
+<div class="row">
+  <div class="panel grow"><svg id="svg" viewBox="0 0 300 300"></svg></div>
+  <div class="panel grow">
+    <div class="label">Bygg atomen</div>
+    <div class="ctrl"><span class="name">Protoner (p⁺)</span><button id="p-" aria-label="Färre protoner">−</button><span class="val" id="pv"></span><button id="p+" aria-label="Fler protoner">+</button></div>
+    <div class="ctrl"><span class="name">Neutroner (n)</span><button id="n-" aria-label="Färre neutroner">−</button><span class="val" id="nv"></span><button id="n+" aria-label="Fler neutroner">+</button></div>
+    <div class="ctrl"><span class="name">Elektroner (e⁻)</span><button id="e-" aria-label="Färre elektroner">−</button><span class="val" id="ev"></span><button id="e+" aria-label="Fler elektroner">+</button></div>
+    <div class="ctrl"><span class="name">Välj ämne</span><select id="pick" style="font-family:var(--mono);background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:7px"></select> <button id="reset">Nollställ</button></div>
+    <div style="font-size:30px;margin:12px 0 4px" id="notation"></div>
+    <div class="stat"><span>Ämne</span><b id="s-name"></b></div>
+    <div class="stat"><span>Atomnummer (protoner)</span><b id="s-z"></b></div>
+    <div class="stat"><span>Masstal (p + n)</span><b id="s-a"></b></div>
+    <div class="stat"><span>Laddning (p − e)</span><b id="s-c"></b></div>
+    <div class="stat"><span>Elektroner i skalen</span><b id="s-sh"></b></div>
+    <div class="stat"><span>Valenselektroner</span><b id="s-v"></b></div>
+    <div class="msg info" id="msg"></div>
+  </div>
+</div><script src="kemi.js"></script><script>
+
+let p=6,n=6,e=6;
+const sel=$("pick"); EL.forEach(x=>sel.add(new Option(x.z+" "+x.name+" ("+x.sym+")",x.z)));
+function clamp(){p=Math.max(1,Math.min(20,p));n=Math.max(0,Math.min(24,n));e=Math.max(0,Math.min(22,e));}
+function render(){
+  clamp();
+  const el=byZ(p), c=p-e, a=p+n, sh=shells(e);
+  const svg=$("svg"); svg.innerHTML="";
+  drawAtom(svg,{p,n,e,maxShells:Math.max(sh.length,shells(p).length),label:el.sym+charge(c)});
+  $("pv").textContent=p;$("nv").textContent=n;$("ev").textContent=e;sel.value=p;
+  $("notation").innerHTML=`<sup style="font-size:.5em">${a}</sup><sub style="font-size:.5em;margin-left:-.55em;vertical-align:-.35em">${p}</sub>${el.sym}<sup style="font-size:.5em">${charge(c)}</sup>`;
+  $("s-name").textContent=el.name;$("s-z").textContent=p;$("s-a").textContent=a;
+  $("s-c").textContent=c===0?"0 (oladdad)":(c>0?"+"+c:c);
+  $("s-sh").textContent=sh.length?sh.join(", "):"–";
+  $("s-v").textContent=sh.length?sh[sh.length-1]:0;
+  const iso=n===el.mass-p;
+  let m=c===0?"Lika många protoner som elektroner – atomen är oladdad.":
+    c>0?`Atomen har ${c} elektron${c>1?"er":""} för lite och är en positiv jon (katjon).`:
+    `Atomen har ${-c} elektron${-c>1?"er":""} för mycket och är en negativ jon (anjon).`;
+  m+=iso?" Det här är den vanligaste isotopen.":` Antalet neutroner skiljer sig från den vanligaste isotopen (${el.mass-p} n) – det är en annan isotop av ${el.name.toLowerCase()}.`;
+  if(c===0 && sh.length && sh[sh.length-1]===(sh.length===1?2:8)) m+=" Yttersta skalet är fullt – en ädelgas!";
+  $("msg").textContent=m;
+}
+$("p+").onclick=()=>{p++;e++;n++;render()};$("p-").onclick=()=>{p--;e--;n--;render()};
+$("n+").onclick=()=>{n++;render()};$("n-").onclick=()=>{n--;render()};
+$("e+").onclick=()=>{e++;render()};$("e-").onclick=()=>{e--;render()};
+sel.onchange=()=>{p=+sel.value;e=p;n=byZ(p).mass-p;render()};
+$("reset").onclick=()=>{e=p;n=byZ(p).mass-p;render()};
+render();
+</script></body></html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Periodiska systemet</title>
+<link rel="stylesheet" href="kemi.css"></head><body><div class="app">
+
+<h1>🧪 Periodiska systemet (1–20)</h1>
+<p class="lead">Klicka på ett ämne. Rader kallas perioder (= antal elektronskal), kolumner kallas grupper (= liknande egenskaper, lika många valenselektroner).</p>
+<div class="row" style="margin-bottom:12px"><span class="label" style="align-self:center;margin:0">Färga efter:</span>
+  <button id="c-cat" class="on">Typ av ämne</button><button id="c-val">Valenselektroner</button><button id="c-sh">Elektronskal</button>
+  <button id="quiz" class="primary" style="margin-left:auto">Starta övning</button></div>
+<div class="panel" id="qpanel" style="display:none;margin-bottom:12px"><div class="label" id="qprog"></div><div id="qtext" style="font-size:16px"></div><div class="msg" id="qmsg" style="display:none"></div><button id="qnext" style="display:none;margin-top:10px" class="primary">Nästa →</button></div>
+<div class="row">
+  <div class="panel grow" style="flex:3 1 560px;overflow-x:auto"><div id="tbl"></div><div class="legend" id="legend"></div></div>
+  <div class="panel grow" id="detailp" style="flex:1 1 240px"><div class="label">Valt ämne</div><div id="d"></div><svg id="svg" viewBox="0 0 300 300" style="max-width:260px;margin:8px auto 0"></svg></div>
+</div><script src="kemi.js"></script><script>
+
+const valence=e=>shells(e.z).pop(), nsh=e=>shells(e.z).length;
+let colorMode="cat",sel=bySym("Na"),quiz=null,hl=[];
+const pal=["#2a3350","#e8845a","#e8c75a","#5ecfa0","#5ab0e8","#c58af0","#f08ab4","#9aa7c7"];
+function color(e){
+  if(colorMode==="cat")return CAT[e.cat].color;
+  if(colorMode==="val")return pal[1+((valence(e)-1)%7)];
+  return ["","#5ab0e8","#5ecfa0","#e8c75a","#e8845a"][nsh(e)];
+}
+function legend(){
+  let h="";
+  if(colorMode==="cat")h=Object.values(CAT).map(c=>`<span><i style="background:${c.color}"></i>${c.name}</span>`).join("");
+  else if(colorMode==="val")h=[1,2,3,4,5,6,7,8].map(n=>`<span><i style="background:${pal[1+((n-1)%7)]}"></i>${n}${n===8?" (fullt skal)":""}${n===1?" valenselektron":""}</span>`).join("");
+  else h=[1,2,3,4].map(n=>`<span><i style="background:${["","#5ab0e8","#5ecfa0","#e8c75a","#e8845a"][n]}"></i>${n} skal</span>`).join("");
+  $("legend").innerHTML=h;
+}
+function table(){
+  const t=$("tbl");let h=`<div style="display:grid;grid-template-columns:22px repeat(18,minmax(28px,1fr));gap:3px;min-width:600px"><div></div>`;
+  for(let g=1;g<=18;g++)h+=`<div style="text-align:center;font-size:10px;color:var(--muted)">${g}</div>`;
+  for(let p=1;p<=4;p++){h+=`<div style="font-size:10px;color:var(--muted);align-self:center">${p}</div>`;
+    for(let g=1;g<=18;g++){const e=EL.find(x=>x.period===p&&x.group===g);
+      if(!e){h+="<div></div>";continue}
+      const on=hl.includes(e.z), isSel=!quiz&&sel===e;
+      h+=`<button data-z="${e.z}" style="padding:3px 0;line-height:1.15;background:${color(e)}22;border:2px solid ${isSel||on?"#fff":color(e)+"88"};${on?"box-shadow:0 0 8px #fff8;":""}">
+        <div style="font-size:9px;color:var(--muted)">${e.z}</div><div style="font-size:14px;color:${color(e)}">${e.sym}</div></button>`}}
+  t.innerHTML=h+"</div>";
+  t.querySelectorAll("button").forEach(b=>{const e=byZ(+b.dataset.z);b.title=e.name;b.onclick=()=>pick(e);});
+}
+function detail(){
+  const e=sel,sh=shells(e.z);
+  $("d").innerHTML=`<div style="font-size:22px">${e.sym} <span style="font-size:14px;color:var(--muted)">${e.name}</span></div>
+   <div class="stat"><span>Atomnummer</span><b>${e.z}</b></div><div class="stat"><span>Grupp</span><b>${e.group}</b></div>
+   <div class="stat"><span>Period (antal skal)</span><b>${e.period}</b></div><div class="stat"><span>Elektroner i skalen</span><b>${sh.join(", ")}</b></div>
+   <div class="stat"><span>Valenselektroner</span><b>${valence(e)}</b></div><div class="stat"><span>Typ</span><b>${CAT[e.cat].name}</b></div>`;
+  const svg=$("svg");svg.innerHTML="";drawAtom(svg,{p:e.z,n:e.mass-e.z,e:e.z,maxShells:4,label:e.sym});
+}
+function pick(e){
+  if(quiz){answer(e);return}
+  sel=e;hl=[];table();detail();
+}
+// ── Övning ──
+const Q=[
+ ()=>{const c=pickOne(["halogen","adel","alkali","jord"]);const nm={halogen:"en halogen",adel:"en ädelgas",alkali:"en alkalimetall",jord:"en alkalisk jordartsmetall"}[c];return{t:`Klicka på ${nm}.`,f:e=>e.cat===c}},
+ ()=>{const g=pickOne([1,2,13,14,15,16,17,18]);return{t:`Klicka på ett ämne i grupp ${g}.`,f:e=>e.group===g}},
+ ()=>{const p=pickOne([1,2,3,4]);return{t:`Klicka på ett ämne i period ${p}.`,f:e=>e.period===p}},
+ ()=>{const v=pickOne([1,2,3,4,5,6,7,8]);return{t:`Klicka på ett ämne med ${v} valenselektron${v>1?"er":""}.`,f:e=>valence(e)===v}},
+ ()=>{const s=pickOne([1,2,3,4]);return{t:`Klicka på ett ämne med ${s} elektronskal.`,f:e=>nsh(e)===s}},
+ ()=>{const s=pickOne(EL);return{t:`Vilket ämne har atomnummer ${s.z}?`,f:e=>e.z===s.z}},
+ ()=>{const s=pickOne(EL.filter(e=>e.z>2));return{t:`Klicka på ett ämne som liknar ${s.name.toLowerCase()} (${s.sym}) kemiskt, alltså står i samma grupp.`,f:e=>e.group===s.group&&e!==s}}
+];
+function pickOne(a){return a[Math.floor(Math.random()*a.length)]}
+let qi=0,score=0,cq=null,answered=false;
+function startQuiz(){quiz=true;qi=0;score=0;$("qpanel").style.display="";$("quiz").textContent="Avsluta övning";hl=[];nextQ()}
+function stopQuiz(){quiz=null;$("qpanel").style.display="none";$("quiz").textContent="Starta övning";hl=[];table();detail()}
+function nextQ(){
+  if(qi>=10){$("qtext").textContent=`Klart! Du fick ${score} av 10 rätt.`;$("qprog").textContent="Resultat";$("qnext").style.display="none";$("qmsg").style.display="none";hl=[];table();return}
+  cq=pickOne(Q)();while(!EL.some(cq.f))cq=pickOne(Q)();
+  qi++;answered=false;hl=[];$("qprog").textContent=`Fråga ${qi} av 10 · ${score} rätt`;$("qtext").textContent=cq.t;
+  $("qmsg").style.display="none";$("qnext").style.display="none";table();
+}
+function answer(e){
+  if(answered)return;answered=true;
+  const ok=cq.f(e);if(ok)score++;
+  hl=EL.filter(cq.f).map(x=>x.z);
+  const m=$("qmsg");m.style.display="";m.className="msg "+(ok?"good":"bad");
+  m.textContent=(ok?"Rätt! ":`Inte riktigt – ${e.name} (${e.sym}) passar inte. `)+"Alla rätta ämnen är markerade: "+EL.filter(cq.f).map(x=>x.sym).join(", ")+".";
+  $("qprog").textContent=`Fråga ${qi} av 10 · ${score} rätt`;
+  $("qnext").style.display="";$("qnext").textContent=qi>=10?"Visa resultat":"Nästa →";table();
+}
+$("qnext").onclick=nextQ;$("quiz").onclick=()=>quiz?stopQuiz():startQuiz();
+[["c-cat","cat"],["c-val","val"],["c-sh","sh"]].forEach(([id,m])=>$(id).onclick=()=>{colorMode=m;["c-cat","c-val","c-sh"].forEach(x=>$(x).classList.toggle("on",x===id));legend();table()});
+legend();table();detail();
+</script></body></html>
