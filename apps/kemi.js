@@ -74,3 +74,34 @@ function drawAtom(svg, o) {
   return g;
 }
 const $ = id => document.getElementById(id);
+
+// Gör en SVG-cirkel (elektron) dragbar. vb = [bredd, höjd] på SVG:ns viewBox.
+// onDrop(x, y) anropas i SVG-koordinater när eleven släpper.
+function enableDrag(dot, svg, vb, onDrop) {
+  dot.style.cursor = "grab";
+  dot.addEventListener("pointerdown", ev => {
+    ev.preventDefault();
+    const rect = svg.getBoundingClientRect();
+    const toSvg = (cx, cy) => [((cx - rect.left) * vb[0]) / rect.width, ((cy - rect.top) * vb[1]) / rect.height];
+    dot.setPointerCapture(ev.pointerId);
+    dot.setAttribute("r", +dot.getAttribute("r") + 2);
+    const move = m => { const [x, y] = toSvg(m.clientX, m.clientY); dot.setAttribute("cx", x); dot.setAttribute("cy", y); };
+    const up = m => {
+      dot.removeEventListener("pointermove", move);
+      dot.removeEventListener("pointerup", up);
+      dot.removeEventListener("pointercancel", up);
+      const [x, y] = toSvg(m.clientX, m.clientY);
+      onDrop(x, y);
+    };
+    dot.addEventListener("pointermove", move);
+    dot.addEventListener("pointerup", up);
+    dot.addEventListener("pointercancel", up);
+  });
+}
+const SVGNS = "http://www.w3.org/2000/svg";
+function mkSvg(tag, attrs, text) {
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text !== undefined) e.textContent = text;
+  return e;
+}

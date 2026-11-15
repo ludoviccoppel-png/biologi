@@ -1,74 +1,117 @@
 <!doctype html>
 <html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Jonbildning</title>
-<link rel="stylesheet" href="kemi.css"></head><body><div class="app">
+<link rel="stylesheet" href="kemi.css"><style>svg{touch-action:none;user-select:none}</style></head><body><div class="app">
 
 <h1>🧂 Jonbildning</h1>
-<p class="lead">Välj en metall och en icke-metall. Förutsäg hur många elektroner som flyttas och se hur jonföreningen bildas.</p>
-<div class="panel" style="margin-bottom:14px">
-  <div class="row" style="align-items:center">
-    <label>Metall: <select id="m"></select></label>
-    <label>Icke-metall: <select id="nm"></select></label>
-  </div>
-</div>
+<p class="lead">Välj en metall och en icke-metall. Dra metallens valenselektroner (blå prickar) till icke-metallens yttre skal tills alla atomer har fullt skal. Då har jonerna bildats!</p>
+<div class="panel" style="margin-bottom:14px"><div class="row" style="align-items:center">
+  <label>Metall: <select id="m"></select></label>
+  <label>Icke-metall: <select id="nm"></select></label>
+  <button id="reset">Börja om</button></div></div>
 <div class="row">
-  <div class="panel grow"><svg id="svg" viewBox="0 0 600 300"></svg><div class="legend"><span><i style="background:#5ecfa0"></i>inre skal</span><span><i style="background:#5ab0e8"></i>valenselektroner</span></div></div>
-  <div class="panel grow" style="flex-basis:280px">
-    <div class="label">Steg för steg</div>
-    <div id="q1"></div><div id="q2" style="margin-top:12px"></div>
-    <div style="margin-top:14px"><button class="primary" id="go" disabled>Överför elektroner →</button> <button id="back" style="display:none">Börja om</button></div>
-    <div class="msg info" id="msg" style="display:none"></div>
-  </div>
+  <div class="panel grow" style="flex:2 1 420px"><svg id="svg" viewBox="0 0 640 400"></svg>
+    <div class="legend"><span><i style="background:#5ecfa0"></i>inre skal</span><span><i style="background:#5ab0e8"></i>valenselektroner</span><span><i style="background:#e8c75a"></i>elektron som flyttats</span></div></div>
+  <div class="panel grow" style="flex:1 1 240px"><div class="label">Laddning</div><div id="ch"></div>
+    <div class="msg info" id="msg" style="margin-top:12px"></div></div>
+</div>
 </div><script src="kemi.js"></script><script>
 
-const metals=["Li","Na","K","Mg","Ca","Al"], nons=["F","Cl","O","S","N"];
+const metals=["Li","Na","K","Mg","Ca","Al"],nons=["F","Cl","O","S","N"];
 const ide={F:"fluorid",Cl:"klorid",O:"oxid",S:"sulfid",N:"nitrid"};
 const msel=$("m"),nsel=$("nm");
 metals.forEach(s=>msel.add(new Option(bySym(s).name+" ("+s+")",s)));
 nons.forEach(s=>nsel.add(new Option(bySym(s).name+" ("+s+")",s)));
 msel.value="Na";nsel.value="Cl";
-const val=el=>shells(el.z).pop();
-const gcd=(a,b)=>b?gcd(b,a%b):a;
-let ok1=false,ok2=false,done=false;
-function subs(n){return n>1?"<sub>"+n+"</sub>":""}
-function choices(id,txt,right,opts,cb){
-  const box=$(id);box.innerHTML="<div style=\"margin-bottom:6px\">"+txt+"</div>";
-  opts.forEach(o=>{const b=document.createElement("button");b.textContent=o;b.style.marginRight="6px";
-    b.onclick=()=>{if(b.classList.contains("good"))return;
-      if(o===right){b.className="good";box.querySelectorAll("button").forEach(x=>x.disabled=true);cb(true)}else{b.className="bad"}};
-    box.appendChild(b);});
+const W=640,H=400,svg=$("svg");
+const val=e=>shells(e.z).pop(),gcd=(a,b)=>b?gcd(b,a%b):a;
+let M,N,vm,need,a,b,mEls,mAt,nAt;   // mEls: metallens valenselektroner {m, to}
+function setup(){
+  M=bySym(msel.value);N=bySym(nsel.value);vm=val(M);need=8-val(N);
+  const L=vm*need/gcd(vm,need);a=L/vm;b=L/need;
+  const col=(k,x)=>Array.from({length:k},(_,i)=>({x,y:(i+.5)*H/k}));
+  mAt=col(a,150);nAt=col(b,490);
+  mEls=[];for(let m=0;m<a;m++)for(let k=0;k<vm;k++)mEls.push({m,to:null});
+  draw();
 }
-function reset(){
-  const M=bySym(msel.value),N=bySym(nsel.value);
-  done=false;ok1=ok2=false;$("go").disabled=true;$("back").style.display="none";$("msg").style.display="none";$("go").style.display="";
-  $("q2").innerHTML="";
-  const vm=val(M),need=8-val(N);
-  choices("q1",`<b>${M.name}</b> har ${vm} valenselektron${vm>1?"er":""}. Hur många elektroner lämnar den ifrån sig för att få fullt yttre skal?`,String(vm),["1","2","3","4"],()=>{
-    ok1=true;
-    choices("q2",`<b>${N.name}</b> har ${val(N)} valenselektroner. Hur många elektroner behöver <b>en</b> atom ta upp för att få fullt skal?`,String(need),["1","2","3","4"],()=>{ok2=true;$("go").disabled=false});
+const ringR=(i,s)=>(24+14*i)*s;
+function scaleFor(k,z){const n=shells(z).length;return Math.min(1,(H/k)/(2*(24+14*(n-1))+22))}
+function nativeSlots(){const slots=[];for(let k=0;k<8-need;k++)slots.push(Math.floor(k*8/(8-need)));return slots}
+function freeSlots(){const nat=nativeSlots();return [0,1,2,3,4,5,6,7].filter(s=>!nat.includes(s))}
+function draw(){
+  svg.innerHTML="";
+  const sm=scaleFor(a,M.z),sn=scaleFor(b,N.z);
+  const moved=m=>mEls.filter(e=>e.m===m&&e.to!==null).length;
+  const added=n=>mEls.filter(e=>e.to===n).length;
+  const nshM=shells(M.z).length,nshN=shells(N.z).length;
+  // metaller
+  mAt.forEach((P,m)=>{
+    const e=M.z-moved(m),sh=shells(e);
+    for(let i=0;i<nshM;i++)svg.appendChild(mkSvg("circle",{cx:P.x,cy:P.y,r:ringR(i,sm)+10*sm,fill:"none",stroke:"#3a4a78","stroke-width":1.3,"stroke-dasharray":i<sh.length?"":"3 4"}));
+    svg.appendChild(mkSvg("circle",{cx:P.x,cy:P.y,r:15*sm+4,fill:"#2a1f3a",stroke:"#e8845a","stroke-width":1.5}));
+    svg.appendChild(mkSvg("text",{x:P.x,y:P.y+4,"text-anchor":"middle","font-size":13*sm+2,fill:"#dde4f0"},M.sym));
+    const lost0=moved(m)===vm;
+    sh.forEach((c,i)=>{
+      const r=ringR(i,sm)+10*sm,outer=i===nshM-1;
+      if(outer)return; // yttre skalets elektroner ritas som dragbara nedan
+      for(let k=0;k<c;k++){const ang=2*Math.PI*k/c-Math.PI/2;
+        svg.appendChild(mkSvg("circle",{cx:P.x+r*Math.cos(ang),cy:P.y+r*Math.sin(ang),r:4*sm+1,fill:(lost0&&i===sh.length-1)?"#5ab0e8":"#5ecfa0",stroke:"#0b0f1a","stroke-width":1}))}});
+    // om hela yttre skalet flyttats är nästa skal det yttersta: rita med blå färg som fullt skal
+    const lost=moved(m)===vm;
+    const mine=mEls.filter(x=>x.m===m&&x.to===null);
+    const r=ringR(nshM-1,sm)+10*sm;
+    mine.forEach((el,k)=>{const ang=2*Math.PI*k/mine.length-Math.PI/2;
+      const d=mkSvg("circle",{cx:P.x+r*Math.cos(ang),cy:P.y+r*Math.sin(ang),r:5*sm+1.5,fill:"#5ab0e8",stroke:"#0b0f1a","stroke-width":1.2});
+      enableDrag(d,svg,[W,H],(x,y)=>drop(el,x,y,sn));svg.appendChild(d)});
+    svg.appendChild(mkSvg("text",{x:P.x,y:P.y+(ringR(nshM-1,sm)+26*sm),"text-anchor":"middle","font-size":13,fill:moved(m)?"#e8c75a":"#dde4f0"},M.sym+charge(moved(m))));
   });
-  draw(false);
+  // icke-metaller
+  nAt.forEach((P,n)=>{
+    const ad=mEls.filter(e=>e.to===n);
+    for(let i=0;i<nshN;i++)svg.appendChild(mkSvg("circle",{cx:P.x,cy:P.y,r:ringR(i,sn)+10*sn,fill:"none",stroke:(i===nshN-1&&val(N)+ad.length===8)?"#5ecfa0":"#3a4a78","stroke-width":1.3}));
+    svg.appendChild(mkSvg("circle",{cx:P.x,cy:P.y,r:15*sn+4,fill:"#2a1f3a",stroke:"#e8845a","stroke-width":1.5}));
+    svg.appendChild(mkSvg("text",{x:P.x,y:P.y+4,"text-anchor":"middle","font-size":13*sn+2,fill:"#dde4f0"},N.sym));
+    shells(N.z).forEach((c,i)=>{if(i===nshN-1)return;const r=ringR(i,sn)+10*sn;
+      for(let k=0;k<c;k++){const ang=2*Math.PI*k/c-Math.PI/2;
+        svg.appendChild(mkSvg("circle",{cx:P.x+r*Math.cos(ang),cy:P.y+r*Math.sin(ang),r:4*sn+1,fill:"#5ecfa0",stroke:"#0b0f1a","stroke-width":1}))}});
+    const r=ringR(nshN-1,sn)+10*sn;
+    const nat=nativeSlots(),free=freeSlots();
+    nat.forEach(s=>{const ang=2*Math.PI*s/8-Math.PI/2;
+      svg.appendChild(mkSvg("circle",{cx:P.x+r*Math.cos(ang),cy:P.y+r*Math.sin(ang),r:5*sn+1.5,fill:"#5ab0e8",stroke:"#0b0f1a","stroke-width":1.2}))});
+    free.forEach((s,k)=>{const ang=2*Math.PI*s/8-Math.PI/2,x=P.x+r*Math.cos(ang),y=P.y+r*Math.sin(ang);
+      if(k<ad.length){const d=mkSvg("circle",{cx:x,cy:y,r:5*sn+1.5,fill:"#e8c75a",stroke:"#0b0f1a","stroke-width":1.2});
+        enableDrag(d,svg,[W,H],(px,py)=>drop(ad[k],px,py,sn));svg.appendChild(d)}
+      else svg.appendChild(mkSvg("circle",{cx:x,cy:y,r:3,fill:"#263050"}))});
+    svg.appendChild(mkSvg("text",{x:P.x,y:P.y+(ringR(nshN-1,sn)+26*sn),"text-anchor":"middle","font-size":13,fill:ad.length?"#e8c75a":"#dde4f0"},N.sym+charge(-ad.length)));
+  });
+  info();
 }
-function draw(after){
-  const M=bySym(msel.value),N=bySym(nsel.value),vm=val(M),need=8-val(N);
-  const L=vm*need/gcd(vm,need),a=L/vm,b=L/need;
-  const svg=$("svg");svg.innerHTML="";
-  const em=after?M.z-vm:M.z, en=after?N.z+need:N.z;
-  drawAtom(svg,{p:M.z,n:M.mass-M.z,e:em,cx:150,cy:140,scale:.9,maxShells:shells(M.z).length,label:M.sym+(after?charge(vm):"")+(a>1?"  × "+a:"")});
-  drawAtom(svg,{p:N.z,n:N.mass-N.z,e:en,cx:450,cy:140,scale:.9,maxShells:shells(N.z).length,label:N.sym+(after?charge(-need):"")+(b>1?"  × "+b:"")});
-  const t=document.createElementNS("http://www.w3.org/2000/svg","text");
-  t.setAttribute("x",300);t.setAttribute("y",after?290:150);t.setAttribute("text-anchor","middle");t.setAttribute("font-size",after?15:26);t.setAttribute("fill",after?"#5ecfa0":"#8d9bbb");
-  t.textContent=after?"⟵ "+L+" e⁻ flyttade":"+";svg.appendChild(t);
-  return {M,N,vm,need,a,b};
+function drop(el,x,y,sn){
+  // släppt nära en icke-metall med plats kvar → elektronen flyttas dit; nära en metall → tillbaka; annars oförändrad
+  let best=null,bd=1e9;
+  nAt.forEach((P,n)=>{const d=Math.hypot(P.x-x,P.y-y);if(d<bd){bd=d;best=n}});
+  const nshN=shells(N.z).length,reach=ringR(nshN-1,sn)+10*sn+26;
+  if(bd<reach&&mEls.filter(e=>e.to===best).length<need){el.to=best}
+  else{let mb=1e9;mAt.forEach(P=>{mb=Math.min(mb,Math.hypot(P.x-x,P.y-y))});if(el.to!==null&&mb<bd)el.to=null}
+  draw();
 }
-$("go").onclick=()=>{
-  const r=draw(true);done=true;$("go").style.display="none";$("back").style.display="";
-  const f=r.M.sym+(r.a>1?"<sub>"+r.a+"</sub>":"")+r.N.sym+(r.b>1?"<sub>"+r.b+"</sub>":"");
-  const m=$("msg");m.style.display="";m.className="msg good";
-  m.innerHTML=`${r.M.name} lämnar ifrån sig ${r.vm} e⁻ och blir <b>${r.M.sym}${charge(r.vm)}</b>. ${r.N.name} tar upp ${r.need} e⁻ och blir <b>${r.N.sym}${charge(-r.need)}</b>.<br>`+
-  (r.a>1||r.b>1?`Det behövs ${r.a} ${r.M.sym}-atom${r.a>1?"er":""} och ${r.b} ${r.N.sym}-atom${r.b>1?"er":""} så att laddningarna tar ut varandra (${r.a*r.vm} + och ${r.b*r.need} −).<br>`:"Laddningarna tar ut varandra.<br>")+
-  `Jonerna dras till varandra med elektriska krafter (jonbindning). Formel: <b>${f}</b> – ${r.M.name.toLowerCase()}${ide[r.N.sym]}.`;
-};
-$("back").onclick=reset;msel.onchange=reset;nsel.onchange=reset;
-reset();
+function info(){
+  const moved=m=>mEls.filter(e=>e.m===m&&e.to!==null).length,added=n=>mEls.filter(e=>e.to===n).length;
+  $("ch").innerHTML=mAt.map((_,m)=>`<div class="stat"><span>${M.name} ${m+1}</span><b>${M.sym}${charge(moved(m))||" (oladdad)"}</b></div>`).join("")+
+    nAt.map((_,n)=>`<div class="stat"><span>${N.name} ${n+1}</span><b>${N.sym}${charge(-added(n))||" (oladdad)"}</b></div>`).join("");
+  const done=mAt.every((_,m)=>moved(m)===vm)&&nAt.every((_,n)=>added(n)===need),msg=$("msg");
+  if(done){
+    const f=M.sym+(a>1?"<sub>"+a+"</sub>":"")+N.sym+(b>1?"<sub>"+b+"</sub>":"");
+    msg.className="msg good";
+    msg.innerHTML=`Klart! ${M.name} har lämnat ifrån sig ${vm} e⁻ och blivit <b>${M.sym}${charge(vm)}</b>. ${N.name} har tagit upp ${need} e⁻ och blivit <b>${N.sym}${charge(-need)}</b>.<br>`+
+      (a>1||b>1?`Det behövs ${a} ${M.sym}-atom${a>1?"er":""} och ${b} ${N.sym}-atom${b>1?"er":""} så att laddningarna tar ut varandra (${a*vm} + och ${b*need} −).<br>`:"Laddningarna tar ut varandra.<br>")+
+      `Jonerna dras till varandra med elektriska krafter (jonbindning). Formel: <b>${f}</b> – ${M.name.toLowerCase()}${ide[N.sym]}.`;
+  }else{
+    msg.className="msg info";
+    msg.textContent=mEls.every(e=>e.to===null)?`Dra en blå valenselektron från ${M.name.toLowerCase()} till ${N.name.toLowerCase()}.`:
+      `${M.name} har ${vm} valenselektron${vm>1?"er":""} att lämna och varje ${N.name.toLowerCase()}atom behöver ta upp ${need}. Fortsätt tills alla har fullt yttre skal.`;
+  }
+}
+msel.onchange=setup;nsel.onchange=setup;$("reset").onclick=setup;
+setup();
 </script></body></html>
