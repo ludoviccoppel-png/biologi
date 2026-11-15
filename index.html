@@ -117,6 +117,46 @@
     </div>
   </section>
 
+  <!-- ── KEMI: INTERAKTIVA ÖVNINGAR ─────────────────── -->
+  <section class="section-block" id="section-kemiappar">
+    <div class="section-header">
+      <div class="section-label-tag">⚗️ Kemi – interaktiva övningar</div>
+      <p class="section-desc">Utforska och experimentera – hör ihop med läxförhöret Periodiska systemet åk 9</p>
+    </div>
+
+    <div class="lax-grid">
+      <div class="lax-card ready app-card" data-app="apps/atombyggare.html" data-title="Atombyggaren">
+        <div class="lax-icon">⚛️</div>
+        <div class="lax-name">Atombyggaren</div>
+        <div class="lax-status">Protoner, neutroner, elektroner</div>
+      </div>
+      <div class="lax-card ready app-card" data-app="apps/periodiska.html" data-title="Periodiska systemet">
+        <div class="lax-icon">🧪</div>
+        <div class="lax-name">Periodiska systemet</div>
+        <div class="lax-status">Utforska + övning</div>
+      </div>
+      <div class="lax-card ready app-card" data-app="apps/jonbildning.html" data-title="Jonbildning">
+        <div class="lax-icon">🧂</div>
+        <div class="lax-name">Jonbildning</div>
+        <div class="lax-status">Elektronöverföring</div>
+      </div>
+      <div class="lax-card ready app-card" data-app="apps/molekyl.html" data-title="Molekylbyggaren">
+        <div class="lax-icon">🔗</div>
+        <div class="lax-name">Molekylbyggaren</div>
+        <div class="lax-status">Delade elektronpar</div>
+      </div>
+    </div>
+
+    <div id="app-panel" style="display:none">
+      <div class="scorebar" style="margin-top:20px">
+        <div class="score-info"><span id="app-title"></span></div>
+        <div class="pips"></div>
+        <button class="btn-ghost" id="app-close">✕ Stäng</button>
+      </div>
+      <iframe id="app-frame" title="Interaktiv övning" style="width:100%;height:760px;border:1px solid var(--border);border-radius:10px;background:#0b0f1a"></iframe>
+    </div>
+  </section>
+
   <!-- ── PROV ──────────────────────────────────────── -->
   <!-- Kemi och fysik läggs till här senare som egna kort i samma rutnät -->
   <section class="section-block" id="section-prov">
@@ -179,5 +219,6 @@
 <script src="src/api.js"></script>
 <script src="src/app.js"></script>
 <script src="src/lax.js"></script>
+<script src="src/apps.js"></script>
 </body>
 </html>
