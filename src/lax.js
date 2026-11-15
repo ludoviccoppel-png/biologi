@@ -22,6 +22,16 @@ const Lax = (() => {
       // Utan frågor är kortet inte klickbart (visas som "Kommer snart")
     });
     buildExtras();
+    openFromUrl();
+    window.addEventListener("hashchange", openFromUrl);
+  }
+
+  // Direktlänkar: https://…/#biologi8 (eller ?topic=biologi8) öppnar det kortet automatiskt
+  function openFromUrl() {
+    const t = (location.hash || "").replace(/^#/, "") || new URLSearchParams(location.search).get("topic");
+    if (!t) return;
+    const card = Array.from(document.querySelectorAll(".lax-card")).find(c => c.dataset.topic === t);
+    if (card && card.classList.contains("ready")) card.click();
   }
 
   function startTopic(topic, card) {
