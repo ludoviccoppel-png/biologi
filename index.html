@@ -19,6 +19,28 @@
 
 <main>
 
+  <!-- Delad quiz-panel för läxförhör (aktiveras när frågor finns) -->
+  <div id="lax-panel" style="display:none;margin-bottom:32px">
+    <div class="scorebar" style="margin-top:20px">
+      <div class="score-info">
+        <span>Fråga <strong id="lax-q-num">0</strong></span>
+        <span>Rätt: <strong id="lax-score">0</strong><span class="muted"> / </span><strong id="lax-max">0</strong></span>
+      </div>
+      <div class="pips" id="lax-pips"></div>
+      <button class="btn-ghost" onclick="closeLax()">✕ Stäng</button>
+    </div>
+    <div class="q-card" id="lax-q-card">
+      <div class="q-meta">
+        <span class="q-type-tag" id="lax-type-tag"></span>
+        <span class="q-area-tag" id="lax-area-tag"></span>
+      </div>
+      <div class="q-text" id="lax-q-text"></div>
+      <div id="lax-q-body"></div>
+      <div class="feedback-box" id="lax-feedback" style="display:none"></div>
+      <div class="q-actions" id="lax-actions"></div>
+    </div>
+  </div>
+
   <!-- ── LÄXFÖRHÖR ──────────────────────────────────── -->
   <section class="section-block" id="section-laxforhör">
     <div class="section-header">
@@ -81,29 +103,6 @@
       </div>
     </div>
   </section>
-
-  <!-- Delad quiz-panel för läxförhör (aktiveras när frågor finns) -->
-  <div id="lax-panel" style="display:none">
-    <div class="scorebar" style="margin-top:20px">
-      <div class="score-info">
-        <span>Fråga <strong id="lax-q-num">0</strong></span>
-        <span>Rätt: <strong id="lax-score">0</strong><span class="muted"> / </span><strong id="lax-max">0</strong></span>
-      </div>
-      <div class="pips" id="lax-pips"></div>
-      <button class="btn-ghost" onclick="closeLax()">✕ Stäng</button>
-    </div>
-    <div class="q-card" id="lax-q-card">
-      <div class="q-meta">
-        <span class="q-type-tag" id="lax-type-tag"></span>
-        <span class="q-area-tag" id="lax-area-tag"></span>
-      </div>
-      <div class="q-text" id="lax-q-text"></div>
-      <div id="lax-q-body"></div>
-      <div class="feedback-box" id="lax-feedback" style="display:none"></div>
-      <div class="q-actions" id="lax-actions"></div>
-    </div>
-  </div>
-
 
   <!-- ── KEMI: INTERAKTIVA ÖVNINGAR ─────────────────── -->
   <section class="section-block" id="section-kemiappar">
