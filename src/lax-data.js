@@ -810,32 +810,32 @@ const LAX_DATA = {
         "En jon är en atom som har lämnat ifrån sig eller tagit upp elektroner så att den blivit elektriskt laddad.",
     },
     // Originalet ber eleven rita molekylbindningen för CH4, H2O eller H2. Eleven bygger nu molekylen själv genom att
-    // klicka på atomer och dra bindningar (frågetyp "molecule"). Tre molekyler (H2, H2O, CH4) – lägg till fler på samma sätt.
+    // dra valenselektroner till mitten mellan atomerna (frågetyp "molecule"). Tre molekyler (H2, H2O, CH4) – lägg till fler på samma sätt.
     {
       id: "periodiska9-4b-h2",
       type: "molecule",
       name: "vätgas", formula: "H₂",
-      atoms: [["H", 140, 130], ["H", 260, 130]],
+      atoms: [["H", 130, 150], ["H", 270, 150]],
       bonds: [[0, 1, 1]],
-      text: "Bygg molekylen vätgas (H₂): klicka på två atomer för att dra en bindning mellan dem. Varje atom ska få fullt yttre skal (väte 2 elektroner, övriga 8).",
+      text: "Bygg molekylen vätgas (H₂): dra valenselektronerna till mitten mellan atomerna så att de bildar delade elektronpar. Varje atom ska få fullt yttre skal (väte 2 elektroner, övriga 8).",
       modelAnswer: "Atomerna delar på ett elektronpar (en enkelbindning) så att båda väteatomerna får fullt skal med 2 elektroner.",
     },
     {
       id: "periodiska9-4b-h2o",
       type: "molecule",
       name: "vatten", formula: "H₂O",
-      atoms: [["O", 200, 95], ["H", 125, 175], ["H", 275, 175]],
+      atoms: [["O", 200, 100], ["H", 110, 205], ["H", 290, 205]],
       bonds: [[0, 1, 1], [0, 2, 1]],
-      text: "Bygg molekylen vatten (H₂O): klicka på två atomer för att dra en bindning mellan dem. Varje atom ska få fullt yttre skal (väte 2 elektroner, övriga 8).",
+      text: "Bygg molekylen vatten (H₂O): dra valenselektronerna till mitten mellan atomerna så att de bildar delade elektronpar. Varje atom ska få fullt yttre skal (väte 2 elektroner, övriga 8).",
       modelAnswer: "Syreatomen delar ett elektronpar med var och en av väteatomerna (två enkelbindningar). Då får syre 8 elektroner i yttre skalet och varje väte 2.",
     },
     {
       id: "periodiska9-4b-ch4",
       type: "molecule",
       name: "metan", formula: "CH₄",
-      atoms: [["C", 200, 130], ["H", 200, 45], ["H", 200, 215], ["H", 105, 130], ["H", 295, 130]],
+      atoms: [["C", 200, 150], ["H", 200, 38], ["H", 200, 262], ["H", 88, 150], ["H", 312, 150]],
       bonds: [[0, 1, 1], [0, 2, 1], [0, 3, 1], [0, 4, 1]],
-      text: "Bygg molekylen metan (CH₄): klicka på två atomer för att dra en bindning mellan dem. Varje atom ska få fullt yttre skal (väte 2 elektroner, övriga 8).",
+      text: "Bygg molekylen metan (CH₄): dra valenselektronerna till mitten mellan atomerna så att de bildar delade elektronpar. Varje atom ska få fullt yttre skal (väte 2 elektroner, övriga 8).",
       modelAnswer: "Kolatomen delar ett elektronpar med var och en av de fyra väteatomerna (fyra enkelbindningar). Då får kol 8 elektroner i yttre skalet och varje väte 2.",
     },
     {

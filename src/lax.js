@@ -324,22 +324,52 @@ const Lax = (() => {
     renderView(view);
   }
 
-  // ── Bygg molekyl (klicka på två atomer för att dra/ändra en bindning) ──
-  // Datafält: name, formula, atoms [[symbol,x,y],...], bonds [[i,j,ordning],...] (facit)
+  // ── Bygg molekyl (dra valenselektroner till mitten mellan två atomer → delat elektronpar) ──
+  // Datafält: name, formula, atoms [[symbol,x,y],...] (koordinater i 400×300), bonds [[i,j,ordning],...] (facit)
   const VALENCE = { H: 1, C: 4, N: 5, O: 6, F: 7, Cl: 7 };
   const bondKey = (i, j) => (i < j ? i + "-" + j : j + "-" + i);
-  const molCounts = (q, bonds) => {
-    const ord = q.atoms.map(() => 0);
-    Object.entries(bonds).forEach(([k, o]) => { const [a, b] = k.split("-").map(Number); ord[a] += o; ord[b] += o; });
-    return ord;
-  };
+  const MOL_W = 400, MOL_H = 300, SHELL_R = 32, ZONE_R = 15;
+
+  // Platser där elektroner kan släppas: mitt emellan atomer som ligger nära varandra
+  function molZones(q) {
+    const zones = [];
+    for (let i = 0; i < q.atoms.length; i++) {
+      for (let j = i + 1; j < q.atoms.length; j++) {
+        const A = q.atoms[i], B = q.atoms[j];
+        if (Math.hypot(A[1] - B[1], A[2] - B[2]) < 150) {
+          zones.push({ key: bondKey(i, j), i, j, x: (A[1] + B[1]) / 2, y: (A[2] + B[2]) / 2,
+                       ang: Math.atan2(B[2] - A[2], B[1] - A[1]) });
+        }
+      }
+    }
+    return zones;
+  }
+
+  function molFresh(q) {
+    const els = [];
+    q.atoms.forEach((A, i) => {
+      const v = VALENCE[A[0]], slots = A[0] === "H" ? 2 : 8;
+      for (let k = 0; k < v; k++) els.push({ atom: i, slot: Math.floor((k * slots) / v), zone: null });
+    });
+    return els;
+  }
+
+  // Bindningsordning per zon utifrån var elektronerna ligger (ogiltig om olika många från vardera atom)
+  function molBonds(q, els) {
+    const out = {};
+    molZones(q).forEach(z => {
+      const a = els.filter(e => e.zone === z.key && e.atom === z.i).length;
+      const b = els.filter(e => e.zone === z.key && e.atom === z.j).length;
+      if (a || b) out[z.key] = a === b ? a : -1;
+    });
+    return out;
+  }
 
   function paintMolecule(r) {
     const done = r.status === "done";
     const q = r.q;
-    if (!r.bonds) r.bonds = {};
-    const target = {};
-    q.bonds.forEach(([i, j, o]) => { target[bondKey(i, j)] = o; });
+    if (!r.els) r.els = molFresh(q);
+    const zones = molZones(q);
     const NS = "http://www.w3.org/2000/svg";
     const mk = (tag, attrs, text) => {
       const e = document.createElementNS(NS, tag);
@@ -347,37 +377,66 @@ const Lax = (() => {
       if (text !== undefined) e.textContent = text;
       return e;
     };
-    const svg = mk("svg", { viewBox: "0 0 400 260", class: "mol-svg", role: "img", "aria-label": "Atomer att binda ihop" });
-    const drawBond = (a, b, order, color, dash) => {
-      const A = q.atoms[a], B = q.atoms[b];
-      const dx = B[1] - A[1], dy = B[2] - A[2], len = Math.hypot(dx, dy), nx = -dy / len, ny = dx / len;
-      for (let k = 0; k < order; k++) {
-        const off = (k - (order - 1) / 2) * 7;
-        const ln = mk("line", { x1: A[1] + nx * off, y1: A[2] + ny * off, x2: B[1] + nx * off, y2: B[2] + ny * off, stroke: color, "stroke-width": 3 });
-        if (dash) ln.setAttribute("stroke-dasharray", "6 5");
-        svg.appendChild(ln);
+    const svg = mk("svg", { viewBox: `0 0 ${MOL_W} ${MOL_H}`, class: "mol-svg", role: "img", "aria-label": "Atomer med valenselektroner" });
+    const COLORS = ["#e8845a", "#5ab0e8", "#c58af0", "#5ecfa0", "#e8c75a", "#f08ab4"];
+    const colorOf = i => (q.atoms[i][0] === "H" ? "#5ab0e8" : COLORS[(i % 3 === 0 ? 0 : i % 3) % COLORS.length]);
+
+    const target = {};
+    q.bonds.forEach(([i, j, o]) => { target[bondKey(i, j)] = o; });
+    const mine = molBonds(q, r.els);
+
+    // zoner (mitt emellan atomerna)
+    zones.forEach(z => {
+      const circle = mk("circle", { cx: z.x, cy: z.y, r: ZONE_R + 4, fill: "rgba(90,176,232,.06)", stroke: "#3a4a78", "stroke-width": 1.2, "stroke-dasharray": "3 3" });
+      svg.appendChild(circle);
+      if (done) {
+        const m = mine[z.key] || 0, want = target[z.key] || 0;
+        if (m || want) {
+          const col = m === want ? "#5ecfa0" : "#e85a5a";
+          const t = mk("text", { x: z.x, y: z.y - ZONE_R - 8, "text-anchor": "middle", "font-size": 10, fill: col },
+            m === want ? "✓" : `✗ ska vara ${want}`);
+          svg.appendChild(t);
+        }
       }
-    };
-    const keys = new Set([...Object.keys(r.bonds), ...(done ? Object.keys(target) : [])]);
-    keys.forEach(k => {
-      const [a, b] = k.split("-").map(Number);
-      const mine = r.bonds[k] || 0, want = target[k] || 0;
-      if (!done) { if (mine) drawBond(a, b, mine, "#5ab0e8"); return; }
-      if (mine && mine === want) drawBond(a, b, mine, "#5ecfa0");
-      else { if (mine) drawBond(a, b, mine, "#e85a5a"); if (want) drawBond(a, b, want, "#5ecfa0", true); }
     });
 
-    const ord = molCounts(q, r.bonds);
+    // atomer med skal
     q.atoms.forEach((A, i) => {
       const need = A[0] === "H" ? 2 : 8;
-      const tot = VALENCE[A[0]] + ord[i];
+      const own = r.els.filter(e => e.atom === i).length;
+      const partner = r.els.filter(e => e.zone && zones.some(z => z.key === e.zone && (z.i === i || z.j === i)) && e.atom !== i).length;
+      const tot = own + partner;
       const color = tot === need ? "#5ecfa0" : tot > need ? "#e85a5a" : "#8d9bbb";
-      const g = mk("g", { style: done ? "" : "cursor:pointer" });
-      g.appendChild(mk("circle", { cx: A[1], cy: A[2], r: 19, fill: r.first === i ? "#24324f" : "#1a2235", stroke: r.first === i ? "#e8c75a" : "#e8845a", "stroke-width": 2 }));
-      g.appendChild(mk("text", { x: A[1], y: A[2] + 1, "text-anchor": "middle", "font-size": 14, fill: "#dde4f0" }, A[0]));
-      g.appendChild(mk("text", { x: A[1], y: A[2] + 13, "text-anchor": "middle", "font-size": 9, fill: color }, tot + "/" + need));
-      if (!done) g.addEventListener("click", () => molClick(i));
-      svg.appendChild(g);
+      svg.appendChild(mk("circle", { cx: A[1], cy: A[2], r: SHELL_R, fill: "#161d30", stroke: tot === need ? "#5ecfa0" : "#3a4a78", "stroke-width": 1.6 }));
+      svg.appendChild(mk("circle", { cx: A[1], cy: A[2], r: 17, fill: "#2a1f3a", stroke: "#e8845a", "stroke-width": 1.6 }));
+      svg.appendChild(mk("text", { x: A[1], y: A[2] + 1, "text-anchor": "middle", "font-size": 13, fill: "#dde4f0" }, A[0]));
+      svg.appendChild(mk("text", { x: A[1], y: A[2] + 12, "text-anchor": "middle", "font-size": 8, fill: color }, tot + "/" + need));
+    });
+
+    // elektroner
+    const pos = e => {
+      if (!e.zone) {
+        const A = q.atoms[e.atom], slots = A[0] === "H" ? 2 : 8;
+        const ang = -Math.PI / 2 + (e.slot * 2 * Math.PI) / slots;
+        return [A[1] + SHELL_R * Math.cos(ang), A[2] + SHELL_R * Math.sin(ang)];
+      }
+      const z = zones.find(x => x.key === e.zone);
+      const same = r.els.filter(o => o.zone === e.zone);
+      const sideI = same.filter(o => o.atom === z.i), sideJ = same.filter(o => o.atom === z.j);
+      const list = e.atom === z.i ? sideI : sideJ, idx = list.indexOf(e);
+      const along = e.atom === z.i ? -6 : 6;                 // elektronerna i ett par ligger bredvid varandra
+      const across = (idx - (Math.max(sideI.length, sideJ.length) - 1) / 2) * 11;
+      const nx = -Math.sin(z.ang), ny = Math.cos(z.ang);
+      return [z.x + Math.cos(z.ang) * along + nx * across, z.y + Math.sin(z.ang) * along + ny * across];
+    };
+    r.els.forEach(e => {
+      const [x, y] = pos(e);
+      const dot = mk("circle", { cx: x, cy: y, r: 5.5, fill: colorOf(e.atom), stroke: "#0b0f1a", "stroke-width": 1.5, class: "mol-el" });
+      if (!done) {
+        dot.style.cursor = "grab";
+        dot.addEventListener("pointerdown", ev => startDrag(ev, e, dot, svg, zones));
+      }
+      svg.appendChild(dot);
     });
 
     const wrap = document.createElement("div");
@@ -386,29 +445,51 @@ const Lax = (() => {
     const hint = document.createElement("div");
     hint.className = "mol-hint";
     hint.textContent = done
-      ? "Grön linje = rätt bindning, röd = fel bindning, streckad grön = bindning som saknades. Siffran i atomen visar elektroner i yttre skalet."
-      : "Klicka på en atom och sedan på en annan för att dra en bindning. Klicka på samma två atomer igen för dubbel- och trippelbindning. Siffran i atomen visar elektroner i yttre skalet (egna + delade).";
+      ? "✓ = rätt antal delade elektronpar mellan atomerna, ✗ = fel. Siffran i atomen visar elektroner i yttre skalet (egna + delade)."
+      : "Dra valenselektronerna (prickarna) till de streckade ringarna mellan två atomer. Två elektroner – en från vardera atom – bildar ett delat elektronpar. Siffran i atomen visar elektroner i yttre skalet: målet är fullt skal (väte 2, övriga 8).";
     wrap.appendChild(hint);
     if (!done) {
-      const reset = mkBtn("Rensa bindningar", "btn-secondary", () => { r.bonds = {}; r.first = null; renderView(view); });
-      reset.disabled = Object.keys(r.bonds).length === 0;
+      const reset = mkBtn("Börja om", "btn-secondary", () => { r.els = molFresh(q); renderView(view); });
+      reset.disabled = r.els.every(e => !e.zone);
       wrap.appendChild(reset);
     }
     el("lax-q-body").appendChild(wrap);
   }
 
-  function molClick(i) {
+  function startDrag(ev, e, dot, svg, zones) {
     const r = cur();
     if (r.status === "done") return;
-    if (r.first == null) r.first = i;
-    else if (r.first === i) r.first = null;
-    else {
-      const k = bondKey(r.first, i);
-      const o = ((r.bonds[k] || 0) + 1) % 4;   // 0 → 1 → 2 → 3 → 0
-      if (o === 0) delete r.bonds[k]; else r.bonds[k] = o;
-      r.first = null;
-    }
-    renderView(view);
+    ev.preventDefault();
+    const rect = svg.getBoundingClientRect();
+    const toSvg = (cx, cy) => [((cx - rect.left) * MOL_W) / rect.width, ((cy - rect.top) * MOL_H) / rect.height];
+    dot.setPointerCapture(ev.pointerId);
+    dot.setAttribute("r", 7.5);
+    const move = m => {
+      const [x, y] = toSvg(m.clientX, m.clientY);
+      dot.setAttribute("cx", x); dot.setAttribute("cy", y);
+    };
+    const up = m => {
+      dot.removeEventListener("pointermove", move);
+      dot.removeEventListener("pointerup", up);
+      dot.removeEventListener("pointercancel", up);
+      const [x, y] = toSvg(m.clientX, m.clientY);
+      let best = null, bd = 34;
+      zones.forEach(z => {
+        if (z.i !== e.atom && z.j !== e.atom) return;      // bara de egna atomernas zoner
+        const d = Math.hypot(z.x - x, z.y - y);
+        if (d < bd) { bd = d; best = z; }
+      });
+      if (best) {
+        const side = r.els.filter(o => o.zone === best.key && o.atom === e.atom && o !== e).length;
+        e.zone = side < 3 ? best.key : null;                 // högst tre elektroner per atom och zon (trippelbindning)
+      } else {
+        e.zone = null;
+      }
+      renderView(view);
+    };
+    dot.addEventListener("pointermove", move);
+    dot.addEventListener("pointerup", up);
+    dot.addEventListener("pointercancel", up);
   }
 
   function checkMolecule() {
@@ -417,9 +498,9 @@ const Lax = (() => {
     const q = r.q;
     const target = {};
     q.bonds.forEach(([i, j, o]) => { target[bondKey(i, j)] = o; });
-    const all = new Set([...Object.keys(target), ...Object.keys(r.bonds || {})]);
-    const ok = [...all].every(k => (target[k] || 0) === ((r.bonds || {})[k] || 0));
-    r.first = null;
+    const mine = molBonds(q, r.els);
+    const all = new Set([...Object.keys(target), ...Object.keys(mine)]);
+    const ok = [...all].every(k => (target[k] || 0) === (mine[k] || 0));
     r.pts = ok ? r.max : 0;
     r.pip = ok ? "hit" : "miss";
     r.status = "done";
@@ -429,11 +510,11 @@ const Lax = (() => {
         ? `Rätt! ${q.name} (${q.formula}): ${q.modelAnswer}`
         : `Inte riktigt. ${q.name} (${q.formula}): ${q.modelAnswer}`)
     };
-    const desc = Object.entries(r.bonds || {}).map(([k, o]) => {
+    const desc = Object.entries(mine).map(([k, o]) => {
       const [a, b] = k.split("-").map(Number);
-      return `${q.atoms[a][0]}${a + 1}–${q.atoms[b][0]}${b + 1} (${o} streck)`;
+      return `${q.atoms[a][0]}${a + 1}–${q.atoms[b][0]}${b + 1}: ${o < 0 ? "ojämnt antal elektroner" : o + " elektronpar"}`;
     }).join(", ");
-    r.answerText = "Eleven ritade bindningarna: " + (desc || "inga");
+    r.answerText = "Eleven placerade elektroner i mitten: " + (desc || "inga");
     r.facitText = q.modelAnswer;
     renderView(view);
   }
