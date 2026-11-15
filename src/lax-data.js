@@ -638,6 +638,229 @@ const LAX_DATA = {
     },
   ],
 
+  // ── Läxförhör kemi: Periodiska systemet åk 9 ──────────────────────
+  // 27 skrivfrågor (type "open"), AI-bedömda mot modelAnswer (= lärarens facit).
+  // Delarna i ordning: atomens uppbyggnad, elektronskal, periodiska systemet, kemisk bindning.
+  // OBS: två frågor är anpassade för appen eftersom man inte kan rita i den (markerade nedan).
+  periodiska9: [
+    // ── Atomens uppbyggnad ──
+    {
+      id: "periodiska9-1a",
+      type: "open",
+      text: "Vilka partiklar är en atom byggd av och var i atomen finns de?",
+      modelAnswer:
+        "En atom består av protoner (+) och neutroner (neutrala) i atomkärnan, samt elektroner (-) som rör sig i " +
+        "skal runt kärnan.",
+    },
+    {
+      id: "periodiska9-1b",
+      type: "open",
+      text: "Vad är skillnaden mellan olika atomslag?",
+      modelAnswer: "Antalet protoner i kärnan.",
+    },
+    {
+      id: "periodiska9-1c",
+      type: "open",
+      text: "Vilka elektriska laddningar har partiklarna i en atom?",
+      modelAnswer: "Protoner är positiva, elektroner är negativa och neutroner är oladdade.",
+    },
+    {
+      id: "periodiska9-1d",
+      type: "open",
+      text: "Varför är en atom oladdad?",
+      modelAnswer:
+        "Atomen är oladdad eftersom den innehåller lika många protoner som elektroner, vilket gör att " +
+        "laddningarna tar ut varandra.",
+    },
+    {
+      id: "periodiska9-1e",
+      type: "open",
+      text: "Varför far elektronerna inte iväg från atomkärnan och varför dras de inte in till den?",
+      modelAnswer:
+        "Elektriska krafter håller kvar elektronerna, medan deras höga hastighet hindrar dem från att dras in " +
+        "i kärnan.",
+    },
+    {
+      id: "periodiska9-1f",
+      type: "open",
+      text: "Ibland brukar man jämföra atomen med solsystemet. Vad kan du se för likheter och skillnader?",
+      modelAnswer:
+        "Likheten är att partiklar kretsar kring ett centrum. Skillnaden är att atomen styrs av elektrisk kraft " +
+        "medan solsystemet styrs av gravitation.",
+    },
+    {
+      id: "periodiska9-1g",
+      type: "open",
+      text: "Vad vet man om atomen om man känner till atomnumret?",
+      modelAnswer: "Det anger hur många protoner (och därmed elektroner) atomen har.",
+    },
+    {
+      id: "periodiska9-1h",
+      type: "open",
+      text: "Vad menas med isotoper? Hur betecknar man olika isotoper av helium?",
+      modelAnswer:
+        "Isotoper är varianter av ett grundämne med samma antal protoner men olika antal neutroner. Olika " +
+        "heliumisotoper betecknas genom att skriva masstalet (t.ex. 3 eller 4) snett ovanför He, alltså 3He och 4He.",
+    },
+    {
+      id: "periodiska9-1i",
+      type: "open",
+      text: "Vilken uppgift har neutronerna i atomkärnan?",
+      modelAnswer:
+        "Neutronerna fungerar som ett \"klister\" som neutraliserar de positiva protonerna så att de inte stöter " +
+        "bort varandra.",
+    },
+
+    // ── Elektronskal ──
+    {
+      id: "periodiska9-2a",
+      type: "open",
+      text: "Vad menas med elektronskal, valensskal och valenselektroner?",
+      modelAnswer:
+        "Elektronskal är banorna där elektronerna rör sig. Valensskalet är det yttersta skalet och " +
+        "valenselektroner är elektronerna som finns där.",
+    },
+    {
+      id: "periodiska9-2b",
+      type: "open",
+      text: "Vad heter de tre första elektronskalen?",
+      modelAnswer: "De tre första skalen heter K, L och M.",
+    },
+    {
+      // ANPASSAD: originalet ber eleven rita elektronkonfiguration (uppgift U2). Det går inte att rita i
+      // appen, så frågan är omformulerad till text. Facit nedan är skrivet av Claude, inte hämtat ur ditt underlag.
+      id: "periodiska9-2c",
+      type: "open",
+      text:
+        "Ange elektronkonfigurationen (antal elektroner i skalen K, L och M) för kol (atomnummer 6), " +
+        "syre (atomnummer 8) och natrium (atomnummer 11).",
+      modelAnswer:
+        "Kol: 2 elektroner i K-skalet och 4 i L-skalet (2, 4). Syre: 2 i K och 6 i L (2, 6). " +
+        "Natrium: 2 i K, 8 i L och 1 i M (2, 8, 1). Elektronerna fyller skalen inifrån och ut: K rymmer högst 2 " +
+        "och L högst 8.",
+    },
+
+    // ── Periodiska systemet ──
+    {
+      id: "periodiska9-3a",
+      type: "open",
+      text: "Vem upptäckte det periodiska systemet?",
+      modelAnswer: "Den ryske kemisten Mendelejev.",
+    },
+    {
+      id: "periodiska9-3b",
+      type: "open",
+      text: "Vad kallas de vågräta och de lodräta raderna i systemet?",
+      modelAnswer: "Vågräta rader kallas perioder och lodräta kolumner kallas grupper.",
+    },
+    {
+      id: "periodiska9-3c",
+      type: "open",
+      text: "Förklara varför ämnen som är i samma grupp har liknande egenskaper.",
+      modelAnswer: "De har lika många valenselektroner, vilket ger dem liknande kemiska egenskaper.",
+    },
+    {
+      id: "periodiska9-3d",
+      type: "open",
+      text: "Vad har atomslagen i en period gemensamt?",
+      modelAnswer: "De har lika många elektronskal.",
+    },
+    {
+      id: "periodiska9-3e",
+      type: "open",
+      text: "Ge tre exempel på ädelgaser och vad som är specifikt för atomer i den gruppen.",
+      modelAnswer:
+        "Exempel: helium, neon och argon. De har fulla elektronskal, vilket gör dem stabila och oreaktiva.",
+    },
+    {
+      id: "periodiska9-3f",
+      type: "open",
+      text: "Förklara varför man sällan hittar alkalimetaller i metallform ute i naturen.",
+      modelAnswer:
+        "De är mycket reaktiva och vill gärna lämna ifrån sig sin enda valenselektron för att få fullt skal; " +
+        "därför finns de oftast bara som joner i föreningar.",
+    },
+    {
+      id: "periodiska9-3g",
+      type: "open",
+      text: "Förklara med en kemisk reaktionsformel hur litium reagerar med vatten. Vilka ämnen bildas?",
+      modelAnswer:
+        "Reaktionen behöver inte vara balanserad, så man kan bortse från tvåorna framför de kemiska " +
+        "beteckningarna: Li + H2O -> Li+ + OH- + H2. Balanserad: 2Li + 2H2O -> 2Li+ + 2OH- + H2. " +
+        "Det bildas litiumjoner (Li+), hydroxidjoner (OH-) och vätgas (H2). " +
+        "Med ord: litium + vatten -> litiumjoner + hydroxidjoner + vätgas.",
+    },
+
+    // ── Kemisk bindning ──
+    {
+      id: "periodiska9-4a",
+      type: "open",
+      text: "Vad är en jon?",
+      modelAnswer:
+        "En jon är en atom som har lämnat ifrån sig eller tagit upp elektroner så att den blivit elektriskt laddad.",
+    },
+    {
+      // ANPASSAD: originalet ber eleven rita (CH4, H2O eller H2). Det går inte i appen, så eleven ska förklara i text.
+      id: "periodiska9-4b",
+      type: "open",
+      text: "Hur fungerar en molekylbindning? Förklara med hjälp av något av exemplen CH4, H2O eller H2.",
+      modelAnswer: "Atomer delar på elektronpar så att båda atomerna får fulla skal.",
+    },
+    {
+      id: "periodiska9-4c",
+      type: "open",
+      text:
+        "I en syremolekyl (O2) hålls syreatomerna ihop av en dubbelbindning. Förklara vad det betyder och varför " +
+        "atomerna är ”nöjda” då.",
+      modelAnswer:
+        "Det betyder att atomerna delar på två elektronpar. De blir nöjda för att de då får fulla yttersta skal.",
+    },
+    {
+      id: "periodiska9-4d",
+      type: "open",
+      text: "Förklara hur kol och väte håller samman i en metanmolekyl.",
+      modelAnswer: "Kolatomen delar sina fyra valenselektroner med fyra väteatomer i gemensamma elektronpar.",
+    },
+    {
+      // Originalet saknade facit (troligen en ritfråga). Facit nedan är skrivet av Claude utifrån facit till
+      // föregående fråga och standardkemi (metan CH4) – justera gärna efter hur du vill att eleverna svarar.
+      id: "periodiska9-4e",
+      type: "open",
+      text: "Beskriv metanmolekylen med hjälp av molekylbindningar.",
+      modelAnswer:
+        "Metan (CH4) består av en kolatom och fyra väteatomer. Kolatomen delar ett elektronpar med varje " +
+        "väteatom, alltså fyra enkelbindningar. Då får kol 8 elektroner i sitt yttersta skal och varje väte 2, " +
+        "så alla atomerna får fulla skal.",
+    },
+    {
+      id: "periodiska9-4f",
+      type: "open",
+      text: "Hur fungerar metallbindning?",
+      modelAnswer:
+        "Atomerna ligger inbäddade i ett gemensamt moln av fria elektroner som håller ihop hela metallbiten.",
+    },
+    {
+      id: "periodiska9-4g",
+      type: "open",
+      text:
+        "En järnatom kan lämna bort tre elektroner. Hur skriver man med kemiskt tecken den järnjon som bildas?",
+      modelAnswer: "Fe3+ (Fe med 3+ som upphöjd text).",
+    },
+    {
+      id: "periodiska9-4h",
+      type: "open",
+      text: "Vilka ämnen bildar lättast positiva joner och vilka ämnen bildar lättast negativa joner?",
+      modelAnswer:
+        "Metaller bildar lättast positiva joner, medan icke-metaller lättast bildar negativa joner.",
+    },
+  ],
+
+  // ── Prov ──────────────────────────────────────────────────────────
+  // Biologi åk 7 och åk 9: inga frågor inlagda ännu. Korten i index.html visar
+  // "Kommer snart" tills listan fylls på (samma frågeformat som biologi8 nedan).
+  biologi7: [],
+  biologi9: [],
+
   // Övningsprov åk 8.
   // Del A: 12 kryssfrågor (type "multi") – kryssa i ALLA rätta påståenden. 1 p per fråga om alla
   //        påståenden bedöms rätt. "correct" = lista med rätta bokstäver, "expl" = "Varför" ur facit.
