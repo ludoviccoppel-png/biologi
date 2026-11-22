@@ -543,14 +543,20 @@ const LAX_DATA = {
       "id": "evolution-k5",
       "type": "multi",
       "halfCredit": true,
-      "text": "Björkmätaren är en fjäril som sitter stilla på trädstammar under dagen. Förr var nästan alla björkmätare i England ljusa, och de syntes dåligt mot de ljusa björkstammarna. När fabrikerna började släppa ut mycket sot blev stammarna svarta. Efter några decennier var de flesta björkmätarna i området mörka. Kryssa i alla påståenden som är rätta.",
+      "text": "Bevis för evolution: Kryssa i alla påståenden som är rätta.",
       "opts": {
-        "A": "De ljusa fjärilarna syntes dåligt för fåglar när stammarna var ljusa.",
-        "B": "När stammarna blev svarta av sot överlevde de mörka fjärilarna oftare.",
-        "C": "De ljusa fjärilarna blev mörka när de satt på sotiga stammar.",
-        "D": "När luften blev renare igen kunde de ljusa fjärilarna bli vanligare igen.",
-        "E": "Mörka björkmätare kunde inte finnas alls innan fabrikerna började släppa ut sot."
+        "A": "Fossil visar hur arter har förändrats under lång tid.",
+        "B": "Likheter i DNA mellan arter tyder på att de har en gemensam förfader.",
+        "C": "Fossil finns bara av arter som lever idag.",
+        "D": "Antibiotikaresistens hos bakterier är ett exempel på evolution som vi kan se hända.",
+        "E": "Ju fler likheter i DNA två arter har, desto längre tillbaka delade de förfader."
       },
+      "correct": [
+        "A",
+        "B",
+        "D"
+      ]
+    },
       "correct": [
         "A",
         "B",
