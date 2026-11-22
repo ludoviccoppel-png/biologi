@@ -151,12 +151,12 @@ function drawOx(){
   const t=mkSvg("text",{x:cx,y:36,"text-anchor":"middle","font-size":15,fill:"#dde4f0"},ox.done?nameAcid(ox.n):nameAlc(ox.n));s.appendChild(t);
   const ctl=$("ctl");ctl.innerHTML="";
   if(ox.done){
-    setMsg(`<b>${nameAlc(ox.n)} → ${nameAcid(ox.n)}</b><br>Oxidation: alkoholens C–OH-kol har förlorat två väten och fått en dubbelbunden syreatom (=O). Gruppen –CH₂OH har blivit <b>–COOH</b>, karboxylgruppen.<br><br><b>${nameAlc(ox.n)} + 2 [O] → ${nameAcid(ox.n)} + vatten</b><br>${formula(al)} + 2 [O] → ${formula(acid(ox.n))} + H₂O`,"good");
+    setMsg(`<b>${nameAlc(ox.n)} → ${nameAcid(ox.n)}</b><br>Oxidation: alkoholen reagerar med syre (O₂). Kolet vid –OH förlorar två väten och får en dubbelbunden syreatom (=O). Gruppen –CH₂OH har blivit <b>–COOH</b>, karboxylgruppen. De två väteatomerna och en syreatom bildar vatten.<br><br><b>${nameAlc(ox.n)} + O₂ → ${nameAcid(ox.n)} + vatten</b><br>${formula(al)} + O₂ → ${formula(acid(ox.n))} + H₂O`,"good");
     ctl.appendChild(btn("Börja om",()=>{ox.removed=new Set();ox.done=false;drawOx()}));return}
   const k=ox.removed.size;
   ctl.appendChild(lab("Steg"));
   if(k<2)setMsg(`<b>Steg ${k+1}:</b> Klicka på en av de två väteatomerna på kolet som sitter bredvid –OH (de är markerade för klick). Vid oxidation lämnar de molekylen.`+(k===1?"<br>En kvar!":""));
-  else setMsg("<b>Steg 3:</b> Kolet har nu två lediga bindningar. Det binder in ett syre med dubbelbindning (=O).");
+  else setMsg("<b>Steg 3:</b> Kolet har nu två lediga bindningar. Syret från O₂ binder in med en dubbelbindning (=O).");
   ctl.appendChild(btn("Sätt dit syre (=O)",()=>{ox.done=true;drawOx()},k<2?"":"primary")).disabled=k<2;
   ctl.appendChild(btn("Börja om",()=>{ox.removed=new Set();drawOx()})).style.marginLeft="6px";
 }
