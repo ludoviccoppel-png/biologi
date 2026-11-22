@@ -568,23 +568,24 @@ const Lax = (() => {
       const good = done ? ok[cs.key] : null;
       const col = good === null ? "#5ab0e8" : good ? "#5ecfa0" : "#e85a5a";
       svg.appendChild(mk("text", { x: cs.x, y: 18, "text-anchor": "middle", "font-size": 12, fill: "#dde4f0" }, cs.cap));
+      svg.appendChild(mk("circle", { cx: cs.x, cy: cs.y, r: 20, fill: "#e8d34a", stroke: "#0b0f1a", "stroke-width": 2 }));
       ["up", "down"].forEach(dir => {
         const a = st[dir];
         if (!a) return;
         const len = arrowLen(a.k), sgn = dir === "up" ? -1 : 1;
         const y2 = cs.y + sgn * len;
         const g = mk("g", { style: done ? "" : "cursor:pointer" });
-        g.appendChild(mk("line", { x1: cs.x, y1: cs.y, x2: cs.x, y2: y2 - sgn * 8, stroke: col, "stroke-width": 4 }));
+        const y0 = dir === "up" ? cs.y - 20 : cs.y;
+        g.appendChild(mk("line", { x1: cs.x, y1: y0, x2: cs.x, y2: y2 - sgn * 8, stroke: col, "stroke-width": 4 }));
         g.appendChild(mk("polygon", { points: `${cs.x},${y2} ${cs.x - 8},${y2 - sgn * 14} ${cs.x + 8},${y2 - sgn * 14}`, fill: col }));
-        g.appendChild(mk("line", { x1: cs.x, y1: cs.y, x2: cs.x, y2, stroke: "transparent", "stroke-width": 22 }));
+        g.appendChild(mk("line", { x1: cs.x, y1: y0, x2: cs.x, y2, stroke: "transparent", "stroke-width": 22 }));
         const title = mk("title", {}, done ? "" : "Klicka för att ta bort pilen");
         g.appendChild(title);
         if (a.label) g.appendChild(mk("text", { x: cs.x + 14, y: y2 - sgn * 8 + 4, "font-size": 11, fill: col }, FORCE_NAMES[a.label].split(" (")[0]));
         if (!done) g.addEventListener("click", () => { st[dir] = null; renderView(view); });
         svg.appendChild(g);
       });
-      const lamp = mk("circle", { cx: cs.x, cy: cs.y, r: 20, fill: "#e8d34a", stroke: "#0b0f1a", "stroke-width": 2 });
-      svg.appendChild(lamp);
+      svg.appendChild(mk("circle", { cx: cs.x, cy: cs.y, r: 3.5, fill: "#0b0f1a" }));
       if (!done) {
         const hit = mk("circle", { cx: cs.x, cy: cs.y, r: 28, fill: "transparent", style: "cursor:ns-resize", "pointer-events": "all" });
         hit.addEventListener("pointerdown", ev => startForceDrag(ev, r, cs, svg, hit));
