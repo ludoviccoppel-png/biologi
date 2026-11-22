@@ -565,13 +565,6 @@ const LAX_DATA = {
       "modelAnswer": "1 p: Det finns variation i pälsfärg, och den uppstår bland annat genom mutationer. 1 p: Ljusa harar syntes sämre i snön och togs mer sällan av rovdjur (naturligt urval). 1 p: De överlevde, fick fler ungar och förde generna vidare. Efter många generationer blev arten anpassad med vit vinterpäls. 1 p: Om snön kommer senare syns de vita hararna på den bruna marken och blir lättare byten. Arten kan minska, eller så gynnas harar som byter päls senare, om den variationen finns."
     },
     {
-      "id": "evolution-2",
-      "type": "open",
-      "points": 4,
-      "text": "Björkmätaren är en fjäril som sitter stilla på trädstammar under dagen. Förr var nästan alla björkmätare i England ljusa, och de syntes dåligt mot de ljusa björkstammarna. När fabrikerna började släppa ut mycket sot blev stammarna svarta. Efter några decennier var de flesta björkmätarna i området mörka. Förklara hur det kan ha gått till att björkmätarna blev mörka. Använd begreppen variation, mutation, naturligt urval och arv. Beskriv också vad du tror hände när luften blev renare igen och stammarna blev ljusa.",
-      "modelAnswer": "1 p: Det fanns variation i färg bland björkmätarna. Mörka individer kan ha uppstått genom en mutation. 1 p: På svarta stammar syntes de ljusa fjärilarna och blev lättare uppätna av fåglar, medan de mörka klarade sig bättre (naturligt urval). 1 p: De mörka överlevde, fick fler ungar och förde anlaget för mörk färg vidare (arv). Efter många generationer var de flesta mörka. 1 p: När stammarna blev ljusa igen syntes de mörka bäst, så de ljusa gynnades och blev vanligare igen."
-    },
-    {
       "id": "evolution-3",
       "type": "open",
       "points": 3,
