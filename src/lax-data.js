@@ -1006,6 +1006,39 @@ const LAX_DATA = {
       modelAnswer:
         "1 p: Astronauten utövar en kraft på verktyget så att det accelererar framåt. 1 p: Enligt kraft och motkraft (Newtons 3:e lag) utövar verktyget en lika stor kraft på astronauten, men åt motsatt håll. Astronauten åker därför baklänges, bort från rymdskeppet. 1 p: Astronautens massa är större än verktygets, så astronautens fart blir lägre än verktygets.",
     },
+    // Fyra egna frågor om centralrörelse och fritt fall (facit skrivet av Claude, ej från häftet).
+    {
+      id: "kraft7-c1",
+      type: "open",
+      points: 2,
+      text: "En släggkastare snurrar släggan i en cirkel och släpper sedan vajern. Åt vilket håll far släggan iväg, och varför?",
+      modelAnswer:
+        "1 p: Släggan far rakt fram i en rak linje, i tangentens riktning (inte utåt från mitten), åt det håll den rörde sig i just det ögonblicket. 1 p: Förklaring: Tröghet. Ett föremål fortsätter med samma fart och riktning om ingen kraft ändrar det. Så länge vajern höll i drog den släggan inåt (centripetalkraft) och böjde banan, och när vajern släpps finns ingen sådan kraft kvar.",
+    },
+    {
+      id: "kraft7-c2",
+      type: "open",
+      points: 2,
+      text: "I en karusell känns det som att du trycks utåt. Förklara varför det känns så. Är centrifugalkraften en riktig kraft?",
+      modelAnswer:
+        "1 p: Kroppen vill fortsätta rakt fram på grund av tröghet, men karusellen tvingar den att svänga hela tiden. Det är därför det känns som att något trycker dig utåt. 1 p: Centrifugalkraften är ingen riktig kraft utan en skenkraft, en effekt av tröghet. Den enda riktiga kraften i centralrörelsen är centripetalkraften, som är riktad inåt mot mitten.",
+    },
+    {
+      id: "kraft7-c3",
+      type: "open",
+      points: 2,
+      text: "En sten faller fritt (räkna med g = 10 m/s², bortse från luftmotståndet). Vilken fart har stenen efter 3 sekunder, och hur långt har den fallit då?",
+      modelAnswer:
+        "1 p: Farten ökar med 10 m/s varje sekund, så efter 3 s är farten 10 m/s · 3 = 30 m/s. 1 p: Medelfarten är (0 + 30) / 2 = 15 m/s, och sträckan är 15 m/s · 3 s = 45 m. (Samma resultat med sträcka = 5 · t² = 5 · 9 = 45 m.)",
+    },
+    {
+      id: "kraft7-c4",
+      type: "open",
+      points: 3,
+      text: "Ett klot av papper och ett klot av järn har exakt samma form och storlek och släpps samtidigt i luft. Vilket når marken först, och varför? Vad händer om försöket görs i vakuum?",
+      modelAnswer:
+        "1 p: Järnklotet når marken först. 1 p: Luftmotståndet är ungefär lika stort på båda eftersom formen är lika, men tyngdkraften på pappersklotet är mycket mindre, så luftmotståndet bromsar pappersklotet mycket mer. Järnklotet har så stor tyngdkraft att luftmotståndet knappt märks. 1 p: I vakuum finns inget luftmotstånd, så båda faller lika snabbt (bara tyngdkraften verkar, samma tyngdacceleration) och landar samtidigt.",
+    },
   ],
 
   // ── Prov Biologi åk 7 – Ekologi och evolution (29 p) ──
