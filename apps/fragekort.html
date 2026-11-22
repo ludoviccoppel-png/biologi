@@ -4,93 +4,226 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Frågekort</title>
-<link rel="stylesheet" href="kemi.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.card-wrap{perspective:1200px;max-width:720px;margin:0 auto}
-.fcard{position:relative;min-height:260px;cursor:pointer;transition:transform .45s;transform-style:preserve-3d}
-.fcard.flip{transform:rotateY(180deg)}
-.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 22px 36px;display:flex;flex-direction:column;justify-content:center;overflow:auto}
-.face.back{transform:rotateY(180deg);border-color:rgba(94,207,160,.5)}
-.face .tag{position:absolute;top:10px;left:14px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.face .hintline{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:11px;color:var(--muted)}
-.face .txt{font-size:16px;line-height:1.6}
-.face ul{margin:8px 0 0 18px;font-size:14px}
-.face li{margin:3px 0}
-.bar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:14px 0}
-.count{text-align:center;color:var(--muted);font-size:12px}
-.sm{max-width:720px;margin:0 auto 10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+:root{--bg:#f5f6fa;--card:#fff;--ink:#2a2d45;--mut:#6b7090;--line:#dcdce8;--accent:#4f5bef;--good:#1f9d6b;--bad:#d64545}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Figtree,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);padding:28px 38px 40px;line-height:1.5}
+.wrap{max-width:1040px}
+.eyebrow{font-size:14px;font-weight:600;color:var(--mut)}
+h1{font-size:40px;line-height:1.15;font-weight:700;margin:4px 0 6px;letter-spacing:-.01em}
+.count{font-size:15px;color:var(--mut);margin-bottom:22px}
+.pills{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.pill{display:inline-flex;align-items:center;gap:9px;font:inherit;font-size:16px;font-weight:600;color:var(--ink);background:#fff;border:2px solid var(--line);border-radius:999px;padding:9px 20px;cursor:pointer}
+.pill:hover{border-color:#b9bbd4}
+.pill[aria-pressed=true]{border-color:var(--accent);color:var(--accent)}
+.pill svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.topics .pill{font-size:14px;padding:6px 14px}
+.bar{height:5px;background:var(--line);border-radius:3px;margin-bottom:20px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:3px;transition:width .25s}
+.scene{perspective:1600px}
+.flipper{display:grid;transform-style:preserve-3d;transition:transform .5s;cursor:pointer;outline:none}
+.flipper.flip{transform:rotateY(180deg)}
+.face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--card);border-radius:24px;box-shadow:0 10px 40px rgba(60,66,110,.10);padding:26px 32px 30px;min-height:420px;display:flex;flex-direction:column}
+.face.back{transform:rotateY(180deg)}
+.fhead{display:flex;justify-content:space-between;font-size:14px;font-weight:600;color:var(--mut)}
+.fhead span:last-child{font-weight:500;color:#8a8fae}
+.fbody{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;padding:14px 8px 0}
+.q{font-size:30px;font-weight:600;line-height:1.35;max-width:760px}
+.ans{font-size:21px;line-height:1.6;max-width:720px}
+.q.long,.ans.long{font-size:21px}
+.opts{list-style:none;text-align:left;font-size:19px;max-width:700px;display:grid;gap:8px;margin-top:6px}
+.opts li{background:#f5f6fa;border-radius:12px;padding:9px 14px}
+.opts li.ok{background:#e1f5ec;color:#136a47;font-weight:600}
+.fig svg{display:block;margin:0 auto}
+.foot{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;margin-top:22px}
+.foot .hint{font-size:14px;color:var(--mut)}
+.nav{display:flex;align-items:center;gap:22px}
+.nav .n{font-size:20px;font-weight:700;min-width:70px;text-align:center}
+.round{width:62px;height:62px;border-radius:50%;background:#fff;border:2px solid var(--line);display:grid;place-items:center;cursor:pointer}
+.round:hover{border-color:#b9bbd4}
+.round svg{width:26px;height:26px;stroke:var(--ink);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.rst{justify-self:end;width:44px;height:44px;border:none;background:none;cursor:pointer;display:grid;place-items:center}
+.rst svg{width:24px;height:24px;stroke:var(--mut);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.track{display:none;justify-content:center;gap:12px;margin-top:16px}
+.track.on{display:flex}
+.track .pill.good{border-color:#a8dcc6;color:var(--good)}
+.track .pill.bad{border-color:#f0b5b5;color:var(--bad)}
+.track .pill.sel{background:#f5f6fa}
+@media(max-width:640px){body{padding:18px 14px 30px}h1{font-size:28px}.pill{font-size:14px;padding:7px 14px}.q{font-size:23px}.ans{font-size:18px}.face{padding:18px 16px 22px;min-height:360px}.foot{grid-template-columns:1fr}.foot .hint,.rst{display:none}.nav{justify-content:center}}
 </style>
 </head>
 <body>
-<div class="app">
+<div class="wrap">
+  <div class="eyebrow" id="eyebrow"></div>
   <h1 id="title">Frågekort</h1>
-  <p class="lead">Klicka på kortet för att vända det och se svaret. Markera om du kunde det eller behöver öva mer.</p>
-  <div id="tabs" class="tabs"></div>
-  <div class="sm"><span class="count" id="count"></span><span><button id="shuf">Blanda</button> <button id="onlyMore">Visa bara "öva mer"</button></span></div>
-  <div class="card-wrap"><div class="fcard" id="card" tabindex="0" role="button" aria-label="Vänd kortet">
-    <div class="face front"><span class="tag">Fråga</span><div class="txt" id="front"></div><span class="hintline">klicka för att vända</span></div>
-    <div class="face back"><span class="tag">Svar</span><div class="txt" id="back"></div></div>
+  <div class="count" id="count"></div>
+  <div class="pills topics" id="topics" style="display:none"></div>
+  <div class="pills">
+    <button class="pill" id="bTrack" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Spåra framsteg</button>
+    <button class="pill" id="bShuf" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M3 6h3c4 0 6 12 10 12h5M3 18h3c1.6 0 2.8-1.2 3.800-3M13.500 9C14.500 7.500 15.400 6 17 6h4M18 3l3 3-3 3M18 15l3 3-3 3"/></svg>Blanda</button>
+    <button class="pill" id="bSwap" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M4 8h15M15 4l4 4-4 4M20 16H5M9 12l-4 4 4 4"/></svg>Svaret först</button>
+  </div>
+  <div class="bar"><i id="prog"></i></div>
+  <div class="scene"><div class="flipper" id="card" tabindex="0" role="button" aria-label="Vänd kortet">
+    <div class="face front"><div class="fhead"><span id="lf">Fråga</span><span>Klicka för att vända</span></div><div class="fbody" id="front"></div></div>
+    <div class="face back"><div class="fhead"><span id="lb">Svar</span><span>Klicka för att vända</span></div><div class="fbody" id="back"></div></div>
   </div></div>
-  <div class="bar">
-    <button id="prev">← Föregående</button>
-    <button id="more" class="bad">Öva mer</button>
-    <button id="known" class="good">Kunde det</button>
-    <button id="next">Nästa →</button>
+  <div class="track" id="track">
+    <button class="pill bad" id="bMore">Öva mer</button>
+    <button class="pill good" id="bKnown">Kunde det</button>
+  </div>
+  <div class="foot">
+    <div class="hint">Mellanslag vänder · ← → bläddrar</div>
+    <div class="nav">
+      <button class="round" id="prev" aria-label="Föregående"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+      <div class="n" id="pos"></div>
+      <button class="round" id="next" aria-label="Nästa"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+    <button class="rst" id="reset" aria-label="Börja om" title="Börja om"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.600-5.900M4 4v4.500h4.500"/></svg></button>
   </div>
 </div>
 <script src="../src/lax-data.js"></script>
 <script>
-const TITLES={biologi7:"Biologi åk 7",biologi8:"Biologi åk 8",biologi9:"Biologi åk 9",evolution7:"Evolution åk 7",ekologi7:"Ekologi åk 7",manniska8:"Människokroppen åk 8",genetik:"Genetik åk 9",periodiska9:"Periodiska systemet åk 9",kraft7:"Kraft och rörelse åk 7"};
+const TITLES={biologi7:"Biologi åk 7",biologi8:"Biologi åk 8",biologi9:"Biologi åk 9",evolution7:"Evolution åk 7",ekologi7:"Ekologi åk 7",manniska8:"Människokroppen åk 8",genetik:"Genetik åk 9",periodiska9:"Periodiska systemet och kemisk bindning",kraft7:"Kraft och rörelse åk 7"};
+const SUBJ={periodiska9:"Kemi",kraft7:"Fysik"};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
-let topic,deck=[],i=0,mark={},only=false,all=[];
-function backHtml(q){
+
+/* ───────── Figurer (SVG) ───────── */
+const C={p:"#dc4a4a",n:"#5b6078",e:"#3b9ae1",v:"#f5c518",ring:"#dcdce8",ink:"#2a2d45",mut:"#6b7090"};
+const svg=(w,h,s)=>`<svg viewBox="0 0 ${w} ${h}" width="${w}" role="img" style="max-width:100%;height:auto;font-family:inherit"><defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1L9 5L1 9z" fill="${C.mut}"/></marker></defs>${s}</svg>`;
+const tx=(x,y,t,o={})=>`<text x="${x}" y="${y}" font-size="${o.s||14}" font-weight="${o.w||600}" fill="${o.c||C.ink}" text-anchor="${o.a||"start"}">${t}</text>`;
+const dot=(x,y,r,f,st="")=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${f}" ${st}/>`;
+const ln=(x1,y1,x2,y2,o={})=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${o.c||C.mut}" stroke-width="${o.w||1.3}" ${o.d?`stroke-dasharray="${o.d}"`:""} ${o.m?'marker-end="url(#ar)"':""}/>`;
+const pol=(cx,cy,r,deg)=>[cx+r*Math.cos(deg*Math.PI/180),cy+r*Math.sin(deg*Math.PI/180)];
+function atom(cx,cy,z,sh,o={}){
+  const base=o.base??30,dr=o.dr??22,er=o.er??3.8,nr=o.nr??14;let s="";
+  sh.forEach((n,i)=>{s+=dot(cx,cy,base+i*dr,"none",`stroke="${C.ring}" stroke-width="1.6"`)});
+  s+=dot(cx,cy,nr,C.p)+(z===null?"":tx(cx,cy+nr*.32,z+"+",{s:nr*.8,c:"#fff",a:"middle",w:700}));
+  sh.forEach((n,i)=>{for(let k=0;k<n;k++){const [x,y]=pol(cx,cy,base+i*dr,-90+360*k/n);
+    s+=dot(x,y,er,(o.val&&i===sh.length-1)?C.v:C.e,(o.val&&i===sh.length-1)?`stroke="#c79a00" stroke-width=".8"`:"")}});
+  return s;
+}
+const outer=(sh,o={})=>(o.base??30)+(sh.length-1)*(o.dr??22);
+const nuc=(x,y,t)=>t==="p"?dot(x,y,8,C.p)+tx(x,y+4,"+",{s:12,c:"#fff",a:"middle",w:700}):dot(x,y,8,C.n);
+const leg=(x,y,t,k)=>(k==="e"?dot(x,y,9,C.e)+tx(x,y+4.500,"−",{s:13,c:"#fff",a:"middle",w:700}):nuc(x,y,k).replace(/r="8"/,'r="9"'))+tx(x+20,y+5,t,{s:16,w:700});
+const NM=["K","L","M","N"];
+function lead(x1,y1,x2,y2,t,c){return ln(x1,y1,x2,y2,{d:"3 3",c:"#555"})+tx(x2+8,y2+5,t,{s:16,w:700,c})}
+function cfgFig(sym,z,sh){
+  const o={base:28,dr:22,val:true};const R=outer(sh,o);let s=atom(130,105,z,sh,o);
+  sh.forEach((n,i)=>{s+=tx(270,70+i*28,`${NM[i]}-skalet: ${n} elektroner`,{s:16,w:600})});
+  s+=dot(276,70+sh.length*28+22,6,C.v)+tx(290,70+sh.length*28+28,`valenselektroner: ${sh[sh.length-1]}`,{s:16,w:700});
+  return svg(500,210,s+tx(130,200,sym,{s:15,a:"middle",c:C.mut}));
+}
+function ionRows(rows){let s="",h=0;
+  rows.forEach(r=>{const y=h+60,o={base:16,dr:13,er:3,nr:10};
+    s+=atom(80,y,r.z,r.a,{...o,val:true})+tx(80,y+62,r.sym,{a:"middle",s:15,c:C.mut});
+    s+=ln(150,y,250,y,{m:1,w:2})+tx(200,y-12,r.t,{a:"middle",s:15});
+    s+=atom(330,y,r.z,r.b,o)+tx(330,y+62,r.sym+r.ch+" (jon)",{a:"middle",s:15,c:C.mut})+tx(392,y-18,r.sym+r.ch,{s:24,w:700});h+=130});
+  return svg(470,h,s)}
+function table(fillFn,w,h,extra){let s="";const cs=20,g=2,x0=20,y0=30;
+  for(let p=1;p<=7;p++)for(let gr=1;gr<=18;gr++){
+    const ok=p===1?(gr===1||gr===18):p<=3?(gr<=2||gr>=13):true;if(!ok)continue;
+    s+=`<rect x="${x0+(gr-1)*(cs+g)}" y="${y0+(p-1)*(cs+g)}" width="${cs}" height="${cs}" rx="4" fill="${fillFn(p,gr)}"/>`}
+  return svg(w,h,s+extra)}
+function mol(atoms,bonds,lone,cap,w=460,h=190){
+  let s="";bonds.forEach(([i,j])=>{s+=ln(atoms[i].x,atoms[i].y,atoms[j].x,atoms[j].y,{c:C.ring,w:5})});
+  atoms.forEach(a=>{const r=a.s==="H"?16:20,f=a.s==="H"?"#e8eaf4":a.s==="C"?C.n:C.p;
+    s+=dot(a.x,a.y,r,f,a.s==="H"?`stroke="${C.ring}"`:"")+tx(a.x,a.y+5,a.s,{a:"middle",s:15,w:700,c:a.s==="H"?C.ink:"#fff"})});
+  const pair=(x,y,dx,dy)=>dot(x+dx,y+dy,3.2,C.e)+dot(x-dx,y-dy,3.2,C.e);
+  bonds.forEach(([i,j,n])=>{const a=atoms[i],b=atoms[j],mx=(a.x+b.x)/2,my=(a.y+b.y)/2,L=Math.hypot(b.x-a.x,b.y-a.y),dx=(b.x-a.x)/L,dy=(b.y-a.y)/L,px=-dy,py=dx;
+    for(let k=0;k<n;k++){const off=(k-(n-1)/2)*15;s+=pair(mx+px*off,my+py*off,dx*4.5,dy*4.5)}});
+  (lone||[]).forEach(([i,degs])=>degs.forEach(d=>{const a=atoms[i],[x,y]=pol(a.x,a.y,31,d),t=d*Math.PI/180;s+=pair(x,y,-Math.sin(t)*4.5,Math.cos(t)*4.5)}));
+  return svg(w,h,s+tx(w/2,h-10,cap,{a:"middle",s:15,c:C.mut}))}
+const CH4=()=>mol([{s:"C",x:230,y:90},{s:"H",x:230,y:28},{s:"H",x:230,y:152},{s:"H",x:158,y:90},{s:"H",x:302,y:90}],[[0,1,1],[0,2,1],[0,3,1],[0,4,1]],0,"4 delade elektronpar → fyra enkelbindningar",460,200);
+const FIG={
+ "periodiska9-1a":()=>svg(470,200,dot(100,95,54,"none",`stroke="${C.ring}" stroke-width="2"`)+nuc(90,86,"p")+nuc(108,86,"n")+nuc(90,104,"n")+nuc(108,104,"p")+dot(62,57,9,C.e)+tx(62,61.500,"−",{s:13,c:"#fff",a:"middle",w:700})+dot(138,133,9,C.e)+tx(138,137.500,"−",{s:13,c:"#fff",a:"middle",w:700})+tx(100,180,"kärna i mitten, elektroner i skal",{s:13,a:"middle",c:C.mut,w:500})+leg(235,60,"Proton (+)","p")+leg(235,95,"Neutron (0)","n")+leg(235,130,"Elektron (−)","e")),
+ "periodiska9-1b":()=>{let s="";[[80,1,[1],"Väte"],[230,2,[2],"Helium"],[380,3,[2,1],"Litium"]].forEach(([x,z,sh,nm])=>{s+=atom(x,70,z,sh,{base:26,dr:16,nr:12,er:3.4})+tx(x,148,nm,{a:"middle",s:16})+tx(x,168,z+(z===1?" proton":" protoner"),{a:"middle",s:14,c:C.mut})});return svg(460,185,s)},
+ "periodiska9-4a":()=>ionRows([{z:11,sym:"Na",a:[2,8,1],b:[2,8],ch:"⁺",t:"− 1 elektron"},{z:17,sym:"Cl",a:[2,8,7],b:[2,8,8],ch:"⁻",t:"+ 1 elektron"}]),
+ "periodiska9-1d":()=>svg(470,200,atom(110,100,3,[2,1],{base:28,dr:22})+tx(240,80,"3 protoner (+)",{s:17})+tx(240,110,"3 elektroner (−)",{s:17})+ln(240,122,400,122,{c:C.ring,w:2})+tx(240,148,"laddning 0",{s:17,c:C.mut})),
+ "periodiska9-1e":()=>{const [ex,ey]=[120,45];return svg(470,200,atom(120,100,2,[2],{base:55,er:5})+ln(ex+10,ey,ex+75,ey,{m:1,w:2})+tx(ex+82,ey+5,"hög hastighet",{s:15})+ln(ex,ey+9,ex,82,{m:1,d:"4 3",w:2})+tx(ex+12,72,"elektrisk kraft",{s:15}))},
+ "periodiska9-1f":()=>{let s=atom(100,100,3,[2,1],{base:28,dr:22})+tx(100,28,"Atom",{a:"middle",s:17})+tx(100,190,"elektrisk kraft",{a:"middle",s:15,c:C.mut});
+   s+=dot(350,100,15,C.v)+dot(350,100,32,"none",`stroke="${C.ring}" stroke-width="1.6"`)+dot(350,100,56,"none",`stroke="${C.ring}" stroke-width="1.6"`)+dot(382,100,5,C.e)+dot(350+56*Math.cos(2.4),100+56*Math.sin(2.4),7,"#3aa876")+tx(350,28,"Solsystem",{a:"middle",s:17})+tx(350,190,"gravitation",{a:"middle",s:15,c:C.mut});
+   return svg(470,205,s)},
+ "periodiska9-1g":()=>svg(470,170,`<rect x="30" y="25" width="104" height="116" rx="12" fill="#fff" stroke="${C.ink}" stroke-width="2"/>`+tx(42,60,"11",{s:20,w:700})+tx(82,102,"Na",{s:38,a:"middle",w:700})+tx(82,126,"natrium",{s:13,a:"middle",c:C.mut})+tx(42,44,"atomnummer",{s:10,c:C.mut,w:500})+ln(136,70,205,48,{m:1,w:2})+tx(214,52,"11 protoner (+)",{s:17})+ln(136,100,205,122,{m:1,w:2})+tx(214,128,"11 elektroner (−)",{s:17})),
+ "periodiska9-1h":()=>{const cl=(x,l)=>l.map(([dx,dy,t])=>nuc(x+dx,85+dy,t)).join("");
+   return svg(470,215,leg(120,20,"proton","p")+leg(250,20,"neutron","n")+cl(110,[[-10,-9,"p"],[10,-9,"p"],[0,9,"n"]])+cl(330,[[-10,-9,"p"],[10,-9,"p"],[-10,10,"n"],[10,10,"n"]])+tx(110,150,"³He",{a:"middle",s:26,w:700})+tx(110,172,"2 protoner, 1 neutron",{a:"middle",s:13,c:C.mut})+tx(330,150,"⁴He",{a:"middle",s:26,w:700})+tx(330,172,"2 protoner, 2 neutroner",{a:"middle",s:13,c:C.mut})+tx(220,205,"samma antal protoner, olika antal neutroner",{a:"middle",s:13,c:C.mut}))},
+ "periodiska9-1i":()=>svg(470,190,[[-17,-14,"p"],[0,-20,"n"],[17,-14,"p"],[-20,3,"n"],[20,3,"n"],[-10,18,"p"],[10,18,"n"]].map(([dx,dy,t])=>nuc(100+dx,90+dy,t)).join("")+tx(190,70,"Protoner (+) stöter bort varandra.",{s:16})+tx(190,102,"Neutroner fungerar som klister",{s:16})+tx(190,124,"som håller ihop kärnan.",{s:16})),
+ "periodiska9-2a":()=>{const sh=[2,8,1],o={base:24,dr:20,er:4.500,nr:13,val:true};let s=atom(130,100,11,sh,o);const [ax,ay]=pol(130,100,24+20,40);
+   s+=lead(130,100-64,290,36,"valenselektron")+lead(130+64,100,290,100,"valensskal (yttersta)")+lead(ax,ay,290,166,"elektronskal");return svg(520,200,s)},
+ "periodiska9-2b":()=>{const sh=[2,8,1],o={base:24,dr:20,er:4.500,nr:13};let s=atom(130,100,11,sh,o);
+   [24,44,64].forEach((R,i)=>{const [x,y]=pol(130,100,R,[-20,10,30][i]);s+=lead(x,y,290,[40,100,160][i],NM[i]+"-skalet")});return svg(480,200,s)},
+ "periodiska9-2c-kol":()=>cfgFig("kol",6,[2,4]),
+ "periodiska9-2c-syre":()=>cfgFig("syre",8,[2,6]),
+ "periodiska9-2c-natrium":()=>cfgFig("natrium",11,[2,8,1]),
+ "periodiska9-3b":()=>table((p,g)=>p===3?"#bcd3f5":g===1?"#f8dc86":"#e8eaf4",600,200,tx(20,18,"grupp 1 (lodrät kolumn)",{s:13,c:"#a07d00"})+tx(430,30+2*22+15,"← period 3 (vågrät rad)",{s:13,c:"#2f62b5"})),
+ "periodiska9-3c":()=>{let s="";[[80,3,[2,1],"Li"],[230,11,[2,8,1],"Na"],[380,19,[2,8,8,1],"K"]].forEach(([x,z,sh,n])=>{s+=atom(x,90,null,sh,{base:12,dr:11,er:3,nr:8,val:true})+tx(x,170,n,{a:"middle",s:17})});return svg(460,200,s+tx(230,192,"grupp 1: alla har 1 valenselektron (gul)",{a:"middle",s:14,c:C.mut}))},
+ "periodiska9-3d":()=>{let s="";[[80,3,[2,1],"Li"],[230,6,[2,4],"C"],[380,10,[2,8],"Ne"]].forEach(([x,z,sh,n])=>{s+=atom(x,90,null,sh,{base:18,dr:18,er:3.4,nr:9})+tx(x,170,n,{a:"middle",s:17})});return svg(460,200,s+tx(230,192,"period 2: alla har 2 elektronskal",{a:"middle",s:14,c:C.mut}))},
+ "periodiska9-3e":()=>{let s="";[[80,[2],"He"],[230,[2,8],"Ne"],[380,[2,8,8],"Ar"]].forEach(([x,sh,n])=>{s+=atom(x,90,null,sh,{base:16,dr:13,er:3.2,nr:8,val:true})+tx(x,170,n,{a:"middle",s:17})});return svg(460,200,s+tx(230,192,"fulla yttersta skal → stabila och oreaktiva",{a:"middle",s:14,c:C.mut}))},
+ "periodiska9-3f":()=>ionRows([{z:11,sym:"Na",a:[2,8,1],b:[2,8],ch:"⁺",t:"lämnar ifrån sig 1 e⁻"}]),
+ "periodiska9-4b-h2":()=>mol([{s:"H",x:160,y:80},{s:"H",x:300,y:80}],[[0,1,1]],0,"H–H: ett delat elektronpar",460,150),
+ "periodiska9-4b-h2o":()=>mol([{s:"O",x:230,y:80},{s:"H",x:165,y:140},{s:"H",x:295,y:140}],[[0,1,1],[0,2,1]],[[0,[-125,-55]]],"två delade elektronpar → två enkelbindningar",460,190),
+ "periodiska9-4b-ch4":CH4,
+ "periodiska9-4c":()=>mol([{s:"O",x:170,y:80},{s:"O",x:290,y:80}],[[0,1,2]],[[0,[-125,125]],[1,[-55,55]]],"O=O: två delade elektronpar → dubbelbindning",460,170),
+ "periodiska9-4d":CH4,"periodiska9-4e":CH4,
+ "periodiska9-4f":()=>{let s="";for(let r=0;r<3;r++)for(let c=0;c<5;c++){const x=80+c*75,y=50+r*45;s+=dot(x,y,14,C.n)+tx(x,y+5,"+",{a:"middle",s:15,c:"#fff",w:700})}
+   for(let i=0;i<40;i++){s+=dot(30+((i*97+13)%400),20+((i*53+7)%140),3,C.e)}return svg(460,200,s+tx(230,190,"positiva atomer (+) i ett moln av fria elektroner (blå)",{a:"middle",s:14,c:C.mut}))},
+ "periodiska9-4g":()=>svg(470,110,tx(235,55,"Fe → Fe³⁺ + 3 e⁻",{a:"middle",s:32,w:700})+tx(235,92,"järnatomen lämnar 3 elektroner och får laddningen 3+",{a:"middle",s:14,c:C.mut})),
+ "periodiska9-4h":()=>table((p,g)=>(g>=13||(p===1&&g===1))?"#f6c9c9":"#bcd3f5",600,240,dot(30,212,8,"#bcd3f5")+tx(46,217,"metaller → positiva joner",{s:14})+dot(300,212,8,"#f6c9c9")+tx(316,217,"icke-metaller → negativa joner",{s:14})+tx(580,18,"förenklad bild",{s:11,a:"end",c:C.mut,w:500}))
+};
+
+/* ───────── Kort ───────── */
+const frontHtml=q=>{
+  const long=q.text.length>90?" long":"";
+  let h=`<p class="q${long}">${esc(q.text)}</p>`;
+  if(q.type==="multi")h+=`<ul class="opts">${Object.keys(q.opts).sort().map(k=>`<li>${k}. ${esc(q.opts[k])}</li>`).join("")}</ul>`;
+  return h};
+const backHtml=q=>{
+  let h="";const f=FIG[q.id];
+  if(f)h+=`<div class="fig">${f()}</div>`;
   if(q.type==="multi"){
-    const ok=(q.correct||[]).map(k=>`<li>${esc(k)}. ${esc(q.opts[k])}</li>`).join("");
-    return `<b>Rätta påståenden:</b><ul>${ok}</ul>`+(q.explanation?`<p style="margin-top:10px;color:var(--muted)">${esc(q.explanation)}</p>`:"");
-  }
-  return esc(q.modelAnswer||q.explanation||"");
+    h+=`<ul class="opts">${Object.keys(q.opts).sort().map(k=>`<li class="${(q.correct||[]).includes(k)?"ok":""}">${(q.correct||[]).includes(k)?"✓ ":""}${k}. ${esc(q.opts[k])}</li>`).join("")}</ul>`;
+  }else{const t=q.modelAnswer||q.explanation||"";h+=`<p class="ans${t.length>180?" long":""}">${esc(t)}</p>`}
+  return h};
+
+let topic,all=[],order=[],i=0,flip=false,swap=false,track=false,shuf=false,mark={};
+function paint(){
+  const n=order.length;
+  if(!n){$("front").innerHTML='<p class="q">Inga kort här.</p>';$("back").innerHTML="";return}
+  const q=order[i],F=frontHtml(q),B=backHtml(q);
+  $("front").innerHTML=swap?B:F;$("back").innerHTML=swap?F:B;
+  $("lf").textContent=swap?"Svar":"Fråga";$("lb").textContent=swap?"Fråga":"Svar";
+  $("card").classList.toggle("flip",flip);
+  $("pos").textContent=`${i+1} / ${n}`;
+  $("prog").style.width=((i+1)/n*100)+"%";
+  const known=Object.values(mark).filter(v=>v==="known").length;
+  $("count").textContent=`${n} kort`+(track?` · kunde det: ${known} av ${n}`:"");
+  $("bKnown").classList.toggle("sel",mark[q.id]==="known");$("bMore").classList.toggle("sel",mark[q.id]==="more");
 }
-function frontHtml(q){
-  if(q.type==="multi"){
-    const o=Object.keys(q.opts).sort().map(k=>`<li>${esc(k)}. ${esc(q.opts[k])}</li>`).join("");
-    return esc(q.text)+`<ul>${o}</ul>`;
-  }
-  return esc(q.text);
-}
-function show(){
-  $("card").classList.remove("flip");
-  if(!deck.length){$("front").textContent="Inga kort här.";$("back").textContent="";$("count").textContent="";return}
-  const q=deck[i];
-  $("front").innerHTML=frontHtml(q);$("back").innerHTML=backHtml(q);
-  const m=Object.values(mark).filter(v=>v==="known").length;
-  $("count").textContent=`Kort ${i+1} av ${deck.length} · kunde det: ${m} av ${all.length}`;
-}
-function build(){
-  deck=only?all.filter(q=>mark[q.id]==="more"):all.slice();
-  if(i>=deck.length)i=0;
-  $("onlyMore").classList.toggle("on",only);
-  show();
-}
-function load(t){
-  topic=t;all=(LAX_DATA[t]||[]).slice();mark={};i=0;only=false;
-  $("title").textContent="Frågekort – "+(TITLES[t]||t);
-  document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.k===t));
-  build();
-}
-Object.keys(LAX_DATA).forEach(k=>{const b=document.createElement("button");b.textContent=TITLES[k]||k;b.dataset.k=k;b.onclick=()=>load(k);$("tabs").appendChild(b)});
-const url=new URLSearchParams(location.search).get("topic");
-if(url&&LAX_DATA[url]&&new URLSearchParams(location.search).get("single")!==null)$("tabs").style.display="none";
-$("card").onclick=()=>$("card").classList.toggle("flip");
-$("card").onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("card").classList.toggle("flip")}};
-$("next").onclick=()=>{if(deck.length){i=(i+1)%deck.length;show()}};
-$("prev").onclick=()=>{if(deck.length){i=(i-1+deck.length)%deck.length;show()}};
-$("known").onclick=()=>{if(!deck.length)return;mark[deck[i].id]="known";only?build():$("next").click()};
-$("more").onclick=()=>{if(!deck.length)return;mark[deck[i].id]="more";$("next").click()};
-$("shuf").onclick=()=>{all.sort(()=>Math.random()-.5);i=0;build()};
-$("onlyMore").onclick=()=>{only=!only;i=0;build()};
-load(LAX_DATA[url]?url:(LAX_DATA.kraft7?"kraft7":Object.keys(LAX_DATA)[0]));
+function go(d){flip=false;i=(i+d+order.length)%order.length;paint()}
+function build(keep){order=all.slice();if(shuf)order.sort(()=>Math.random()-.5);if(!keep)i=0;flip=false;paint()}
+function load(t){topic=t;all=(LAX_DATA[t]||[]).slice();mark={};i=0;shuf=false;swap=false;track=false;
+  ["bTrack","bShuf","bSwap"].forEach(b=>$(b).setAttribute("aria-pressed","false"));$("track").classList.remove("on");
+  $("eyebrow").textContent=(SUBJ[t]||"Biologi")+" · Läxförhör";$("title").textContent=TITLES[t]||t;
+  document.title="Frågekort – "+(TITLES[t]||t);
+  document.querySelectorAll("#topics button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===t));build()}
+const P=new URLSearchParams(location.search),want=P.get("topic");
+if(!want){const tp=$("topics");tp.style.display="flex";Object.keys(LAX_DATA).forEach(k=>{const b=document.createElement("button");b.className="pill";b.textContent=TITLES[k]||k;b.dataset.k=k;b.setAttribute("aria-pressed","false");b.onclick=()=>load(k);tp.appendChild(b)})}
+$("card").onclick=()=>{flip=!flip;$("card").classList.toggle("flip",flip)};
+document.addEventListener("keydown",e=>{
+  if(e.key===" "){e.preventDefault();$("card").click()}
+  else if(e.key==="ArrowRight")go(1);else if(e.key==="ArrowLeft")go(-1)});
+$("next").onclick=()=>go(1);$("prev").onclick=()=>go(-1);
+const tog=(id,f)=>$(id).onclick=()=>{const on=$(id).getAttribute("aria-pressed")!=="true";$(id).setAttribute("aria-pressed",on);f(on)};
+tog("bTrack",on=>{track=on;$("track").classList.toggle("on",on);paint()});
+tog("bShuf",on=>{shuf=on;build()});
+tog("bSwap",on=>{swap=on;flip=false;paint()});
+$("bKnown").onclick=()=>{mark[order[i].id]="known";go(1)};
+$("bMore").onclick=()=>{mark[order[i].id]="more";go(1)};
+$("reset").onclick=()=>{mark={};shuf=false;$("bShuf").setAttribute("aria-pressed","false");build()};
+load(LAX_DATA[want]?want:(LAX_DATA.periodiska9?"periodiska9":Object.keys(LAX_DATA)[0]));
 </script>
 </body>
 </html>
