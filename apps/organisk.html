@@ -56,10 +56,10 @@ function draw(g,m,ox,oy,u,o){o=o||{};const hide=o.hide||new Set(),by={};m.atoms.
   m.atoms.forEach(a=>{if(hide.has(a.id))return;const[x,y]=P(a),r=Math.max(a.sym==="H"?5:6.5,u*(a.sym==="H"?.2:.25));
     const sel=o.sel&&o.sel.has(a.id),grp=o.plain?"":a.grp;
     g.appendChild(mkSvg("circle",{cx:x,cy:y,r:r+1.5,fill:"#0b0f1a"}));
-    const c=mkSvg("circle",{cx:x,cy:y,r:r+1.5,fill:sel?"rgba(232,199,90,.3)":grp?GC[grp]+"26":"none",stroke:sel?"#e8c75a":grp?GC[grp]:"none","stroke-width":sel?2.5:1.3});
+    const c=mkSvg("circle",{cx:x,cy:y,r:r+1.5,fill:sel?"rgba(232,199,90,.3)":grp?GC[grp]+"26":"transparent",stroke:sel?"#e8c75a":grp?GC[grp]:"none","stroke-width":sel?2.5:1.3});
     g.appendChild(c);
     g.appendChild(mkSvg("text",{x,y:y+r*.4,"text-anchor":"middle","font-size":r*1.25,fill:SC[a.sym],"pointer-events":"none"},a.sym));
-    if(o.click&&o.click.has(a.id)){c.style.cursor="pointer";c.addEventListener("click",()=>o.onClick(a))}});
+    if(o.click&&o.click.has(a.id)){c.style.cursor="pointer";c.setAttribute("pointer-events","all");c.addEventListener("click",()=>o.onClick(a))}});
 }
 function place(svg,m,cx,cy,u,o){const b=bounds(m),W=(b.x1-b.x0)*u;const g=mkSvg("g",{});svg.appendChild(g);
   draw(g,m,cx-W/2-b.x0*u,cy,u,o);return{W,x0:cx-W/2,x1:cx+W/2}}
