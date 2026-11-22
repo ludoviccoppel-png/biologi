@@ -586,28 +586,28 @@ const LAX_DATA = {
       "id": "resonera9-1",
       "type": "open",
       "points": 3,
-      "text": "Från åker till bottendöd\nMånga bönder använder konstgödsel för att deras grödor ska växa bättre, men detta kan få stora konsekvenser för miljön i närliggande sjöar och hav. Förklara hur användningen av konstgödsel på land kan leda till att fiskar och andra djur dör på havets botten. I ditt svar ska du föra ett naturvetenskapligt resonemang i minst tre led (steg) som visar på sambanden mellan mänsklig aktivitet och miljöpåverkan.",
+      "text": "Många bönder använder konstgödsel för att deras grödor ska växa bättre, men detta kan få stora konsekvenser för miljön i närliggande sjöar och hav. Förklara hur användningen av konstgödsel på land kan leda till att fiskar och andra djur dör på havets botten. I ditt svar ska du föra ett naturvetenskapligt resonemang i minst tre led (steg) som visar på sambanden mellan mänsklig aktivitet och miljöpåverkan.",
       "modelAnswer": "Konstgödsel med kväve- och fosforföreningar sprids på åkrar → växter tar inte upp allt, det andra följer med vattnet via regn ut i närliggande vattendrag och hav → mycket näring i havet leder till algblomning → döda alger sjunker till botten och bryts ner av bakterier, vilket förbrukar syret → det konkurrerar ut fiskar som inte får tillräckligt mycket syre och dör."
     },
     {
       "id": "resonera9-2",
       "type": "open",
       "points": 3,
-      "text": "Toppkonsumenternas sårbarhet\nHavsörnen är en toppkonsument som under lång tid har varit hotad av miljögifter som PCB och DDT. Trots att halterna av dessa gifter kan vara mycket låga i havsvattnet, kan de bli livsfarliga för havsörnen högst upp i näringskedjan. Förklara varför halten av miljögifter ökar ju högre upp i en näringskedja man kommer, och vilka konsekvenser detta får för en toppkonsument som havsörnen. I ditt svar ska du föra ett naturvetenskapligt resonemang i minst tre led (steg).",
+      "text": "Havsörnen är en toppkonsument som under lång tid har varit hotad av miljögifter som PCB och DDT. Trots att halterna av dessa gifter kan vara mycket låga i havsvattnet, kan de bli livsfarliga för havsörnen högst upp i näringskedjan. Förklara varför halten av miljögifter ökar ju högre upp i en näringskedja man kommer, och vilka konsekvenser detta får för en toppkonsument som havsörnen. I ditt svar ska du föra ett naturvetenskapligt resonemang i minst tre led (steg).",
       "modelAnswer": "Organiska miljögifter som PCB och DDT är opolära och mycket svåra för naturen att bryta ner → lagras i fettväven hos organismer istället för att försvinna som energi eller kissas ut → rovdjur samlar på sig alla gifter från de tusentals bytesdjur den äter under sin livstid → halten gift anrikas till livsfarliga nivåer hos havsörnen → skador på DNA eller att de får svårt att få ungar."
     },
     {
       "id": "resonera9-3",
       "type": "open",
       "points": 3,
-      "text": "Hotet mot korallreven\nMänniskans användning av fossila bränslen, som kol och olja, påverkar inte bara klimatet utan förändrar även kemin i världshaven. Detta beskrivs ofta som ett stort hot mot korallreven. Förklara hur förbränning av fossila bränslen leder till att koraller får svårt att bygga sina skelett. I ditt svar ska du föra ett naturvetenskapligt resonemang i minst tre led (steg) som visar på de kemiska och biologiska sambanden.",
+      "text": "Människans användning av fossila bränslen, som kol och olja, påverkar inte bara klimatet utan förändrar även kemin i världshaven. Detta beskrivs ofta som ett stort hot mot korallreven. Förklara hur förbränning av fossila bränslen leder till att koraller får svårt att bygga sina skelett. I ditt svar ska du föra ett naturvetenskapligt resonemang i minst tre led (steg) som visar på de kemiska och biologiska sambanden.",
       "modelAnswer": "Människan förbränner fossila bränslen som frigör stora mängder koldioxid till atmosfären → tas upp av världshaven → koldioxiden reagerar med vatten och bildar kolsyra → sänker havets pH-värde → gör att karbonatjoner reagerar och försvinner → koralldjur får svårt att bygga sina skelett och skal eftersom de saknar de karbonatjoner de behöver → vilket leder till att korallreven skadas."
     },
     {
       "id": "resonera9-4",
       "type": "open",
       "points": 3,
-      "text": "Metaller – från gruva till kretslopp\nVårt moderna samhälle är helt beroende av metaller för allt från smartphones till elbilar och vindkraftverk. Förklara varför det är bättre för miljön och klimatet att återvinna metaller framför att bryta ny malm. I ditt svar ska du föra ett naturvetenskapligt resonemang i minst tre led (steg) som visar på sambanden mellan resursanvändning och miljöpåverkan.",
+      "text": "Vårt moderna samhälle är helt beroende av metaller för allt från smartphones till elbilar och vindkraftverk. Förklara varför det är bättre för miljön och klimatet att återvinna metaller framför att bryta ny malm. I ditt svar ska du föra ett naturvetenskapligt resonemang i minst tre led (steg) som visar på sambanden mellan resursanvändning och miljöpåverkan.",
       "modelAnswer": "Människan bryter ny metallmalm ur berggrunden med tunga maskiner → kräver enorma mängder energi och kemikalier → leder till stora utsläpp av koldioxid → påverkar klimatet (+ giftigt läckage från gruvorna → förstör lokala ekosystem + tungmetaller).\n\nÅtervinning av metaller i en cirkulär ekonomi minskar behovet av gruvdrift och skyddar miljön → sparar på jordens ändliga resurser och minskar den enorma energiåtgången och de koldioxidutsläpp som krävs för att bryta och förädla ny malm → förhindrar att farliga tungmetaller läcker ut och sprids i luft och vatten via kemikalier och gruvavfall från gruvindustrin → stoppar gifterna från att ackumuleras och anrikas i näringskedjan, vilket förhindrar att toppkonsumenter får i sig livsfarliga koncentrationer av miljögifter."
     }
   ],

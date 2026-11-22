@@ -58,8 +58,19 @@ const Lax = (() => {
   }
 
   // ── Frågor och navigering ────────────────────────────
+  // Finns det frågor som ännu inte visats i den här omgången?
+  function hasUnused() {
+    return questions.some(q => !used.has(q.id));
+  }
+
   function newQuestion() {
-    if (questions.every(q => used.has(q.id))) used.clear();
+    // Nästa omgång börjar först när eleven själv går vidare efter att ha besvarat sista frågan
+    // (inte via "Hoppa över"), och då aldrig med frågan som just visades.
+    if (!hasUnused()) {
+      const lastId = records.length ? records[records.length - 1].q.id : null;
+      used.clear();
+      if (lastId && questions.length > 1) used.add(lastId);
+    }
     const pool = questions.filter(q => !used.has(q.id));
     const q = ordered ? pool[0] : pool[Math.floor(Math.random() * pool.length)];
     used.add(q.id);
@@ -869,6 +880,7 @@ POÄNG: [ett heltal: ${scaleText}]
   function skip() {
     const r = cur();
     if (r.status === "done" || r.busy) return;
+    if (!hasUnused()) return; // inga nya frågor kvar – ta inte upp samma fråga igen
     saveDraft();
     r.status = "skip";
     r.pip = "skip";
@@ -1035,8 +1047,9 @@ POÄNG: [ett heltal: ${scaleText}]
       const h = mkBtn(r.hintBusy ? "Hämtar…" : r.hints.length ? "💡 Nytt tips" : "💡 Tips", "btn-secondary", getHint);
       h.disabled = r.busy || !!r.hintBusy;
       wrap.appendChild(h);
-      const s = mkBtn("Hoppa över →", "btn-skip", skip);
-      s.disabled = r.busy;
+      const noMore = !hasUnused();
+      const s = mkBtn(noMore ? "Inga fler nya frågor" : "Hoppa över →", "btn-skip", skip);
+      s.disabled = r.busy || noMore;
       wrap.appendChild(s);
     } else {
       wrap.appendChild(mkBtn("Nästa fråga →", "btn-primary", nextQ));
