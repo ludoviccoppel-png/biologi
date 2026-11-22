@@ -891,7 +891,7 @@ const LAX_DATA = {
   // ── Prov ──────────────────────────────────────────────────────────
   // ── Läxförhör fysik: Kraft och rörelse åk 7 ──────────────────────
   // 14 skrivfrågor ur läxförhöret (frågorna 1, 3, 4, 6 och 9–18). Facit är hämtat ur häftets lösningsförslag.
-  // Fråga 4 (rita krafter) saknade lösningsförslag i häftet; facit där är skrivet av Claude.
+  // Fråga 4 (rita krafter) är en klickövning (frågetyp "forces"); den saknade lösningsförslag i häftet, så facit där är skrivet av Claude.
   kraft7: [
     {
       id: "kraft7-1",
@@ -911,11 +911,12 @@ const LAX_DATA = {
     },
     {
       id: "kraft7-4",
-      type: "open",
+      type: "forces",
       points: 3,
-      text: "Rita krafterna som verkar på en lampa i tre fall (uppgiften går inte att rita i appen, så förklara med ord vilka krafter som verkar och hur stora de är): a) lampan hänger stilla i en tråd från taket, b) lampan faller fritt efter att tråden har gått av, c) lampan står stilla på golvet.",
+      text: "Rita krafterna som verkar på lampan i de tre fallen: a) lampan hänger stilla i en tråd från taket, b) tråden har gått av och lampan faller, c) lampan står stilla på golvet.",
+      // Facit saknades i häftet för uppgift 4 (ritfråga). Facit nedan är skrivet av Claude utifrån häftets avsnitt "Rita krafter".
       modelAnswer:
-        "1 p: a) Tyngdkraften (Fg) verkar nedåt och en lika stor dragkraft från tråden verkar uppåt. Krafterna tar ut varandra och lampan hänger stilla. 1 p: b) Bara tyngdkraften verkar nedåt (ingen kraft från tråden, luftmotståndet bortses från), så lampan accelererar nedåt. 1 p: c) Tyngdkraften verkar nedåt och en lika stor normalkraft (n) från golvet verkar uppåt. Krafterna tar ut varandra och lampan står stilla.",
+        "a) Tyngdkraften verkar nedåt och en lika stor dragkraft från tråden verkar uppåt, så krafterna tar ut varandra. b) Bara tyngdkraften verkar nedåt, så lampan accelererar nedåt. c) Tyngdkraften verkar nedåt och en lika stor normalkraft från golvet verkar uppåt, så krafterna tar ut varandra.",
     },
     {
       id: "kraft7-6",

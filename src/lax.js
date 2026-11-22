@@ -85,7 +85,7 @@ const Lax = (() => {
   }
 
   function typeLabel(t) {
-    return { mc: "Flerval", multi: "Kryssfråga", shells: "Fyll skalen", molecule: "Bygg molekyl", match: "Para ihop", open: "Öppen fråga" }[t] || t;
+    return { mc: "Flerval", multi: "Kryssfråga", shells: "Fyll skalen", molecule: "Bygg molekyl", forces: "Rita krafter", match: "Para ihop", open: "Öppen fråga" }[t] || t;
   }
 
   // ── Rendering av en fråga utifrån dess post ──────────
@@ -117,6 +117,7 @@ const Lax = (() => {
     else if (q.type === "match") paintMatch(r);
     else if (q.type === "shells") paintShells(r);
     else if (q.type === "molecule") paintMolecule(r);
+    else if (q.type === "forces") paintForces(r);
     else                         paintOpen(r);
 
     if (r.status === "done" && q.expl) {
@@ -529,6 +530,191 @@ const Lax = (() => {
     renderView(view);
   }
 
+  // ── Rita krafter (dra pilar från lampan, välj vad kraften heter) ──
+  // Tre fasta fall: a) lampan hänger i en tråd, b) tråden har gått av, c) lampan står på golvet.
+  const FORCE_NAMES = { "": "Välj kraft…", tyngd: "Tyngdkraft", drag: "Dragkraft (från tråden)", normal: "Normalkraft", frikt: "Friktionskraft", luft: "Luftmotstånd" };
+  const FORCE_CASES = [
+    { key: "a", x: 100, y: 190, cap: "a) Lampan hänger stilla" },
+    { key: "b", x: 300, y: 190, cap: "b) Tråden har gått av" },
+    { key: "c", x: 500, y: 190, cap: "c) Lampan står på golvet" }
+  ];
+  const FW = 600, FH = 340, FSTEP = 28, FBASE = 20;
+  const arrowLen = k => FBASE + FSTEP * k;
+
+  function paintForces(r) {
+    const done = r.status === "done";
+    if (!r.forces) r.forces = { a: {}, b: {}, c: {} };
+    const NS = "http://www.w3.org/2000/svg";
+    const mk = (tag, attrs, text) => {
+      const e = document.createElementNS(NS, tag);
+      for (const k in attrs) e.setAttribute(k, attrs[k]);
+      if (text !== undefined) e.textContent = text;
+      return e;
+    };
+    const svg = mk("svg", { viewBox: `0 0 ${FW} ${FH}`, class: "mol-svg force-svg", role: "img", "aria-label": "Lampan i tre fall" });
+    const grey = "#5a6a90";
+    // tak, tråd och golv
+    svg.appendChild(mk("line", { x1: 20, y1: 40, x2: 400, y2: 40, stroke: grey, "stroke-width": 3 }));
+    svg.appendChild(mk("text", { x: 22, y: 30, "font-size": 12, fill: "#8d9bbb" }, "tak"));
+    svg.appendChild(mk("line", { x1: 100, y1: 40, x2: 100, y2: 170, stroke: grey, "stroke-width": 2.5 }));
+    svg.appendChild(mk("line", { x1: 300, y1: 40, x2: 300, y2: 78, stroke: grey, "stroke-width": 2.5 }));
+    svg.appendChild(mk("line", { x1: 300, y1: 100, x2: 300, y2: 112, stroke: grey, "stroke-width": 2.5, "stroke-dasharray": "3 5" }));
+    svg.appendChild(mk("line", { x1: 410, y1: 212, x2: 590, y2: 212, stroke: grey, "stroke-width": 3 }));
+    svg.appendChild(mk("text", { x: 592, y: 230, "text-anchor": "end", "font-size": 12, fill: "#8d9bbb" }, "golv"));
+
+    const ok = done ? r.forceResult : {};
+    FORCE_CASES.forEach(cs => {
+      const st = r.forces[cs.key];
+      const good = done ? ok[cs.key] : null;
+      const col = good === null ? "#5ab0e8" : good ? "#5ecfa0" : "#e85a5a";
+      svg.appendChild(mk("text", { x: cs.x, y: 18, "text-anchor": "middle", "font-size": 12, fill: "#dde4f0" }, cs.cap));
+      ["up", "down"].forEach(dir => {
+        const a = st[dir];
+        if (!a) return;
+        const len = arrowLen(a.k), sgn = dir === "up" ? -1 : 1;
+        const y2 = cs.y + sgn * len;
+        const g = mk("g", { style: done ? "" : "cursor:pointer" });
+        g.appendChild(mk("line", { x1: cs.x, y1: cs.y, x2: cs.x, y2: y2 - sgn * 8, stroke: col, "stroke-width": 4 }));
+        g.appendChild(mk("polygon", { points: `${cs.x},${y2} ${cs.x - 8},${y2 - sgn * 14} ${cs.x + 8},${y2 - sgn * 14}`, fill: col }));
+        g.appendChild(mk("line", { x1: cs.x, y1: cs.y, x2: cs.x, y2, stroke: "transparent", "stroke-width": 22 }));
+        const title = mk("title", {}, done ? "" : "Klicka för att ta bort pilen");
+        g.appendChild(title);
+        if (a.label) g.appendChild(mk("text", { x: cs.x + 14, y: y2 - sgn * 8 + 4, "font-size": 11, fill: col }, FORCE_NAMES[a.label].split(" (")[0]));
+        if (!done) g.addEventListener("click", () => { st[dir] = null; renderView(view); });
+        svg.appendChild(g);
+      });
+      const lamp = mk("circle", { cx: cs.x, cy: cs.y, r: 20, fill: "#e8d34a", stroke: "#0b0f1a", "stroke-width": 2 });
+      svg.appendChild(lamp);
+      if (!done) {
+        const hit = mk("circle", { cx: cs.x, cy: cs.y, r: 28, fill: "transparent", style: "cursor:ns-resize", "pointer-events": "all" });
+        hit.addEventListener("pointerdown", ev => startForceDrag(ev, r, cs, svg, hit));
+        svg.appendChild(hit);
+      }
+    });
+
+    const wrap = document.createElement("div");
+    wrap.className = "mol-wrap";
+    wrap.appendChild(svg);
+
+    const cols = document.createElement("div");
+    cols.className = "force-cols";
+    FORCE_CASES.forEach(cs => {
+      const col = document.createElement("div");
+      col.className = "force-col";
+      const st = r.forces[cs.key];
+      [["up", "uppåt"], ["down", "nedåt"]].forEach(([dir, word]) => {
+        if (!st[dir]) return;
+        const sel = document.createElement("select");
+        sel.className = "match-select";
+        sel.setAttribute("aria-label", `Vad heter kraften ${word} i fall ${cs.key})?`);
+        Object.entries(FORCE_NAMES).forEach(([v, t]) => sel.add(new Option(`Pil ${word}: ${t}`, v)));
+        sel.value = st[dir].label || "";
+        sel.disabled = done;
+        sel.addEventListener("change", () => { st[dir].label = sel.value; renderView(view); });
+        col.appendChild(sel);
+      });
+      if (done) {
+        const note = document.createElement("div");
+        note.className = "force-note " + (ok[cs.key] ? "good" : "bad");
+        note.textContent = ok[cs.key] ? "✓ Rätt" : "✗ " + r.forceWhy[cs.key];
+        col.appendChild(note);
+      }
+      cols.appendChild(col);
+    });
+    wrap.appendChild(cols);
+
+    const hint = document.createElement("div");
+    hint.className = "mol-hint";
+    hint.textContent = done
+      ? "Grön = rätt, röd = fel. Pilens längd visar kraftens storlek."
+      : "Dra från lampan uppåt eller nedåt för att rita en kraftpil – ju längre drag, desto större kraft. Välj sedan under bilden vad kraften heter. Klicka på en pil för att ta bort den.";
+    wrap.appendChild(hint);
+    el("lax-q-body").appendChild(wrap);
+  }
+
+  function startForceDrag(ev, r, cs, svg, hit) {
+    if (r.status === "done") return;
+    ev.preventDefault();
+    hit.setPointerCapture(ev.pointerId);
+    const rect = svg.getBoundingClientRect();
+    const toSvgY = cy => ((cy - rect.top) * FH) / rect.height;
+    const NS = "http://www.w3.org/2000/svg";
+    const prev = document.createElementNS(NS, "line");
+    prev.setAttribute("x1", cs.x); prev.setAttribute("x2", cs.x);
+    prev.setAttribute("stroke", "#e8c75a"); prev.setAttribute("stroke-width", 4); prev.setAttribute("stroke-dasharray", "5 4");
+    svg.appendChild(prev);
+    const calc = m => {
+      const dy = toSvgY(m.clientY) - cs.y;
+      const k = Math.max(1, Math.min(4, Math.round(Math.abs(dy) / 30)));
+      return { dir: dy < 0 ? "up" : "down", k, show: Math.abs(dy) > 12 };
+    };
+    const move = m => {
+      const c = calc(m);
+      if (!c.show) { prev.setAttribute("y1", cs.y); prev.setAttribute("y2", cs.y); return; }
+      prev.setAttribute("y1", cs.y);
+      prev.setAttribute("y2", cs.y + (c.dir === "up" ? -1 : 1) * arrowLen(c.k));
+    };
+    const up = m => {
+      hit.removeEventListener("pointermove", move);
+      hit.removeEventListener("pointerup", up);
+      hit.removeEventListener("pointercancel", up);
+      const c = calc(m);
+      if (c.show) {
+        const old = r.forces[cs.key][c.dir];
+        r.forces[cs.key][c.dir] = { k: c.k, label: old ? old.label : "" };
+      }
+      renderView(view);
+    };
+    hit.addEventListener("pointermove", move);
+    hit.addEventListener("pointerup", up);
+    hit.addEventListener("pointercancel", up);
+  }
+
+  function checkForces() {
+    const r = cur();
+    if (r.status === "done") return;
+    const f = r.forces || { a: {}, b: {}, c: {} };
+    const res = {}, why = {};
+    const isF = (a, lab) => a && a.label === lab;
+    // a) tyngdkraft nedåt och dragkraft uppåt, lika stora
+    {
+      const { up, down } = f.a;
+      res.a = isF(down, "tyngd") && isF(up, "drag") && up.k === down.k;
+      why.a = !down || !up ? "Det verkar både en kraft nedåt och en kraft uppåt."
+        : up.k !== down.k ? "Krafterna är lika stora (lampan står stilla), så pilarna ska vara lika långa."
+        : "Nedåt verkar tyngdkraften och uppåt dragkraften från tråden.";
+    }
+    // b) bara tyngdkraft nedåt
+    {
+      const { up, down } = f.b;
+      res.b = isF(down, "tyngd") && !up;
+      why.b = up ? "Tråden är av, så ingen kraft verkar uppåt. Luftmotståndet bortser vi från."
+        : "Bara tyngdkraften verkar nedåt när lampan faller.";
+    }
+    // c) tyngdkraft nedåt och normalkraft uppåt, lika stora
+    {
+      const { up, down } = f.c;
+      res.c = isF(down, "tyngd") && isF(up, "normal") && up.k === down.k;
+      why.c = !down || !up ? "Det verkar både en kraft nedåt och en kraft uppåt."
+        : up.k !== down.k ? "Lampan står stilla, så normalkraften är lika stor som tyngdkraften."
+        : "Nedåt verkar tyngdkraften och uppåt normalkraften från golvet.";
+    }
+    const n = ["a", "b", "c"].filter(k => res[k]).length;
+    const per = r.max / 3;
+    r.pts = n * per;
+    r.pip = n === 3 ? "hit" : n > 0 ? "part" : "miss";
+    r.status = "done";
+    r.forceResult = res; r.forceWhy = why;
+    r.fb = {
+      cls: n === 3 ? "good" : n > 0 ? "part" : "poor",
+      html: esc(`${n} av 3 fall rätt. ` + r.q.modelAnswer)
+    };
+    const d = k => ["up", "down"].map(dir => f[k][dir] ? `${dir === "up" ? "uppåt" : "nedåt"}: ${FORCE_NAMES[f[k][dir].label] || "ej namngiven"} (längd ${f[k][dir].k})` : "").filter(Boolean).join(", ") || "inga pilar";
+    r.answerText = `Fall a) ${d("a")}; fall b) ${d("b")}; fall c) ${d("c")}`;
+    r.facitText = r.q.modelAnswer;
+    renderView(view);
+  }
+
   // ── Flerval ──────────────────────────────────────────
   function paintMC(r) {
     const done = r.status === "done";
@@ -694,6 +880,7 @@ POÄNG: [ett heltal: ${scaleText}]
       const opts = Object.keys(q.opts).sort().map(k => `${k}. ${q.opts[k]}`).join("\n");
       return `Påståenden:\n${opts}\nRätta påståenden (får inte avslöjas): ${q.correct.join(", ")}`;
     }
+    if (q.type === "forces") return `Facit (får inte avslöjas): ${q.modelAnswer}`;
     if (q.type === "molecule") return `Facit (får inte avslöjas): ${q.modelAnswer}`;
     if (q.type === "shells") return `Facit (får inte avslöjas): ${shellsFor(q.z).filter(n => n).join(", ")} elektroner i K, L, M. Elektronerna fyller skalen inifrån och ut.`;
     if (q.type === "mc") {
@@ -825,6 +1012,8 @@ POÄNG: [ett heltal: ${scaleText}]
     if (r.status !== "done") {
       if (type === "match") {
         wrap.appendChild(mkBtn("Kontrollera svar", "btn-primary", checkMatch));
+      } else if (type === "forces") {
+        wrap.appendChild(mkBtn("Kontrollera svar", "btn-primary", checkForces));
       } else if (type === "molecule") {
         wrap.appendChild(mkBtn("Kontrollera svar", "btn-primary", checkMolecule));
       } else if (type === "shells") {

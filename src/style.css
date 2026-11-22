@@ -694,3 +694,12 @@ main {
 .mol-wrap { margin-top: 12px; }
 .mol-svg { touch-action: none; user-select: none; width: 100%; max-width: 460px; height: auto; display: block; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; }
 .mol-hint { font-size: 12px; color: var(--muted); margin: 8px 0 10px; line-height: 1.5; }
+
+/* ── Rita krafter ────────────────────────────────────── */
+.force-svg { max-width: 640px; touch-action: none; }
+.force-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 640px; margin-top: 8px; }
+.force-col { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.force-col select { width: 100%; font-size: 12px; }
+.force-note { font-size: 12px; line-height: 1.4; }
+.force-note.good { color: var(--green); }
+.force-note.bad { color: var(--red); }
