@@ -242,6 +242,35 @@ const FK={
 };
 Object.assign(FIG,FK);
 
+
+/* ── Figurer: egna frågor om centralrörelse och fritt fall ── */
+Object.assign(FIG,{
+ "kraft7-c1":()=>{const ring=(x)=>dot(x,115,62,"none",`stroke="${C.ring}" stroke-width="1.6" stroke-dasharray="5 5"`)+dot(x,115,4,C.ink);
+   let s=gtx(100,24,"medan vajern håller",C.ink,{s:15})+gtx(350,24,"när vajern släpps",C.ink,{s:15});
+   s+=ring(100)+ln(100,115,162,115,{c:C.ink,w:2})+dot(162,115,12,"#e8923a",`stroke="${C.ink}" stroke-width="1.5"`)+fa(150,115,112,115,KC.g,4)+gtx(130,102,"F",KC.g,{s:15})+fa(162,128,162,195,KC.d,3)+tx(174,170,"v",{s:15,c:KC.d});
+   s+=ring(350)+dot(412,115,12,"#e8923a",`stroke="${C.ink}" stroke-width="1.5"`)+fa(412,128,412,205,KC.d,3).replace('stroke-linecap="round"','stroke-linecap="round" stroke-dasharray="6 5"');
+   s+=tx(404,170,"rak linje",{a:"end",s:14,c:KC.d})+tx(404,188,"(tangenten)",{a:"end",s:13,c:KC.d,w:500});
+   return svg(470,225,s)},
+ "kraft7-c2":()=>{let s=dot(130,115,80,"none",`stroke="${C.ring}" stroke-width="1.6" stroke-dasharray="5 5"`)+dot(130,115,4,C.ink)+tx(130,140,"mitten",{a:"middle",s:12,c:C.mut,w:500});
+   s+=dot(210,115,13,"#e8923a",`stroke="${C.ink}" stroke-width="1.5"`)+fa(197,115,150,115,KC.g,4)+fa(210,129,210,205,KC.d,3)+fa(225,115,268,115,"#9aa3b5",3).replace('stroke-linecap="round"','stroke-linecap="round" stroke-dasharray="5 4"');
+   s+=dot(310,70,6,KC.g)+tx(324,68,"centripetalkraft",{s:15})+tx(324,86,"riktig kraft, inåt",{s:13,c:C.mut,w:500});
+   s+=dot(310,125,6,KC.d)+tx(324,123,"kroppen vill rakt fram",{s:15})+tx(324,141,"tröghet",{s:13,c:C.mut,w:500});
+   s+=dot(310,180,6,"#9aa3b5")+tx(324,178,"centrifugalkraft",{s:15})+tx(324,196,"skenkraft, känns som utåt",{s:13,c:C.mut,w:500});
+   return svg(540,225,s)},
+ "kraft7-c3":()=>{let s=tx(60,22,"start",{a:"middle",s:12,c:C.mut})+tx(180,22,"fart",{s:12,c:C.mut})+tx(500,22,"fallit",{a:"end",s:12,c:C.mut});
+   for(let t=0;t<=3;t++){const y=40+5*t*t*2.4;s+=dot(60,y,8,"#8d91a8",`stroke="${C.ink}" stroke-width="1.5"`)+tx(82,y+5,t+" s",{s:14});
+     if(t>0)s+=rect(180,y-5,10*t*4,10,KC.d,"",3)+tx(186+10*t*4,y+5,10*t+" m/s",{s:14,c:KC.d});
+     s+=tx(500,y+5,5*t*t+" m",{a:"end",s:14,c:C.mut})}
+   s+=ln(60,40,60,40+45*2.4,{c:C.gr,d:"3 4"})+gtx(260,178,"v = 10 · 3 = 30 m/s,  s = 5 · 3² = 45 m",C.ink,{s:15});
+   return svg(520,195,s)},
+ "kraft7-c4":()=>{let s="";
+   [[80,"#f4f1e8",28,22,"papper i luft","bromsas mycket"],[235,"#4a4f63",64,22,"järn i luft","bromsas lite"]].forEach(([x,f,g,l,t,u])=>{
+     s+=dot(x,100,16,f,`stroke="${C.ink}" stroke-width="1.5"`)+fa(x,118,x,118+g,KC.g,5)+fa(x,82,x,82-l,KC.d,5)+gtx(x,208,t,C.ink,{s:15})+gtx(x,226,u,C.mut,{s:12,w:500})});
+   s+=dot(370,100,16,"#f4f1e8",`stroke="${C.ink}" stroke-width="1.5"`)+dot(420,100,16,"#4a4f63",`stroke="${C.ink}" stroke-width="1.5"`)+fa(370,118,370,168,KC.g,4)+fa(420,118,420,168,KC.g,4)+gtx(395,208,"i vakuum",C.ink,{s:15})+gtx(395,226,"landar samtidigt",C.mut,{s:12,w:500});
+   s+=dot(24,24,6,KC.g)+tx(36,29,"tyngdkraft",{s:13})+dot(130,24,6,KC.d)+tx(142,29,"luftmotstånd",{s:13});
+   return svg(500,245,s)}
+});
+
 /* ───────── Kort ───────── */
 const frontHtml=q=>{
   const long=q.text.length>90?" long":"";
