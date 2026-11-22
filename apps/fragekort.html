@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Frågekort</title>
+<link rel="stylesheet" href="kemi.css">
+<style>
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.card-wrap{perspective:1200px;max-width:720px;margin:0 auto}
+.fcard{position:relative;min-height:260px;cursor:pointer;transition:transform .45s;transform-style:preserve-3d}
+.fcard.flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 22px 36px;display:flex;flex-direction:column;justify-content:center;overflow:auto}
+.face.back{transform:rotateY(180deg);border-color:rgba(94,207,160,.5)}
+.face .tag{position:absolute;top:10px;left:14px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.face .hintline{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:11px;color:var(--muted)}
+.face .txt{font-size:16px;line-height:1.6}
+.face ul{margin:8px 0 0 18px;font-size:14px}
+.face li{margin:3px 0}
+.bar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:14px 0}
+.count{text-align:center;color:var(--muted);font-size:12px}
+.sm{max-width:720px;margin:0 auto 10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1 id="title">Frågekort</h1>
+  <p class="lead">Klicka på kortet för att vända det och se svaret. Markera om du kunde det eller behöver öva mer.</p>
+  <div id="tabs" class="tabs"></div>
+  <div class="sm"><span class="count" id="count"></span><span><button id="shuf">Blanda</button> <button id="onlyMore">Visa bara "öva mer"</button></span></div>
+  <div class="card-wrap"><div class="fcard" id="card" tabindex="0" role="button" aria-label="Vänd kortet">
+    <div class="face front"><span class="tag">Fråga</span><div class="txt" id="front"></div><span class="hintline">klicka för att vända</span></div>
+    <div class="face back"><span class="tag">Svar</span><div class="txt" id="back"></div></div>
+  </div></div>
+  <div class="bar">
+    <button id="prev">← Föregående</button>
+    <button id="more" class="bad">Öva mer</button>
+    <button id="known" class="good">Kunde det</button>
+    <button id="next">Nästa →</button>
+  </div>
+</div>
+<script src="../src/lax-data.js"></script>
+<script>
+const TITLES={biologi7:"Biologi åk 7",biologi8:"Biologi åk 8",biologi9:"Biologi åk 9",evolution7:"Evolution åk 7",ekologi7:"Ekologi åk 7",manniska8:"Människokroppen åk 8",genetik:"Genetik åk 9",periodiska9:"Periodiska systemet åk 9",kraft7:"Kraft och rörelse åk 7"};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+let topic,deck=[],i=0,mark={},only=false,all=[];
+function backHtml(q){
+  if(q.type==="multi"){
+    const ok=(q.correct||[]).map(k=>`<li>${esc(k)}. ${esc(q.opts[k])}</li>`).join("");
+    return `<b>Rätta påståenden:</b><ul>${ok}</ul>`+(q.explanation?`<p style="margin-top:10px;color:var(--muted)">${esc(q.explanation)}</p>`:"");
+  }
+  return esc(q.modelAnswer||q.explanation||"");
+}
+function frontHtml(q){
+  if(q.type==="multi"){
+    const o=Object.keys(q.opts).sort().map(k=>`<li>${esc(k)}. ${esc(q.opts[k])}</li>`).join("");
+    return esc(q.text)+`<ul>${o}</ul>`;
+  }
+  return esc(q.text);
+}
+function show(){
+  $("card").classList.remove("flip");
+  if(!deck.length){$("front").textContent="Inga kort här.";$("back").textContent="";$("count").textContent="";return}
+  const q=deck[i];
+  $("front").innerHTML=frontHtml(q);$("back").innerHTML=backHtml(q);
+  const m=Object.values(mark).filter(v=>v==="known").length;
+  $("count").textContent=`Kort ${i+1} av ${deck.length} · kunde det: ${m} av ${all.length}`;
+}
+function build(){
+  deck=only?all.filter(q=>mark[q.id]==="more"):all.slice();
+  if(i>=deck.length)i=0;
+  $("onlyMore").classList.toggle("on",only);
+  show();
+}
+function load(t){
+  topic=t;all=(LAX_DATA[t]||[]).slice();mark={};i=0;only=false;
+  $("title").textContent="Frågekort – "+(TITLES[t]||t);
+  document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.k===t));
+  build();
+}
+Object.keys(LAX_DATA).forEach(k=>{const b=document.createElement("button");b.textContent=TITLES[k]||k;b.dataset.k=k;b.onclick=()=>load(k);$("tabs").appendChild(b)});
+const url=new URLSearchParams(location.search).get("topic");
+if(url&&LAX_DATA[url]&&new URLSearchParams(location.search).get("single")!==null)$("tabs").style.display="none";
+$("card").onclick=()=>$("card").classList.toggle("flip");
+$("card").onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("card").classList.toggle("flip")}};
+$("next").onclick=()=>{if(deck.length){i=(i+1)%deck.length;show()}};
+$("prev").onclick=()=>{if(deck.length){i=(i-1+deck.length)%deck.length;show()}};
+$("known").onclick=()=>{if(!deck.length)return;mark[deck[i].id]="known";only?build():$("next").click()};
+$("more").onclick=()=>{if(!deck.length)return;mark[deck[i].id]="more";$("next").click()};
+$("shuf").onclick=()=>{all.sort(()=>Math.random()-.5);i=0;build()};
+$("onlyMore").onclick=()=>{only=!only;i=0;build()};
+load(LAX_DATA[url]?url:(LAX_DATA.kraft7?"kraft7":Object.keys(LAX_DATA)[0]));
+</script>
+</body>
+</html>
