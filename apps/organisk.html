@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alkoholer, syror och estrar</title>
+<link rel="stylesheet" href="kemi.css"><style>svg{touch-action:manipulation;user-select:none}</style></head><body><div class="app">
+
+<h1>🧴 Alkoholer, syror och estrar</h1>
+<p class="lead">Fullständiga strukturformler. <span style="color:#e8845a">Orange</span> = hydroxylgrupp (–OH), <span style="color:#5ab0e8">blå</span> = karboxylgrupp (–COOH), <span style="color:#5ecfa0">grön</span> = estergrupp (–COO–).</p>
+<div class="row" style="margin-bottom:12px">
+  <button id="t-explore" class="on">Utforska</button><button id="t-quiz">Namnge</button>
+  <button id="t-ox">Alkohol → syra</button><button id="t-est">Syra + alkohol → ester</button>
+</div>
+<div class="row">
+  <div class="panel grow" style="flex:2 1 460px"><div id="stage"></div></div>
+  <div class="panel grow" style="flex:1 1 260px"><div id="side"></div><div class="msg info" id="msg" style="margin-top:12px"></div></div>
+</div>
+</div><script src="kemi.js"></script><script>
+
+const AN=["metanol","etanol","propanol","butanol"],SN=["metansyra","etansyra","propansyra","butansyra"],
+      AL=["metyl","etyl","propyl","butyl"],ES=["metanoat","etanoat","propanoat","butanoat"];
+const TRIV={"metansyra":"myrsyra","etansyra":"ättiksyra"};
+// ── Molekylbyggare (rutnät: x längs kedjan, y = ±1 för väte/syre ovan och under) ──
+function M(){return{atoms:[],bonds:[],n:0}}
+function add(m,sym,x,y,grp){const a={id:"a"+(m.n++),sym,x,y,grp:grp||""};m.atoms.push(a);return a}
+function bnd(m,a,b,o){m.bonds.push([a.id,b.id,o||1])}
+function chain(m,x0,count,leftH,rightH){const cs=[];
+  for(let i=0;i<count;i++){const c=add(m,"C",x0+i,0);cs.push(c);
+    c.hu=add(m,"H",x0+i,-1);c.hd=add(m,"H",x0+i,1);bnd(m,c,c.hu);bnd(m,c,c.hd);if(i>0)bnd(m,cs[i-1],c)}
+  if(leftH){const h=add(m,"H",x0-1,0);bnd(m,cs[0],h)}
+  if(rightH){const h=add(m,"H",x0+count,0);bnd(m,cs[count-1],h)}
+  return cs}
+function alcohol(n){const m=M(),cs=chain(m,0,n,true,false),c=cs[n-1];
+  const o=add(m,"O",n,0,"oh"),h=add(m,"H",n+1,0,"oh");bnd(m,c,o);bnd(m,o,h);
+  m.ox=[c.hu.id,c.hd.id];m.oh={o:o.id,h:h.id};m.cx=c.x;return m}
+function acid(n){const m=M();let c;
+  if(n===1){c=add(m,"C",0,0,"cooh");const h=add(m,"H",-1,0);bnd(m,c,h)}
+  else{const cs=chain(m,0,n-1,true,false);c=add(m,"C",n-1,0,"cooh");bnd(m,cs[n-2],c)}
+  const o1=add(m,"O",n-1,-1,"cooh"),o2=add(m,"O",n,0,"cooh"),h=add(m,"H",n+1,0,"cooh");
+  bnd(m,c,o1,2);bnd(m,c,o2);bnd(m,o2,h);m.oh={o:o2.id,h:h.id};m.newO=o1.id;return m}
+function ester(na,nb){const m=M();let c;
+  if(na===1){c=add(m,"C",0,0,"ester");const h=add(m,"H",-1,0);bnd(m,c,h)}
+  else{const cs=chain(m,0,na-1,true,false);c=add(m,"C",na-1,0,"ester");bnd(m,cs[na-2],c)}
+  const o1=add(m,"O",na-1,-1,"ester"),o2=add(m,"O",na,0,"ester");bnd(m,c,o1,2);bnd(m,c,o2);
+  const cs2=chain(m,na+1,nb,false,true);bnd(m,o2,cs2[0]);return m}
+function water(){const m=M(),o=add(m,"O",0,0),a=add(m,"H",-1,.9),b=add(m,"H",1,.9);bnd(m,o,a);bnd(m,o,b);return m}
+function formula(m){const c={C:0,H:0,O:0};m.atoms.forEach(a=>c[a.sym]++);
+  const s=n=>n>1?String(n).replace(/\d/g,d=>"₀₁₂₃₄₅₆₇₈₉"[d]):"";return "C"+s(c.C)+"H"+s(c.H)+"O"+s(c.O)}
+function bounds(m){let a=1e9,b=-1e9,c=1e9,d=-1e9;m.atoms.forEach(t=>{a=Math.min(a,t.x);b=Math.max(b,t.x);c=Math.min(c,t.y);d=Math.max(d,t.y)});return{x0:a,x1:b,y0:c,y1:d}}
+const GC={oh:"#e8845a",cooh:"#5ab0e8",ester:"#5ecfa0"},SC={C:"#dde4f0",O:"#e85a5a",H:"#8d9bbb"},VY=.85;
+// Ritar molekylen i g med origo (ox,oy) och enhetslängd u. o: {hide,sel,click,onClick,plain}
+function draw(g,m,ox,oy,u,o){o=o||{};const hide=o.hide||new Set(),by={};m.atoms.forEach(a=>by[a.id]=a);
+  const P=a=>[ox+a.x*u,oy+a.y*u*VY];
+  m.bonds.forEach(([i,j,ord])=>{if(hide.has(i)||hide.has(j))return;const A=P(by[i]),B=P(by[j]);
+    const dx=B[0]-A[0],dy=B[1]-A[1],L=Math.hypot(dx,dy),nx=-dy/L,ny=dx/L;
+    for(let k=0;k<ord;k++){const off=(k-(ord-1)/2)*Math.max(3,u*.12);
+      g.appendChild(mkSvg("line",{x1:A[0]+nx*off,y1:A[1]+ny*off,x2:B[0]+nx*off,y2:B[1]+ny*off,stroke:"#8d9bbb","stroke-width":Math.max(1.2,u*.04)}))}});
+  m.atoms.forEach(a=>{if(hide.has(a.id))return;const[x,y]=P(a),r=Math.max(a.sym==="H"?5:6.5,u*(a.sym==="H"?.2:.25));
+    const sel=o.sel&&o.sel.has(a.id),grp=o.plain?"":a.grp;
+    g.appendChild(mkSvg("circle",{cx:x,cy:y,r:r+1.5,fill:"#0b0f1a"}));
+    const c=mkSvg("circle",{cx:x,cy:y,r:r+1.5,fill:sel?"rgba(232,199,90,.3)":grp?GC[grp]+"26":"none",stroke:sel?"#e8c75a":grp?GC[grp]:"none","stroke-width":sel?2.5:1.3});
+    g.appendChild(c);
+    g.appendChild(mkSvg("text",{x,y:y+r*.4,"text-anchor":"middle","font-size":r*1.25,fill:SC[a.sym],"pointer-events":"none"},a.sym));
+    if(o.click&&o.click.has(a.id)){c.style.cursor="pointer";c.addEventListener("click",()=>o.onClick(a))}});
+}
+function place(svg,m,cx,cy,u,o){const b=bounds(m),W=(b.x1-b.x0)*u;const g=mkSvg("g",{});svg.appendChild(g);
+  draw(g,m,cx-W/2-b.x0*u,cy,u,o);return{W,x0:cx-W/2,x1:cx+W/2}}
+function miniSvg(m,u){const b=bounds(m),pad=16,s=mkSvg("svg",{viewBox:`${b.x0*u-pad} ${b.y0*u*VY-pad} ${(b.x1-b.x0)*u+2*pad} ${(b.y1-b.y0)*u*VY+2*pad}`});
+  draw(s,m,0,0,u,{plain:false});return s}
+// ── Ämnen ──
+const nameAlc=n=>AN[n-1],nameAcid=n=>SN[n-1],nameEst=(na,nb)=>AL[nb-1]+ES[na-1];
+function pool(){const p=[];
+  for(let n=1;n<=4;n++)p.push({fam:"alc",n,name:nameAlc(n),mk:()=>alcohol(n)});
+  for(let n=1;n<=4;n++)p.push({fam:"acid",n,name:nameAcid(n),mk:()=>acid(n)});
+  for(let a=1;a<=4;a++)for(let b=1;b<=4;b++)p.push({fam:"est",na:a,nb:b,name:nameEst(a,b),mk:()=>ester(a,b)});
+  return p}
+const FAMNAME={alc:"alkohol",acid:"karboxylsyra",est:"ester"};
+const stage=$("stage"),side=$("side"),msg=$("msg");
+function svgBox(w,h){stage.innerHTML="";const s=mkSvg("svg",{viewBox:`0 0 ${w} ${h}`});stage.appendChild(s);return s}
+function setMsg(t,c){msg.className="msg "+(c||"info");msg.innerHTML=t}
+function btn(label,fn,cls){const b=document.createElement("button");b.innerHTML=label;if(cls)b.className=cls;b.onclick=fn;return b}
+function row(...els){const d=document.createElement("div");d.style.cssText="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0";els.forEach(e=>d.appendChild(e));return d}
+function lab(t){const d=document.createElement("div");d.className="label";d.style.marginTop="12px";d.textContent=t;return d}
+const tabs=["explore","quiz","ox","est"];
+function setTab(t){tabs.forEach(x=>$("t-"+x).classList.toggle("on",x===t));side.innerHTML="";({explore:explore,quiz:quiz,ox:oxTab,est:estTab})[t]()}
+tabs.forEach(t=>$("t-"+t).onclick=()=>setTab(t));
+
+// ── 1. Utforska ──
+let ex={fam:"alc",n:2,na:2,nb:1};
+function explore(){
+  side.innerHTML="";
+  side.appendChild(lab("Ämnesgrupp"));
+  side.appendChild(row(...[["alc","Alkoholer"],["acid","Organiska syror"],["est","Estrar"]].map(([k,t])=>btn(t,()=>{ex.fam=k;explore()},ex.fam===k?"on":""))));
+  const chainBtns=(key,names)=>row(...names.map((nm,i)=>btn(`C${i+1}`,()=>{ex[key]=i+1;explore()},ex[key]===i+1?"on":"")));
+  if(ex.fam==="est"){side.appendChild(lab("Syradel (antal kol)"));side.appendChild(chainBtns("na",SN));
+    side.appendChild(lab("Alkoholdel (antal kol)"));side.appendChild(chainBtns("nb",AN))}
+  else{side.appendChild(lab("Antal kolatomer"));side.appendChild(chainBtns("n",AN))}
+  let m,name,grp,txt;
+  if(ex.fam==="alc"){m=alcohol(ex.n);name=nameAlc(ex.n);grp="hydroxylgrupp, –OH";txt="Alkoholer slutar på <b>-ol</b>."}
+  else if(ex.fam==="acid"){m=acid(ex.n);name=nameAcid(ex.n);grp="karboxylgrupp, –COOH";txt="Karboxylsyror slutar på <b>-syra</b>."+(TRIV[name]?` Vardagsnamn: ${TRIV[name]}.`:"")}
+  else{m=ester(ex.na,ex.nb);name=nameEst(ex.na,ex.nb);grp="estergrupp, –COO–";
+    txt=`Bildas av <b>${nameAcid(ex.na)}</b> och <b>${nameAlc(ex.nb)}</b>. Namnet: alkylgruppen <b>${AL[ex.nb-1]}</b> (från alkoholen) + <b>${ES[ex.na-1]}</b> (från syran).`}
+  const ue=Math.min(54,520/((bounds(m).x1-bounds(m).x0)+1)),We=Math.max(300,((bounds(m).x1-bounds(m).x0)+1)*ue+70);
+  const s=svgBox(We,300);place(s,m,We/2,150,ue);
+  setMsg(`<b style="font-size:16px">${name}</b><br>Molekylformel: ${formula(m)}<br>Funktionell grupp: ${grp}<br>${txt}`)
+}
+
+// ── 2. Namnge (quiz) ──
+let qz;
+function quiz(){qz={i:0,score:0,done:false};nextQ()}
+function pick(a,k){const c=a.slice(),o=[];while(o.length<k&&c.length)o.push(c.splice(Math.floor(Math.random()*c.length),1)[0]);return o}
+function nextQ(){
+  const P=pool();side.innerHTML="";
+  if(qz.i>=10){stage.innerHTML="";side.appendChild(lab("Resultat"));setMsg(`Klart! Du fick <b>${qz.score} av 10</b> rätt.`,qz.score>=8?"good":"info");side.appendChild(btn("Försök igen",quiz,"primary"));return}
+  qz.i++;qz.answered=false;
+  const q=P[Math.floor(Math.random()*P.length)],type=Math.random()<.5?"name":"struct";
+  const similar=P.filter(x=>x!==q&&(x.fam===q.fam)&&(q.fam!=="est"||x.na===q.na||x.nb===q.nb));
+  const wrong=pick(similar.length>=3?similar:P.filter(x=>x!==q),3);
+  const opts=pick([q,...wrong],4);
+  side.appendChild(lab(`Fråga ${qz.i} av 10 · ${qz.score} rätt`));
+  const done=(ok,chosenEl)=>{if(qz.answered)return;qz.answered=true;if(ok)qz.score++;
+    side.firstChild.textContent=`Fråga ${qz.i} av 10 · ${qz.score} rätt`;
+    setMsg((ok?"Rätt! ":"Inte riktigt. ")+`Det är <b>${q.name}</b> (${FAMNAME[q.fam]}, ${formula(q.mk())}).`,ok?"good":"bad");
+    side.appendChild(btn(qz.i>=10?"Visa resultat":"Nästa →",nextQ,"primary"))};
+  if(type==="name"){
+    const s=svgBox(640,280);place(s,q.mk(),320,140,Math.min(54,520/((bounds(q.mk()).x1-bounds(q.mk()).x0)+1)),{plain:true});
+    setMsg("Vad heter ämnet?");
+    opts.forEach(o=>{const b=btn(o.name,()=>{done(o===q);b.classList.add(o===q?"good":"bad");[...side.querySelectorAll("button:not(.primary)")].forEach(x=>{x.disabled=true;if(x.textContent===q.name)x.classList.add("good")})});b.style.cssText="display:block;width:100%;margin:6px 0;text-align:left";side.appendChild(b)})
+  }else{
+    stage.innerHTML="";const grid=document.createElement("div");grid.style.cssText="display:grid;grid-template-columns:1fr 1fr;gap:10px";stage.appendChild(grid);
+    setMsg(`Vilken strukturformel är <b>${q.name}</b>?`);
+    opts.forEach(o=>{const m=o.mk(),b=document.createElement("button");b.style.cssText="padding:8px;display:flex;align-items:center;justify-content:center;min-height:110px";
+      b.appendChild(miniSvg(m,Math.min(30,230/((bounds(m).x1-bounds(m).x0)+1))));
+      b.onclick=()=>{if(qz.answered)return;done(o===q);b.classList.add(o===q?"good":"bad");if(o!==q)[...grid.children].forEach((x,i)=>{if(opts[i]===q)x.classList.add("good")});[...grid.children].forEach(x=>x.disabled=true)};grid.appendChild(b)})
+  }
+}
+
+// ── 3. Alkohol → syra ──
+let ox={n:2,removed:new Set(),done:false};
+function oxTab(){
+  side.innerHTML="";side.appendChild(lab("Välj alkohol"));
+  side.appendChild(row(...AN.map((nm,i)=>btn(nm,()=>{ox={n:i+1,removed:new Set(),done:false};oxTab()},ox.n===i+1?"on":""))));
+  const ctl=document.createElement("div");ctl.id="ctl";side.appendChild(ctl);
+  drawOx()
+}
+function drawOx(){
+  const al=alcohol(ox.n),m=ox.done?acid(ox.n):al,u=Math.min(56,520/((bounds(al).x1-bounds(al).x0)+1));
+  const W=Math.max(300,((bounds(al).x1-bounds(al).x0)+1)*u+70),cx=W/2;
+  const s=svgBox(W,300);
+  const opts={};
+  if(!ox.done){opts.hide=ox.removed;opts.click=new Set(al.ox.filter(id=>!ox.removed.has(id)));opts.onClick=a=>{ox.removed.add(a.id);drawOx()}}
+  const p=place(s,m,cx,150,u,opts);
+  const t=mkSvg("text",{x:cx,y:36,"text-anchor":"middle","font-size":15,fill:"#dde4f0"},ox.done?nameAcid(ox.n):nameAlc(ox.n));s.appendChild(t);
+  const ctl=$("ctl");ctl.innerHTML="";
+  if(ox.done){
+    setMsg(`<b>${nameAlc(ox.n)} → ${nameAcid(ox.n)}</b><br>Oxidation: alkoholens C–OH-kol har förlorat två väten och fått en dubbelbunden syreatom (=O). Gruppen –CH₂OH har blivit <b>–COOH</b>, karboxylgruppen.<br><br><b>${nameAlc(ox.n)} + 2 [O] → ${nameAcid(ox.n)} + vatten</b><br>${formula(al)} + 2 [O] → ${formula(acid(ox.n))} + H₂O`,"good");
+    ctl.appendChild(btn("Börja om",()=>{ox.removed=new Set();ox.done=false;drawOx()}));return}
+  const k=ox.removed.size;
+  ctl.appendChild(lab("Steg"));
+  if(k<2)setMsg(`<b>Steg ${k+1}:</b> Klicka på en av de två väteatomerna på kolet som sitter bredvid –OH (de är markerade för klick). Vid oxidation lämnar de molekylen.`+(k===1?"<br>En kvar!":""));
+  else setMsg("<b>Steg 3:</b> Kolet har nu två lediga bindningar. Det binder in ett syre med dubbelbindning (=O).");
+  ctl.appendChild(btn("Sätt dit syre (=O)",()=>{ox.done=true;drawOx()},k<2?"":"primary")).disabled=k<2;
+  ctl.appendChild(btn("Börja om",()=>{ox.removed=new Set();drawOx()})).style.marginLeft="6px";
+}
+
+// ── 4. Syra + alkohol → ester ──
+let es={na:2,nb:1,selA:false,selB:false,done:false};
+function estTab(){
+  side.innerHTML="";
+  side.appendChild(lab("Välj syra"));side.appendChild(row(...SN.map((nm,i)=>btn(nm,()=>{es={na:i+1,nb:es.nb,selA:false,selB:false,done:false};estTab()},es.na===i+1?"on":""))));
+  side.appendChild(lab("Välj alkohol"));side.appendChild(row(...AN.map((nm,i)=>btn(nm,()=>{es={na:es.na,nb:i+1,selA:false,selB:false,done:false};estTab()},es.nb===i+1?"on":""))));
+  const ctl=document.createElement("div");ctl.id="ctl";side.appendChild(ctl);
+  drawEst()
+}
+function drawEst(){
+  const ac=acid(es.na),al=alcohol(es.nb),er=ester(es.na,es.nb),w=water();
+  const span=m=>bounds(m).x1-bounds(m).x0+1,u=Math.min(40,560/Math.max(span(ac),span(al),span(er)+3));
+  const W=Math.max(300,Math.max(span(ac),span(al),es.done?span(er)+4:0)*u+70),cx=W/2;
+  const s=svgBox(W,es.done?450:340);
+  const txt=(x,y,t,c)=>s.appendChild(mkSvg("text",{x,y,"text-anchor":"middle","font-size":13,fill:c||"#8d9bbb"},t));
+  const selA=new Set(es.selA?[ac.oh.o,ac.oh.h]:[]),selB=new Set(es.selB?[al.oh.h]:[]);
+  txt(cx,20,"Syra: "+nameAcid(es.na));
+  place(s,ac,cx,76,u,es.done?{hide:new Set([ac.oh.o,ac.oh.h]),sel:selA}:{sel:selA,click:new Set([...ac.atoms.map(a=>a.id)]),onClick:a=>{
+    if(a.id===ac.oh.o||a.id===ac.oh.h){es.selA=true;drawEst()}
+    else setMsg("Nej – titta på karboxylgruppen (–COOH). Det är <b>–OH</b> i syran som lämnar, inte den här atomen.","bad")}});
+  txt(cx,134,"+","#dde4f0");
+  txt(cx,156,"Alkohol: "+nameAlc(es.nb));
+  place(s,al,cx,212,u,es.done?{hide:new Set([al.oh.h])}:{sel:selB,click:new Set(al.atoms.map(a=>a.id)),onClick:a=>{
+    if(a.id===al.oh.h){es.selB=true;drawEst()}
+    else setMsg("Nej – syran tar inte med sig den här atomen. Välj <b>väteatomen i alkoholens –OH</b>.","bad")}});
+  const ctl=$("ctl");ctl.innerHTML="";
+  if(es.done){
+    const t0=270;s.appendChild(mkSvg("line",{x1:20,y1:t0-12,x2:W-20,y2:t0-12,stroke:"#263050"}));
+    txt(cx,t0+8,"⇌   (katalysator: H⁺, till exempel svavelsyra)","#e8c75a");
+    const eW=span(er)*u,wW=span(w)*u,gap=60,tot=eW+gap+wW,left=cx-tot/2;
+    txt(left+eW/2,t0+34,"Ester: "+nameEst(es.na,es.nb),"#5ecfa0");
+    place(s,er,left+eW/2,t0+88,u);
+    txt(left+eW+gap+wW/2,t0+34,"Vatten");
+    place(s,w,left+eW+gap+wW/2,t0+88,u*1.2,{plain:true});
+    txt(left+eW+gap/2,t0+92,"+","#dde4f0");
+    setMsg(`<b>${nameAcid(es.na)} + ${nameAlc(es.nb)} ⇌ ${nameEst(es.na,es.nb)} + vatten</b><br>${formula(ac)} + ${formula(al)} ⇌ ${formula(er)} + H₂O<br>Syrans –OH och alkoholens –H bildar vatten. Resten sätts ihop till en <b>ester</b> med den gröna estergruppen –COO–. Namnet: <b>${AL[es.nb-1]}</b> (alkoholen) + <b>${ES[es.na-1]}</b> (syran).`,"good");
+    ctl.appendChild(btn("Börja om",()=>{es.selA=es.selB=es.done=false;drawEst()}));return}
+  ctl.appendChild(lab("Steg"));
+  if(!es.selA)setMsg("<b>Steg 1:</b> Klicka på <b>–OH</b> i syrans karboxylgrupp – den del som lämnar.");
+  else if(!es.selB)setMsg("<b>Steg 2:</b> Klicka på <b>väteatomen</b> i alkoholens –OH. Den bildar vatten tillsammans med syrans –OH.");
+  else setMsg("<b>Steg 3:</b> Nu kan syran och alkoholen kopplas ihop och vatten lämnar molekylen.");
+  const b=btn("Bilda ester + vatten",()=>{es.done=true;drawEst()},es.selA&&es.selB?"primary":"");b.disabled=!(es.selA&&es.selB);ctl.appendChild(b);
+  const r=btn("Börja om",()=>{es.selA=es.selB=false;drawEst()});r.style.marginLeft="6px";ctl.appendChild(r);
+}
+setTab("explore");
+
+</script></body></html>
