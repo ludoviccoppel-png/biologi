@@ -557,12 +557,6 @@ const LAX_DATA = {
         "D"
       ]
     },
-      "correct": [
-        "A",
-        "B",
-        "D"
-      ]
-    },
     {
       "id": "evolution-1",
       "type": "open",
