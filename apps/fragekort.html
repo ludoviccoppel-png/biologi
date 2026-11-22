@@ -174,6 +174,74 @@ const FIG={
  "periodiska9-4h":()=>table((p,g)=>(g>=13||(p===1&&g===1))?"#f6c9c9":"#bcd3f5",600,240,dot(30,212,8,"#bcd3f5")+tx(46,217,"metaller → positiva joner",{s:14})+dot(300,212,8,"#f6c9c9")+tx(316,217,"icke-metaller → negativa joner",{s:14})+tx(580,18,"förenklad bild",{s:11,a:"end",c:C.mut,w:500}))
 };
 
+/* ── Figurer: Kraft och rörelse ── */
+const KC={g:"#dc4a4a",n:"#1f9d6b",d:"#3b9ae1",f:"#e8923a",v:"#7a5cd6",wood:"#c9a46c",gr:"#8d91a8"};
+function fa(x1,y1,x2,y2,c,w=4){const a=Math.atan2(y2-y1,x2-x1),h=11,[bx,by]=[x2-h*Math.cos(a),y2-h*Math.sin(a)],[px,py]=[-Math.sin(a)*6,Math.cos(a)*6];
+  return `<line x1="${x1}" y1="${y1}" x2="${bx}" y2="${by}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/><polygon points="${x2},${y2} ${bx+px},${by+py} ${bx-px},${by-py}" fill="${c}"/>`}
+const car=(x,y)=>`<rect x="${x-50}" y="${y-20}" width="100" height="20" rx="6" fill="#4f5bef"/><path d="M${x-28} ${y-20}l9-16h30l12 16z" fill="#6f79f2"/><rect x="${x-17}" y="${y-33}" width="13" height="11" fill="#dfe3ff"/><rect x="${x+1}" y="${y-33}" width="14" height="11" fill="#dfe3ff"/>${dot(x-28,y,11,"#2a2d45")}${dot(x+28,y,11,"#2a2d45")}${dot(x-28,y,4,"#aaa")}${dot(x+28,y,4,"#aaa")}`;
+const person=(x,y,c="#2a2d45")=>dot(x,y-26,7,c)+`<line x1="${x}" y1="${y-19}" x2="${x}" y2="${y}" stroke="${c}" stroke-width="3"/><line x1="${x}" y1="${y-14}" x2="${x+9}" y2="${y-6}" stroke="${c}" stroke-width="3"/><line x1="${x}" y1="${y}" x2="${x-7}" y2="${y+13}" stroke="${c}" stroke-width="3"/><line x1="${x}" y1="${y}" x2="${x+7}" y2="${y+13}" stroke="${c}" stroke-width="3"/>`;
+const rect=(x,y,w,h,f,st="",rx=3)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${f}" ${st}/>`;
+const gtx=(x,y,t,c,o={})=>tx(x,y,t,{s:o.s||14,c,a:o.a||"middle",w:o.w||700});
+function seesaw(xm,xc,hm,hc,extra){ // gungbräda med pivot i x=230
+  const y=120;let s=ln(40,y+30,430,y+30,{c:C.ring,w:3});
+  s+=`<polygon points="230,${y} 212,${y+30} 248,${y+30}" fill="${C.mut}"/>`+rect(60,y-7,340,9,KC.wood,"",4);
+  s+=person(xm,y-8,"#2a2d45")+person(xc,y-8,"#7a5cd6").replace(/r="7"/,'r="6"');
+  return s}
+const FK={
+ "kraft7-1":()=>svg(470,200,car(235,120)+fa(235,100,235,176,KC.g,5)+gtx(235,194,"Tyngd = 10 000 N",KC.g,{s:16})+tx(235,32,"massa 1000 kg",{a:"middle",s:16})+tx(235,54,"tyngd ≈ 10 · massan i kg",{a:"middle",s:15,c:C.mut,w:500})+ln(90,131,380,131,{c:C.ring,w:3})),
+ "kraft7-3":()=>svg(470,230,ln(70,150,400,150,{c:C.gr,w:4})+car(235,139)+fa(235,112,235,52,KC.n,5)+fa(235,122,235,182,KC.g,5)+gtx(235,40,"Normalkraft 10 000 N",KC.n,{s:15})+gtx(235,205,"Tyngdkraft 10 000 N",KC.g,{s:15})+tx(410,112,"lika stora",{s:14,c:C.mut,w:500})+tx(410,132,"→ tar ut",{s:14,c:C.mut,w:500})+tx(410,152,"varandra",{s:14,c:C.mut,w:500})),
+ "kraft7-4":()=>{const L=(x,y)=>dot(x,y,15,"#e8d34a",`stroke="#2a2d45" stroke-width="2"`);let s=ln(20,28,230,28,{c:C.gr,w:3})+ln(70,28,70,95,{c:C.gr,w:2.500})+ln(210,28,210,70,{c:C.gr,w:2.500})+ln(210,88,210,96,{c:C.gr,w:2.500,d:"3 5"})+ln(340,160,460,160,{c:C.gr,w:3});
+   s+=L(70,110)+fa(70,95,70,40,KC.d)+fa(70,110,70,165,KC.g)+gtx(70,190,"a) hänger stilla",C.ink,{s:13})+gtx(70,208,"dragkraft = tyngdkraft",C.mut,{s:12,w:500});
+   s+=L(210,130)+fa(210,130,210,185,KC.g)+gtx(210,210,"b) faller",C.ink,{s:13})+gtx(210,226,"bara tyngdkraft",C.mut,{s:12,w:500});
+   s+=L(400,145)+fa(400,130,400,75,KC.n)+fa(400,145,400,200,KC.g)+gtx(400,222,"c) står på golvet",C.ink,{s:13})+gtx(400,240,"normalkraft = tyngdkraft",C.mut,{s:12,w:500});
+   s+=dot(28,266,6,KC.g)+tx(40,271,"tyngdkraft",{s:13,c:KC.g})+dot(150,266,6,KC.d)+tx(162,271,"dragkraft",{s:13,c:KC.d})+dot(260,266,6,KC.n)+tx(272,271,"normalkraft",{s:13,c:KC.n});
+   return svg(470,285,s)},
+ "kraft7-6":()=>{let s=ln(20,152,450,152,{c:"#cfe6fb",w:14})+tx(26,188,"snö",{s:13,c:C.mut,w:500});
+   s+=`<path d="M60 138 H350 Q372 138 392 118 L392 130 Q372 146 350 146 H60 z" fill="#c7d2fe"/>`;
+   s+=rect(60,132,95,8,"#7fc8f8","",2)+rect(155,132,100,8,KC.f,"",2)+rect(255,132,95,8,"#7fc8f8","",2);
+   s+=ln(108,128,108,96,{d:"3 3",c:"#555"})+gtx(108,88,"glidvalla",C.ink,{s:15})+ln(205,128,205,96,{d:"3 3",c:"#555"})+gtx(205,88,"fästvalla",KC.f,{s:15})+ln(302,128,302,96,{d:"3 3",c:"#555"})+gtx(302,88,"glidvalla",C.ink,{s:15});
+   s+=fa(260,176,170,176,KC.d,3)+tx(268,181,"du trycker bakåt mot snön",{s:13,c:KC.d})+fa(170,200,260,200,KC.n,3)+tx(268,205,"friktion framåt",{s:13,c:KC.n});
+   return svg(480,220,s)},
+ "kraft7-9":()=>svg(470,220,seesaw(120,350)+fa(120,110,120,170,KC.g,4)+fa(350,110,350,140,KC.g,4)+gtx(120,190,"Man 60 kg",C.ink,{s:15})+gtx(120,208,"60 · 10 = 600 N",KC.g,{s:15})+gtx(350,190,"Barn 30 kg",C.ink,{s:15})+gtx(350,208,"30 · 10 = 300 N",KC.g,{s:15}),
+ ),
+ "kraft7-10":()=>{let s=seesaw(150,390);s+=fa(150,110,150,170,KC.g,4)+fa(390,110,390,140,KC.g,4);
+   s+=ln(150,195,230,195,{c:C.mut})+ln(230,195,390,195,{c:C.mut})+tx(190,190,"L = 1 m",{a:"middle",s:13})+tx(310,190,"2,0 m",{a:"middle",s:13})+gtx(150,70,"600 N",KC.g,{s:14})+gtx(390,70,"300 N",KC.g,{s:14})
+   +tx(235,225,"600 N · 1 m = 600 Nm  =  300 N · 2 m = 600 Nm",{a:"middle",s:15})+tx(235,247,"lika kraftmoment → jämvikt",{a:"middle",s:14,c:KC.n});
+   return svg(470,260,s)},
+ "kraft7-11":()=>{let s=rect(30,160,300,34,KC.wood,"",3)+tx(40,182,"trä",{s:13,c:"#6b4e1f"})+ln(70,118,70,168,{c:C.gr,w:4});
+   s+=rect(46,108,258,9,"#4f5bef","",4)+`<polygon points="130,117 114,148 146,148" fill="${C.mut}" transform="translate(0,0)"/>`;
+   s=s.replace('<polygon points="130,117 114,148 146,148"','<polygon points="130,117 114,160 146,160"');
+   s+=fa(70,104,70,50,KC.d,6)+gtx(70,38,"stor kraft på spiken",KC.d,{s:13})+fa(300,50,300,102,KC.g,3)+gtx(300,38,"liten kraft från handen",KC.g,{s:13});
+   s+=ln(70,208,130,208,{c:C.mut})+gtx(100,226,"kort avstånd",C.mut,{s:12,w:500})+ln(130,208,300,208,{c:C.mut})+gtx(215,226,"långt avstånd",C.mut,{s:12,w:500})+gtx(130,177,"vridpunkt",C.mut,{s:12,w:500}).replace(/y="177"/,'y="180"');
+   return svg(470,240,s+tx(345,110,"hävstång",{s:18}))},
+ "kraft7-12":()=>{let s=ln(30,60,440,60,{c:C.gr,w:3});[0,1,2,3].forEach(i=>{const x=60+i*115;s+=ln(x,52,x,68,{c:C.gr,w:2})+gtx(x,94,i*150+" km",C.ink,{s:14})+gtx(x,114,i+" h",C.mut,{s:13,w:500})});
+   [0,1,2].forEach(i=>{const x=60+i*115;s+=fa(x+6,40,x+109,40,KC.d,3)+gtx(x+57,32,"150 km",KC.d,{s:12})});
+   s+=rect(160,130,150,22,"#4f5bef","",5)+rect(312,134,40,18,"#6f79f2","",4)+dot(180,156,6,"#2a2d45")+dot(230,156,6,"#2a2d45")+dot(280,156,6,"#2a2d45")+dot(335,156,6,"#2a2d45");
+   s+=gtx(235,190,"fart = sträcka / tid = 450 km / 3 h = 150 km/h",C.ink,{s:15});return svg(470,205,s)},
+ "kraft7-13":()=>{let s=ln(40,120,430,120,{c:C.gr,w:3})+gtx(40,142,"0 m",C.ink,{s:13})+gtx(430,142,"60 m",C.ink,{s:13})+dot(380,100,11,"#d8e84a",`stroke="#2a2d45" stroke-width="1.5"`);
+   s+=ln(330,92,300,92,{c:KC.d,w:2})+ln(335,100,295,100,{c:KC.d,w:2})+ln(330,108,305,108,{c:KC.d,w:2})+fa(60,70,400,70,KC.d,3)+gtx(230,56,"60 m på 1 s",KC.d,{s:15})+gtx(235,180,"fart = 60 m / 1 s = 60 m/s",C.ink,{s:16});
+   return svg(470,200,s+dot(60,100,11,"#d8e84a",`stroke="#2a2d45" stroke-width="1.5" opacity=".4"`))},
+ "kraft7-14":()=>{let s=dot(50,100,22,KC.f)+tx(50,142,"ljus",{a:"middle",s:13,c:C.mut});
+   s+=fa(80,100,420,100,"#e8c75a",5)+gtx(250,80,"1 minut = 60 s",C.ink,{s:15})+gtx(250,128,"300 000 km/s · 60 s",C.ink,{s:15})+gtx(250,170,"= 18 000 000 km",KC.d,{s:20})+tx(250,194,"(18 miljoner km)",{a:"middle",s:13,c:C.mut,w:500});
+   return svg(470,205,s)},
+ "kraft7-15":()=>{let s=person(40,86)+ln(60,100,210,100,{c:KC.d,w:5})+gtx(135,86,"2 km",KC.d,{s:15})+gtx(135,126,"20 min = ⅓ h",C.ink,{s:13,w:500});
+   s+=tx(20,160,"på 1 timme (3 · 20 min):",{s:13,c:C.mut,w:500});[0,1,2].forEach(i=>{s+=ln(40+i*155,185,40+i*155+145,185,{c:KC.d,w:5})+gtx(40+i*155+72,176,"2 km",KC.d,{s:12})});
+   return svg(520,235,s+gtx(260,222,"3 · 2 km = 6 km på 1 h → 6 km/h",C.ink,{s:16}))},
+ "kraft7-16":()=>{let s=ln(60,170,60,30,{c:C.ink,w:2})+ln(60,170,420,170,{c:C.ink,w:2})+tx(64,26,"fart (m/s)",{s:12,c:C.mut,w:500})+tx(428,164,"tid (s)",{a:"end",s:12,c:C.mut,w:500});
+   s+=ln(60,170,380,50,{c:KC.d,w:4})+ln(380,50,380,170,{c:C.ring,w:1.5,d:"4 3"})+ln(60,50,380,50,{c:C.ring,w:1.5,d:"4 3"})+gtx(380,188,"10 s",C.ink,{s:13})+tx(34,54,"100",{s:13})+tx(44,174,"0",{s:13});
+   s+=tx(235,132,"a = 100 / 10",{s:17})+tx(235,156,"= 10 m/s²",{s:17,c:KC.d});return svg(470,205,s)},
+ "kraft7-17":()=>{let s=ln(20,150,460,150,{c:C.gr,w:3})+rect(180,150,70,10,"#c9c1b0","",2)+tx(215,176,"grus",{a:"middle",s:13,c:C.mut});
+   s+=rect(62,128,52,9,"#c0392b","",4)+person(95,128)+fa(70,92,130,92,KC.d,3)+gtx(100,80,"hög fart",KC.d,{s:13});
+   s+=rect(176,128,52,9,"#c0392b","",4)+`<path d="M205 96 Q300 40 360 138" fill="none" stroke="${KC.v}" stroke-width="2.500" stroke-dasharray="5 4"/>`+person(205,128).replace(/#2a2d45/g,"#2a2d45").replace("",""); 
+   s+=ln(352,138,376,138,{c:"#2a2d45",w:3})+dot(380,134,7,"#2a2d45")+gtx(300,62,"tröghet: kroppen fortsätter framåt",KC.v,{s:13})+fa(335,76,342,112,KC.g,3)+tx(350,96,"tyngdkraft",{s:12,c:KC.g})+fa(420,172,350,172,KC.f,3)+tx(425,192,"friktion bromsar",{a:"end",s:12,c:KC.f});
+   return svg(470,205,s)},
+ "kraft7-18":()=>{let s=dot(190,115,28,"#e9ecf7",`stroke="#2a2d45" stroke-width="2"`)+dot(190,86,14,"#e9ecf7",`stroke="#2a2d45" stroke-width="2"`)+rect(185,90,10,7,"#4f5bef","",2)+rect(300,108,26,12,"#7a7e94","",3);
+   s+=fa(232,50,302,50,KC.g,4)+fa(148,50,78,50,KC.g,4)+gtx(268,38,"kraft F",KC.g,{s:13})+gtx(112,38,"lika stor F",KC.g,{s:13});
+   s+=fa(330,114,440,114,KC.d,5)+gtx(385,100,"verktyget: stor fart",KC.d,{s:13})+fa(150,150,110,150,KC.d,3).replace(/y1="150"/,'y1="150"')+gtx(118,172,"astronauten: liten fart",KC.d,{s:13});
+   return svg(470,200,s+tx(235,194,"kraft och motkraft (Newtons 3:e lag)",{a:"middle",s:13,c:C.mut,w:500}))}
+};
+Object.assign(FIG,FK);
+
 /* ───────── Kort ───────── */
 const frontHtml=q=>{
   const long=q.text.length>90?" long":"";
