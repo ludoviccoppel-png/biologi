@@ -5,6 +5,7 @@
 
 const Lax = (() => {
   let questions = [];
+  let ordered = false; // true = frågorna kommer i den ordning de ligger i lax-data.js (data-ordered="true" på kortet)
   let used = new Set();
   let records = [];   // en post per visad fråga, i den ordning de visats
   let view = -1;      // index i records för frågan som visas just nu
@@ -39,6 +40,7 @@ const Lax = (() => {
     card.classList.add("active");
 
     questions = [...LAX_DATA[topic]];
+    ordered = card.dataset.ordered === "true";
     used.clear();
     records = [];
     view = -1;
@@ -59,7 +61,7 @@ const Lax = (() => {
   function newQuestion() {
     if (questions.every(q => used.has(q.id))) used.clear();
     const pool = questions.filter(q => !used.has(q.id));
-    const q = pool[Math.floor(Math.random() * pool.length)];
+    const q = ordered ? pool[0] : pool[Math.floor(Math.random() * pool.length)];
     used.add(q.id);
     records.push({
       q, max: maxFor(q), status: "new", pts: 0, pip: null,

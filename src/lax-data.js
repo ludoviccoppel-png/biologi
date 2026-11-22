@@ -464,6 +464,129 @@ const LAX_DATA = {
     },
   ],
 
+  // Evolution: fem kryssfrågor + fyra provfrågor (åk 7 skarpt prov, åk 7 omprov, åk 9 prov, åk 9 omprov).
+  // Poängfördelningen i fråga 1 är ett förslag (originalet saknades).
+  evolution: [
+    {
+      "id": "evolution-k1",
+      "type": "multi",
+      "halfCredit": true,
+      "text": "Begrepp i evolutionen: Kryssa i alla påståenden som är rätta.",
+      "opts": {
+        "A": "Variation betyder att individer i en art skiljer sig något åt i sina egenskaper.",
+        "B": "Mutationer är slumpmässiga förändringar i arvsmassan.",
+        "C": "Mutationer uppstår för att individen behöver en ny egenskap.",
+        "D": "Naturligt urval innebär att individer med fördelaktiga egenskaper oftare överlever och får fler ungar.",
+        "E": "Egenskaper som en individ lär sig under sitt liv ärvs av ungarna."
+      },
+      "correct": [
+        "A",
+        "B",
+        "D"
+      ]
+    },
+    {
+      "id": "evolution-k2",
+      "type": "multi",
+      "halfCredit": true,
+      "text": "Naturligt urval: Kryssa i alla påståenden som är rätta.",
+      "opts": {
+        "A": "Naturligt urval kräver att det finns variation inom arten.",
+        "B": "Naturligt urval fungerar bara om egenskaperna går i arv.",
+        "C": "Individer kan bestämma sig för att få en ny egenskap som passar miljön.",
+        "D": "Naturligt urval bestämmer vilka mutationer som uppstår.",
+        "E": "Naturligt urval gör alltid att arten blir starkare och större."
+      },
+      "correct": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": "evolution-k3",
+      "type": "multi",
+      "halfCredit": true,
+      "text": "Anpassning: Kryssa i alla påståenden som är rätta.",
+      "opts": {
+        "A": "En art är anpassad när den har egenskaper som passar miljön den lever i.",
+        "B": "Anpassningar uppstår under många generationer.",
+        "C": "Fjällharen blev vit på vintern för att den ville vara osynlig.",
+        "D": "Om miljön förändras kan en tidigare fördel bli en nackdel.",
+        "E": "Anpassning betyder att varje individ ändrar sina gener när miljön förändras."
+      },
+      "correct": [
+        "A",
+        "B",
+        "D"
+      ]
+    },
+    {
+      "id": "evolution-k4",
+      "type": "multi",
+      "halfCredit": true,
+      "text": "Antibiotikaresistens: Kryssa i alla påståenden som är rätta.",
+      "opts": {
+        "A": "Resistenta bakterier har fått sin egenskap genom en slumpmässig mutation.",
+        "B": "Antibiotikan gör att bakterierna muterar för att kunna överleva.",
+        "C": "Vid behandling med antibiotika överlever de resistenta bakterierna oftare än de känsliga.",
+        "D": "Ju mer antibiotika som används, desto större andel av bakteriepopulationen kan bli resistent.",
+        "E": "De resistenta bakterierna för sin egenskap vidare till sina avkomlingar."
+      },
+      "correct": [
+        "A",
+        "C",
+        "D",
+        "E"
+      ]
+    },
+    {
+      "id": "evolution-k5",
+      "type": "multi",
+      "halfCredit": true,
+      "text": "Björkmätaren: Kryssa i alla påståenden som är rätta.",
+      "opts": {
+        "A": "De ljusa fjärilarna syntes dåligt för fåglar när stammarna var ljusa.",
+        "B": "När stammarna blev svarta av sot överlevde de mörka fjärilarna oftare.",
+        "C": "De ljusa fjärilarna blev mörka när de satt på sotiga stammar.",
+        "D": "När luften blev renare igen kunde de ljusa fjärilarna bli vanligare igen.",
+        "E": "Mörka björkmätare kunde inte finnas alls innan fabrikerna började släppa ut sot."
+      },
+      "correct": [
+        "A",
+        "B",
+        "D"
+      ]
+    },
+    {
+      "id": "evolution-1",
+      "type": "open",
+      "points": 4,
+      "text": "Fjällharen har brun päls på sommaren och vit päls på vintern. Förklara hur det kan ha gått till när fjällharen under många generationer fick vit vinterpäls. Använd begreppen variation, mutation, naturligt urval och anpassning. Beskriv också vad som kan hända med fjällharen om snön kommer allt senare på hösten på grund av ett varmare klimat.",
+      "modelAnswer": "1 p: Det finns variation i pälsfärg, och den uppstår bland annat genom mutationer. 1 p: Ljusa harar syntes sämre i snön och togs mer sällan av rovdjur (naturligt urval). 1 p: De överlevde, fick fler ungar och förde generna vidare. Efter många generationer blev arten anpassad med vit vinterpäls. 1 p: Om snön kommer senare syns de vita hararna på den bruna marken och blir lättare byten. Arten kan minska, eller så gynnas harar som byter päls senare, om den variationen finns."
+    },
+    {
+      "id": "evolution-2",
+      "type": "open",
+      "points": 4,
+      "text": "Björkmätaren är en fjäril som sitter stilla på trädstammar under dagen. Förr var nästan alla björkmätare i England ljusa, och de syntes dåligt mot de ljusa björkstammarna. När fabrikerna började släppa ut mycket sot blev stammarna svarta. Efter några decennier var de flesta björkmätarna i området mörka. Förklara hur det kan ha gått till att björkmätarna blev mörka. Använd begreppen variation, mutation, naturligt urval och arv. Beskriv också vad du tror hände när luften blev renare igen och stammarna blev ljusa.",
+      "modelAnswer": "1 p: Det fanns variation i färg bland björkmätarna. Mörka individer kan ha uppstått genom en mutation. 1 p: På svarta stammar syntes de ljusa fjärilarna och blev lättare uppätna av fåglar, medan de mörka klarade sig bättre (naturligt urval). 1 p: De mörka överlevde, fick fler ungar och förde anlaget för mörk färg vidare (arv). Efter många generationer var de flesta mörka. 1 p: När stammarna blev ljusa igen syntes de mörka bäst, så de ljusa gynnades och blev vanligare igen."
+    },
+    {
+      "id": "evolution-3",
+      "type": "open",
+      "points": 3,
+      "text": "När antibiotika används mycket, till exempel när det skrivs ut i onödan eller ges till friska djur, blir allt fler bakterier resistenta. Det betyder att antibiotikan inte längre dödar dem. Förklara med hjälp av evolutionsteorin hur en bakteriepopulation kan bli resistent. Använd begreppen mutation, variation, naturligt urval och arv.",
+      "modelAnswer": "1 p: Det finns variation mellan bakterierna. Genom slumpmässiga mutationer får några få bakterier en egenskap som gör dem motståndskraftiga mot antibiotikan. 1 p: När antibiotika används dör de känsliga bakterierna, medan de resistenta överlever. Det är naturligt urval. 1 p: De resistenta bakterierna förökar sig och för anlaget vidare till sina avkommor (arv). Ju mer antibiotika som används, desto större andel av populationen blir resistent."
+    },
+    {
+      "id": "evolution-4",
+      "type": "open",
+      "points": 3,
+      "text": "Björkmätaren är en fjäril som vilar på trädstammar under dagen. Förr var nästan alla björkmätare i England ljusa, och de syntes dåligt mot de ljusa björkstammarna. När fabrikerna under 1800-talet gjorde trädstammarna svarta av sot blev de mörka björkmätarna allt vanligare. Förklara med hjälp av evolutionsteorin varför de mörka björkmätarna blev vanligare. Använd begreppen mutation, variation, naturligt urval och arv.",
+      "modelAnswer": "1 p: Det finns variation, och den uppstår genom mutationer (mörka björkmätare har uppstått genom mutationer). 1 p: När stammarna blev svarta av sot syntes de ljusa fjärilarna tydligt och åts upp av fåglar, medan de mörka var kamouflerade. De mörka överlevde oftare och fick fler ungar (naturligt urval). 1 p: Den mörka färgen sitter i generna och förs vidare till ungarna (arv). Efter många generationer blev de mörka björkmätarna vanligast."
+    },
+  ],
+
   evolution7: [
     {
       id: "evolution7-1",
