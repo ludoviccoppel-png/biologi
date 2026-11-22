@@ -889,6 +889,124 @@ const LAX_DATA = {
   ],
 
   // ── Prov ──────────────────────────────────────────────────────────
+  // ── Läxförhör fysik: Kraft och rörelse åk 7 ──────────────────────
+  // 14 skrivfrågor ur läxförhöret (frågorna 1, 3, 4, 6 och 9–18). Facit är hämtat ur häftets lösningsförslag.
+  // Fråga 4 (rita krafter) saknade lösningsförslag i häftet; facit där är skrivet av Claude.
+  kraft7: [
+    {
+      id: "kraft7-1",
+      type: "open",
+      points: 1,
+      text: "Vad är tyngden av en 1000 kg tung bil på jorden?",
+      modelAnswer:
+        "Tyngdkraften på jorden är ungefär 10 gånger massan i kg. Tyngden är 10 000 N.",
+    },
+    {
+      id: "kraft7-3",
+      type: "open",
+      points: 2,
+      text: "Vad är normalkraften från vägen på en 1000 kg tung bil på jorden? Förklara varför.",
+      modelAnswer:
+        "Normalkraften är 10 000 N. 1 p: Tyngdkraften på bilen är 10 000 N och drar bilen nedåt. 1 p: Bilen står still och går inte genom vägen, så det måste finnas en motriktad kraft, normalkraften, som är riktad uppåt och lika stor som tyngdkraften, och därför tar ut den.",
+    },
+    {
+      id: "kraft7-4",
+      type: "open",
+      points: 3,
+      text: "Rita krafterna som verkar på en lampa i tre fall (uppgiften går inte att rita i appen, så förklara med ord vilka krafter som verkar och hur stora de är): a) lampan hänger stilla i en tråd från taket, b) lampan faller fritt efter att tråden har gått av, c) lampan står stilla på golvet.",
+      modelAnswer:
+        "1 p: a) Tyngdkraften (Fg) verkar nedåt och en lika stor dragkraft från tråden verkar uppåt. Krafterna tar ut varandra och lampan hänger stilla. 1 p: b) Bara tyngdkraften verkar nedåt (ingen kraft från tråden, luftmotståndet bortses från), så lampan accelererar nedåt. 1 p: c) Tyngdkraften verkar nedåt och en lika stor normalkraft (n) från golvet verkar uppåt. Krafterna tar ut varandra och lampan står stilla.",
+    },
+    {
+      id: "kraft7-6",
+      type: "open",
+      points: 2,
+      text: "På längdskidor vallar man mitten av undersidan med fästvalla som liknar klister, och fram- och bakdelen av undersidan med glidvalla. Varför är det så?",
+      modelAnswer:
+        "1 p: Man vill ha bra glid framåt, och för att skidorna ska glida är det glidvalla fram och bak. 1 p: För att ta sig fram måste man trycka bakåt mot snön, och då får skidan inte glida. Det krävs bra friktion, och när man trycker på skidan pressas mitten med fästvallan mot snön. När skidan glider böjs mitten upp så att så lite fästvalla som möjligt är i kontakt med snön.",
+    },
+    {
+      id: "kraft7-9",
+      type: "open",
+      points: 1,
+      text: "På en gungbräda sitter en man som väger 60 kg och ett barn som väger 30 kg. Räkna mannens och barnets tyngd. Det är tyngdkraften som verkar på gungbrädan.",
+      modelAnswer:
+        "Tyngden är ungefär 10 gånger massan i kg. Mannen: 600 N. Barnet: 300 N.",
+    },
+    {
+      id: "kraft7-10",
+      type: "open",
+      points: 2,
+      text: "På en gungbräda sitter en man som väger 60 kg (tyngd 600 N) på avståndet L från vridpunkten, och ett barn som väger 30 kg (tyngd 300 N) 2,0 m från vridpunkten på andra sidan. Visa att gungbrädan är i balans om avståndet L = 1 m. Använd relevanta begrepp.",
+      modelAnswer:
+        "1 p: Gungan är i jämvikt när kraftmomentet (kraft gånger avstånd) är lika på båda sidorna. Barnets kraftmoment är 300 N · 2 m = 600 Nm. 1 p: Mannens kraftmoment är 600 N · 1 m = 600 Nm. Kraftmomenten är lika stora, så gungan är i jämvikt. Godta också: mannen väger dubbelt så mycket som barnet och måste därför sitta på halva avståndet, 2 / 2 = 1 m.",
+    },
+    {
+      id: "kraft7-11",
+      type: "open",
+      points: 2,
+      text: "Kan du förklara hur en så kallad kofot fungerar? (En kofot är en lång stång med en böjd ände som används för att dra upp en spik.)",
+      modelAnswer:
+        "1 p: En kofot fungerar som en hävstång. Avståndet mellan spiken och rotationspunkten är mycket kortare än avståndet mellan rotationspunkten och punkten där man trycker. För att få upp spiken lätt trycker man vid kofotens ände, så att avståndet blir så stort som möjligt. 1 p: Kraftmoment är kraft gånger avstånd, så en liten kraft med långt avstånd ger ett stort kraftmoment. Det motsvarar en stor dragkraft på spiken (kort avstånd) som får upp den.",
+    },
+    {
+      id: "kraft7-12",
+      type: "open",
+      points: 1,
+      text: "Beräkna farten för ett tåg som kör 450 km på 3 timmar.",
+      modelAnswer:
+        "Fart = sträcka / tid = 450 km / 3 h = 150 km/h.",
+    },
+    {
+      id: "kraft7-13",
+      type: "open",
+      points: 1,
+      text: "Beräkna farten för en tennisboll som tar en sekund att färdas 60 meter.",
+      modelAnswer:
+        "Bollen färdas 60 m på 1 s, så farten är 60 m/s.",
+    },
+    {
+      id: "kraft7-14",
+      type: "open",
+      points: 1,
+      text: "Ljusets hastighet är 300 000 km/s. Hur långt färdas ljuset på en minut?",
+      modelAnswer:
+        "En minut är 60 s. Sträckan är 300 000 km/s · 60 s = 18 000 000 km, alltså 18 miljoner km.",
+    },
+    {
+      id: "kraft7-15",
+      type: "open",
+      points: 1,
+      text: "Kevin bor 2 km från skolan. Det tar 20 minuter för honom att gå från hemmet till skolan. Med vilken fart går han?",
+      modelAnswer:
+        "20 minuter är en tredjedel av en timme. På en timme går han tre gånger så långt: 2 km · 3 = 6 km/h.",
+    },
+    {
+      id: "kraft7-16",
+      type: "open",
+      points: 1,
+      text: "En bil ökar hastighet från 0 till 100 m/s på 10 sekunder. Vilken är dess medelacceleration?",
+      modelAnswer:
+        "Hastigheten ökar med 100 m/s på 10 s, alltså 100 / 10 = 10 m/s varje sekund. Accelerationen är 10 m/s².",
+    },
+    {
+      id: "kraft7-17",
+      type: "open",
+      points: 3,
+      text: "Beskriv vad som händer om du åker pulka i hög fart och kommer på en grusväg där pulkan tvärstannar.",
+      modelAnswer:
+        "1 p: Din kropp har en hastighet och en massa. På grund av tröghet fortsätter din kropp framåt trots att pulkan stannar (Newtons 1:a lag: det krävs en kraft för att ändra hastigheten). Om du inte bromsar med ben eller händer flyger du iväg. 1 p: Tyngdkraften drar dig nedåt tills du landar på marken. 1 p: Friktionskraften från grusvägen sänker din hastighet till noll, och du står stilla med en normalkraft från vägen som tar ut din tyngd.",
+    },
+    {
+      id: "kraft7-18",
+      type: "open",
+      points: 3,
+      text: "Beskriv vad som händer med en astronaut i rymden som kastar ett verktyg framåt.",
+      modelAnswer:
+        "1 p: Astronauten utövar en kraft på verktyget så att det accelererar framåt. 1 p: Enligt kraft och motkraft (Newtons 3:e lag) utövar verktyget en lika stor kraft på astronauten, men åt motsatt håll. Astronauten åker därför baklänges, bort från rymdskeppet. 1 p: Astronautens massa är större än verktygets, så astronautens fart blir lägre än verktygets.",
+    },
+  ],
+
   // ── Prov Biologi åk 7 – Ekologi och evolution (29 p) ──
   // Del A: 12 kryssfrågor (1 p, 0,5 p vid högst ett fel). Del B: skrivfrågor med provets poäng.
   biologi7: [
