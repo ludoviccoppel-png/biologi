@@ -874,6 +874,7 @@ const LAX_DATA = {
     {
       id: "periodiska9-4g",
       type: "open",
+      points: 1,
       text:
         "En järnatom kan lämna bort tre elektroner. Hur skriver man med kemiskt tecken den järnjon som bildas?",
       modelAnswer: "Fe3+ (Fe med 3+ som upphöjd text).",
