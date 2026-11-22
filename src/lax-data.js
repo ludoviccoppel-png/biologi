@@ -543,7 +543,7 @@ const LAX_DATA = {
       "id": "evolution-k5",
       "type": "multi",
       "halfCredit": true,
-      "text": "Björkmätaren: Kryssa i alla påståenden som är rätta.",
+      "text": "Björkmätaren är en fjäril som sitter stilla på trädstammar under dagen. Förr var nästan alla björkmätare i England ljusa, och de syntes dåligt mot de ljusa björkstammarna. När fabrikerna började släppa ut mycket sot blev stammarna svarta. Efter några decennier var de flesta björkmätarna i området mörka. Kryssa i alla påståenden som är rätta.",
       "opts": {
         "A": "De ljusa fjärilarna syntes dåligt för fåglar när stammarna var ljusa.",
         "B": "När stammarna blev svarta av sot överlevde de mörka fjärilarna oftare.",
