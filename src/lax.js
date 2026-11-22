@@ -984,7 +984,10 @@ POÄNG: [ett heltal: ${scaleText}]
       `${r.answerText ? "Elevens svar: " + r.answerText + ". " : ""}` +
       `${r.facitText ? "Facit: " + r.facitText + ". " : ""}` +
       `${r.gradeText ? "Bedömning: " + r.gradeText + " " : ""}` +
-      `Svara pedagogiskt och uppmuntrande på elevens följdfrågor. Håll svaren korta (2-4 meningar). Skriv på svenska.`;
+      `Svara pedagogiskt och uppmuntrande på elevens följdfrågor. Håll svaren korta (2-4 meningar). Skriv på svenska.` +
+      (r.q.type === "open"
+        ? ` Avsluta varje svar med att uppmuntra eleven att skriva om sitt svar med hjälp av det ni just pratat om, så att resonemanget blir tydligare och fullständigt (t.ex. fler led där varje steg följer av det förra). Nämn att knappen "Skriv om mitt svar" finns under frågan. Läs inte upp facit ordagrant.`
+        : "");
     let ok = true;
     try {
       const reply = await ask(r.chat, system, 500);
@@ -1052,8 +1055,22 @@ POÄNG: [ett heltal: ${scaleText}]
       s.disabled = r.busy || noMore;
       wrap.appendChild(s);
     } else {
+      if (type === "open") wrap.appendChild(mkBtn("✏️ Skriv om mitt svar", "btn-secondary", rewriteAnswer));
       wrap.appendChild(mkBtn("Nästa fråga →", "btn-primary", nextQ));
     }
+  }
+
+  // Låt eleven skriva om sitt svar på en öppen fråga och få det bedömt på nytt (nya poängen ersätter de gamla)
+  function rewriteAnswer() {
+    const r = cur();
+    if (r.q.type !== "open" || r.status !== "done" || r.busy) return;
+    r.status = "new";
+    r.pip = null;
+    r.pts = 0;
+    r.fb = null;
+    renderView(view);
+    const ta = el("lax-open-ta");
+    if (ta) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
   }
 
   // ── Poängrad ─────────────────────────────────────────
