@@ -253,7 +253,7 @@ const backHtml=q=>{
   if(f)h+=`<div class="fig">${f()}</div>`;
   if(q.type==="multi"){
     h+=`<ul class="opts">${Object.keys(q.opts).sort().map(k=>`<li class="${(q.correct||[]).includes(k)?"ok":""}">${(q.correct||[]).includes(k)?"✓ ":""}${k}. ${esc(q.opts[k])}</li>`).join("")}</ul>`;
-  }else{const t=(q.modelAnswer||q.explanation||"").replace(/\b\d+ p:\s*/g,"");h+=`<p class="ans${t.length>180?" long":""}">${esc(t)}</p>`}
+  }else{const t=(q.modelAnswer||q.explanation||"").replace(/\b\d+ p:\s*/g,"").replace(/\s*Godta också:.*$/s,"");h+=`<p class="ans${t.length>180?" long":""}">${esc(t)}</p>`}
   return h};
 
 let topic,all=[],order=[],i=0,flip=false,swap=false,track=false,shuf=false,mark={};
