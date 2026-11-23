@@ -647,6 +647,52 @@ const LAX_DATA = {
     }
   ],
 
+  // Planera åk 9: planering av systematiska undersökningar (a = hypotes, b = instruktion). Poäng och nivåer följer bedömningsanvisningar i nationella prov.
+  planera9: [
+    {
+      "id": "planera9-1",
+      "type": "open",
+      "points": 4,
+      "text": "Planering av en systematisk undersökning i biologi\n\nVid vilken temperatur är ökningen av antalet mjölksyrabakterier i mjölk som störst?\n\nFakta: Yoghurt tillverkas genom att man tillsätter mjölksyrabakterier i mjölk. Antalet mjölksyrabakterier påverkas av mjölkens temperatur. När antalet mjölksyrabakterier ökar sjunker pH-värdet i mjölken.\n\na) Skriv en hypotes om vid vilken temperatur, 20 °C eller 40 °C, som ökningen av antalet mjölksyrabakterier är som störst. Motivera din hypotes med hjälp av dina kunskaper om temperatur och bakteriers livsmiljöer.\n\nb) Skriv en instruktion där du steg för steg beskriver hur en undersökning ska genomföras för att pröva din hypotes och hur resultatet ska avläsas.",
+      "modelAnswer": "a) (1 p) Hypotes om vilken av temperaturerna som ger störst ökning, med en motivering som kopplar ihop temperatur, bakterietillväxt och bakteriers livsmiljö. Exempel: 40 °C, eftersom mjölksyrabakterier trivs nära kroppstemperatur där de normalt lever. Att bara skriva att bakterier förökar sig snabbare vid värme, utan koppling till livsmiljön, räcker inte.\n\nb) (3 p) Nivå 1: mjölk används, de två temperaturerna undersöks och mängden mjölksyrabakterier undersöks (via pH). Nivå 2: även två separata försök, samma volym mjölk eller konstant temperatur under försöket, och pH mäts i båda försöken. Nivå 3: även samma volym mjölk OCH konstant temperatur, samt att pH mäts kontinuerligt tills pH förändras i den ena bägaren eller att tiden mäts tills samma pH uppnåtts. Exempel: lika mycket mjölk i två bägare, värm den ena till 20 °C och den andra till 40 °C och håll temperaturen konstant, mät pH-värdet kontinuerligt och notera när det sjunkit till samma värde i bägarna."
+    },
+    {
+      "id": "planera9-2",
+      "type": "open",
+      "points": 4,
+      "text": "Planering av en systematisk undersökning i biologi\n\nVad påverkar när lövträd får sina löv?\n\nLövträd får sina löv vid olika tidpunkter på våren. I moderna växthus går det att undersöka vilka faktorer som påverkar hur tidigt lövträden får sina löv. Fakta: I moderna växthus går det att styra tillgången till 1. ljus, 2. koldioxid och 3. vatten.\n\na) Välj en av faktorerna. Skriv en hypotes kring hur den faktorn påverkar vid vilken tidpunkt som lövträden får sina löv. Motivera din hypotes med hjälp av dina kunskaper i biologi.\n\nb) Skriv en instruktion där du steg för steg beskriver hur en undersökning ska genomföras i moderna växthus för att pröva din hypotes och hur resultatet ska avläsas.",
+      "modelAnswer": "a) (1 p) Hypotes om hur den valda faktorn påverkar tidpunkten för lövsprickning, med en motivering från ekologiska samband. Exempel: mycket ljus gör att träden får löv tidigare eftersom ljus behövs för fotosyntesen och träden då kan växa; eller tillgång på vatten, eftersom näring transporteras med vatten.\n\nb) (3 p) Nivå 1: den valda faktorn undersöks och undersökningen pågår tills lövsprickning har skett. Nivå 2: även att övriga faktorer hålls konstanta och att den faktor som undersöks varieras på minst två olika sätt, t.ex. mycket vatten och lite vatten. Nivå 3: även att träden kontrolleras regelbundet tills tidpunkterna för lövsprickning kan bestämmas."
+    },
+    {
+      "id": "planera9-3",
+      "type": "open",
+      "points": 4,
+      "text": "Planering av en systematisk undersökning i biologi\n\nMögel på bröd\n\nDet vi i vardagligt tal kallar för mögel är egentligen mögelsvampar. Sporer från mögelsvampar finns överallt i luften och kan hamna på till exempel bröd. Om sporerna hamnar på brödet kan det bildas mögel. Temperatur och fuktighet är två faktorer som kan påverka om mögel bildas.\n\na) Skriv en hypotes där du gör ett antagande kring hur någon av faktorerna temperatur eller fuktighet påverkar om det bildas mögel på bröd och använd kunskaper inom naturvetenskap för att motivera ditt antagande.\n\nb) Skriv en instruktion där du steg för steg beskriver hur en undersökning ska genomföras för att kunna avgöra hur de två faktorerna temperatur och fuktighet påverkar om det bildas mögel på bröd och hur resultatet ska avläsas.",
+      "modelAnswer": "a) (1 p) Hypotes om hur EN av faktorerna, temperatur eller fuktighet, påverkar mögeltillväxten på bröd, med en naturvetenskaplig motivering. Exempel: mycket fukt gör att bröd möglar snabbare eftersom mögelsvampar behöver vatten för att växa.\n\nb) (3 p) Nivå 1: brödskivor eller brödbitar undersöks, temperatur eller fuktighet undersöks och mögeltillväxt på brödet undersöks. Nivå 2: även en strategi för att undersöka temperatur eller fuktighet samtidigt som den andra faktorn hålls konstant, och att brödet undersöks vid en bestämd tidpunkt, t.ex. efter en vecka. Nivå 3: även att både temperatur OCH fuktighet undersöks, med en strategi för båda, och att brödet undersöks med regelbundet tidsintervall, t.ex. varje dag. Exempel: flera lika stora brödskivor, några i kylen, några i rumstemperatur och några varmt; för varje temperatur en fuktad och en torr skiva i likadana påsar; kontrollera skivorna varje dag och anteckna när mögel syns."
+    },
+    {
+      "id": "planera9-4",
+      "type": "open",
+      "points": 3,
+      "text": "Planering av en systematisk undersökning i biologi\n\nHur kan man undersöka om ett läkemedel fungerar?\n\nEtt läkemedelsföretag arbetar med att ta fram ett nytt läkemedel mot högt blodtryck. Fakta: Innan ett läkemedel kan godkännas ska det bland annat prövas på ett antal försökspersoner. I en läkemedelsprövning kan försökspersonerna få pröva antingen det nya läkemedlet, ett redan godkänt läkemedel eller ett så kallat sockerpiller. Ett sockerpiller innehåller inget läkemedel, men kan ha en placeboeffekt eftersom försökspersoner tror att sockerpillret är läkemedlet. Placeboeffekten innebär här att blodtrycket sänks trots att försökspersonen får sockerpiller.\n\nDin uppgift är att planera en undersökning där du ska ta reda på om ett nytt läkemedel sänker blodtrycket hos människor med högt blodtryck. I undersökningen ska även ett redan godkänt läkemedel och sockerpiller ingå. Totalt ska 1200 försökspersoner delta.",
+      "modelAnswer": "Nivå 1 (1 p): blodtrycket mäts efter behandlingen och försökspersonerna delas upp i grupper där den ena får det nya läkemedlet och den andra det redan godkända läkemedlet eller sockerpiller (eller får dem efter varandra). Nivå 2 (2 p): blodtrycket mäts före OCH efter behandlingen, och försökspersonerna delas i två grupper (nya läkemedlet + godkänt läkemedel eller sockerpiller), eller i tre grupper. Nivå 3 (3 p): blodtrycket mäts före och efter, försökspersonerna delas in i TRE grupper (nya läkemedlet, redan godkänt läkemedel och sockerpiller) och hänsyn tas till gruppindelningen, t.ex. slumpvis indelning eller att man kontrollerar en faktor som kön, ålder eller vikt. Exempel: 400 personer i varje grupp, blodtryck mäts på alla före och efter en vecka, och i varje grupp ska hälften vara män och hälften kvinnor."
+    },
+    {
+      "id": "planera9-5",
+      "type": "open",
+      "points": 3,
+      "text": "Planering av en systematisk undersökning i biologi\n\nGrobarhet hos frön av smörgåskrasse\n\nSmörgåskrasse är en örtväxt. Dess frön har lätt för att gro. Fakta: Groning innebär att det vilande groddanlaget i fröet börjar växa och tränger igenom fröskalet. Groddanlaget får energi att växa från näringen i frövitan. Grobarhet definieras som hur stor andel frön som gror av antalet sådda frön. Krassefrön gror bäst på våt bomull.\n\nDin uppgift är att planera en undersökning där du ska ta reda på om fler krassefrön gror i ljus än i mörker.",
+      "modelAnswer": "Nivå 1 (1 p): bomull och vatten används i båda försöken, frön används i båda försöken och resultatet avläses. Nivå 2 (2 p): även lika mängd bomull och vatten, lika antal/mängd frön, att båda försöken pågår under lika lång tid och hur resultatet ska avläsas (antal frön som grott jämfört med antal sådda frön). Nivå 3 (3 p): även ett bestämt antal frön (minst 10) som används i båda försöken. Exempel: två petriskålar med lika mycket fuktig bomull och 20 frön i varje, den ena i ljus och den andra i mörker vid samma temperatur, kontrollera efter några dagar och räkna andelen frön som grott i varje skål."
+    },
+    {
+      "id": "planera9-6",
+      "type": "open",
+      "points": 3,
+      "text": "Planering av en systematisk undersökning i biologi\n\nDin uppgift är att planera en undersökning som du senare ska genomföra och utvärdera.\n\nSalthalten i vatten är en miljöfaktor som påverkar organismer. Fiskar som är anpassade för att leva i sötvatten kan inte leva i saltvatten eftersom deras celler påverkas negativt av salthalten. Du ska undersöka hur potatisceller påverkas av lösningar med olika salthalter. En potatiscell har en cellmembran som avgränsar cellen mot omgivningen och släpper igenom vatten men inte salt, och cellplasma (vätska inuti cellen) med en salthalt på ca 1 %.\n\nDu har potatisskivor, natriumklorid (salt) och saltvatten med en salthalt på 1 % samt avjoniserat vatten (0 % salthalt).\n\nPlanera en undersökning där du redovisar hur du ska väga upp massan av saltet natriumklorid och av vatten som du behöver för att blanda till saltvatten med en salthalt på 10 %, och där du tar reda på hur massan på potatisskivor förändras efter att de har legat i saltvatten med salthalt 10 %, saltvatten med salthalt 1 % och avjoniserat vatten (0 % salthalt). Ange även vilket material du behöver.",
+      "modelAnswer": "Nivå 1 (1 p): lösningarna ska arbetas med i separata kärl, tre potatisskivor används, potatisskivorna vägs, och delvis vilket material som behövs. Nivå 2 (2 p): även att saltlösningen bereds med bestämda proportioner, att skivorna vägs före och efter de legat i lösningarna och till övervägande del vilket material som behövs. Nivå 3 (3 p): även att saltlösningen bereds med bestämda massor (t.ex. 10 g salt och 90 g vatten ger 10 %), att lösningen rörs om, att lika stora potatisskivor används, att de tre försöken pågår lika lång tid och vilket material som behövs. Exempel på material: knivar, tre bägare, mätglas, sked, vatten, avjoniserat vatten, salt, potatis, våg, märkpenna, tidtagarur."
+    }
+  ],
+
   evolution7: [
     {
       id: "evolution7-1",

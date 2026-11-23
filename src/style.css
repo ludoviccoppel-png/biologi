@@ -209,6 +209,7 @@ main {
 }
 
 .q-text {
+  white-space: pre-line;
   font-family: var(--serif);
   font-size: 1.05rem;
   line-height: 1.7;
