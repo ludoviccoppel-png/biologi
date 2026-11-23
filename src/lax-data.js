@@ -651,7 +651,7 @@ const LAX_DATA = {
   planera9: [
     {
       "id": "planera9-1",
-      "source": "Nationella provet i biologi (Skolverket), delprov A3 – uppgift och bild hämtade från provet, nivåbeskrivningarna i facit är omskrivna.",
+      "source": "Nationella provet i biologi åk 9, VT 2019, uppgift 15 (Skolverket), delprov A3 – uppgift och bild hämtade från provet, nivåbeskrivningarna i facit är omskrivna.",
       "image": "planera9-1.png",
       "type": "open",
       "points": 4,
@@ -660,7 +660,7 @@ const LAX_DATA = {
     },
     {
       "id": "planera9-2",
-      "source": "Nationella provet i biologi (Skolverket), delprov A3 – uppgift och bild hämtade från provet, nivåbeskrivningarna i facit är omskrivna.",
+      "source": "Nationella provet i biologi åk 9, årtal ej verifierat (Skolverket), delprov A3 – uppgift och bild hämtade från provet, nivåbeskrivningarna i facit är omskrivna.",
       "image": "planera9-2.png",
       "type": "open",
       "points": 4,
@@ -669,7 +669,7 @@ const LAX_DATA = {
     },
     {
       "id": "planera9-3",
-      "source": "Nationella provet i biologi (Skolverket), delprov A3 – uppgift och bild hämtade från provet, nivåbeskrivningarna i facit är omskrivna.",
+      "source": "Nationella provet i biologi åk 9, VT 2017, uppgift 14 (Skolverket), delprov A3 – uppgift och bild hämtade från provet, nivåbeskrivningarna i facit är omskrivna.",
       "image": "planera9-3.png",
       "type": "open",
       "points": 4,
@@ -678,7 +678,7 @@ const LAX_DATA = {
     },
     {
       "id": "planera9-4",
-      "source": "Nationella provet i biologi (Skolverket), delprov A3 – uppgift och bild hämtade från provet, nivåbeskrivningarna i facit är omskrivna.",
+      "source": "Nationella provet i biologi åk 9, VT 2016, uppgift 12 (Skolverket), delprov A3 – uppgift och bild hämtade från provet, nivåbeskrivningarna i facit är omskrivna.",
       "type": "open",
       "points": 3,
       "text": "Planering av en systematisk undersökning i biologi\n\nHur kan man undersöka om ett läkemedel fungerar?\n\nEtt läkemedelsföretag arbetar med att ta fram ett nytt läkemedel mot högt blodtryck. Fakta: Innan ett läkemedel kan godkännas ska det bland annat prövas på ett antal försökspersoner. I en läkemedelsprövning kan försökspersonerna få pröva antingen det nya läkemedlet, ett redan godkänt läkemedel eller ett så kallat sockerpiller. Ett sockerpiller innehåller inget läkemedel, men kan ha en placeboeffekt eftersom försökspersoner tror att sockerpillret är läkemedlet. Placeboeffekten innebär här att blodtrycket sänks trots att försökspersonen får sockerpiller.\n\nDin uppgift är att planera en undersökning där du ska ta reda på om ett nytt läkemedel sänker blodtrycket hos människor med högt blodtryck. I undersökningen ska även ett redan godkänt läkemedel och sockerpiller ingå. Totalt ska 1200 försökspersoner delta.",
@@ -686,7 +686,7 @@ const LAX_DATA = {
     },
     {
       "id": "planera9-5",
-      "source": "Nationella provet i biologi (Skolverket), delprov A3 – uppgift och bild hämtade från provet, nivåbeskrivningarna i facit är omskrivna.",
+      "source": "Nationella provet i biologi åk 9, VT 2015, uppgift 12 (Skolverket), delprov A3 – uppgift och bild hämtade från provet, nivåbeskrivningarna i facit är omskrivna.",
       "image": "planera9-5.png",
       "type": "open",
       "points": 3,
@@ -695,7 +695,7 @@ const LAX_DATA = {
     },
     {
       "id": "planera9-6",
-      "source": "Nationella provet i biologi (Skolverket), delprov A3 – uppgift och bild hämtade från provet, nivåbeskrivningarna i facit är omskrivna.",
+      "source": "Nationella provet i biologi åk 9, VT 2014 (Skolverket), delprov A3 – uppgift och bild hämtade från provet, nivåbeskrivningarna i facit är omskrivna.",
       "image": "planera9-6.png",
       "type": "open",
       "points": 3,
