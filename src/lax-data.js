@@ -609,6 +609,41 @@ const LAX_DATA = {
       "points": 3,
       "text": "Vårt moderna samhälle är helt beroende av metaller för allt från smartphones till elbilar och vindkraftverk. Förklara varför det är bättre för miljön och klimatet att återvinna metaller framför att bryta ny malm. I ditt svar ska du föra ett naturvetenskapligt resonemang i minst tre led (steg) som visar på sambanden mellan resursanvändning och miljöpåverkan.",
       "modelAnswer": "Människan bryter ny metallmalm ur berggrunden med tunga maskiner → kräver enorma mängder energi och kemikalier → leder till stora utsläpp av koldioxid → påverkar klimatet (+ giftigt läckage från gruvorna → förstör lokala ekosystem + tungmetaller).\n\nÅtervinning av metaller i en cirkulär ekonomi minskar behovet av gruvdrift och skyddar miljön → sparar på jordens ändliga resurser och minskar den enorma energiåtgången och de koldioxidutsläpp som krävs för att bryta och förädla ny malm → förhindrar att farliga tungmetaller läcker ut och sprids i luft och vatten via kemikalier och gruvavfall från gruvindustrin → stoppar gifterna från att ackumuleras och anrikas i näringskedjan, vilket förhindrar att toppkonsumenter får i sig livsfarliga koncentrationer av miljögifter."
+    },
+    {
+      "id": "resonera9-5",
+      "type": "open",
+      "points": 3,
+      "text": "Forskning visar att ungdomar bör motionera cirka en timme varje dag för att må bra. Exempel på aktiviteter kan vara att promenera eller att cykla till skolan. Argumentera kring varför det är viktigt att motionera cirka en timme varje dag. Utgå från dina kunskaper om två av människokroppens organsystem och resonera i två led.",
+      "modelAnswer": "Cirkulationssystemet: vid motion arbetar musklerna hårdare och behöver mer syre → hjärtat slår snabbare och pumpar ut mer blod, och med regelbunden motion blir hjärtmuskeln starkare → ett starkare hjärta pumpar mer blod per hjärtslag, så vilopulsen sjunker och blodtrycket blir lägre, vilket minskar risken för hjärt- och kärlsjukdom på sikt.\n\nSkelett- och muskelsystemet: belastning från rörelse, till exempel att gå eller cykla, påverkar muskler och skelett → musklerna blir starkare och skelettet bygger upp mer benvävnad → det minskar risken för benskörhet och skador senare i livet, och kroppen orkar mer i vardagen.\n\n(Andningssystemet går också bra: kroppen behöver mer syre och måste göra sig av med mer koldioxid → andningen blir djupare och lungorna tränas att ta upp mer syre per andetag → kroppen orkar mer utan att bli andfådd.) Regelbunden belastning varje dag behövs för att anpassningen ska hålla i sig."
+    },
+    {
+      "id": "resonera9-6",
+      "type": "open",
+      "points": 3,
+      "text": "Förklara varför förbränning av olja ökar mängden koldioxid i atmosfären på lång sikt, medan förbränning av flis från skogen inte gör det i samma utsträckning. I ditt svar ska du föra ett naturvetenskapligt resonemang i minst tre led (steg) och använda begreppen snabbt och långsamt kretslopp.",
+      "modelAnswer": "Olja är fossilt kol som legat lagrat i marken i miljontals år (långsamt kretslopp) → vid förbränning släpps detta kol ut som koldioxid och tillför ny koldioxid i atmosfären på kort tid → flis kommer från träd som nyss tagit upp koldioxid genom fotosyntes (snabbt kretslopp, ca 100 år) → vid förbränning släpps ungefär samma kol tillbaka som växterna nyss fixerade → nya träd som växer upp tar upp koldioxiden igen, så nettoökningen blir liten."
+    },
+    {
+      "id": "resonera9-7",
+      "type": "open",
+      "points": 3,
+      "text": "Havsvatten är salt och dricker man det blir man sjuk, men regnvatten är oftast sött. Förklara hur vattnets kretslopp gör att saltvatten blir till sött vatten. I ditt svar ska du föra ett naturvetenskapligt resonemang i minst tre led (steg) och förklara vad som händer med saltet.",
+      "modelAnswer": "Solen värmer havet → vattenmolekylerna avdunstar men salterna och andra lösta ämnen följer inte med → vattenångan stiger, kyls och kondenserar till moln av rent vatten → det regnar eller snöar och sött vatten rinner via marken (där det filtreras) till sjöar och grundvatten → saltet blir kvar i havet."
+    },
+    {
+      "id": "resonera9-8",
+      "type": "open",
+      "points": 3,
+      "text": "Bönder sprutar ibland sina åkrar med bekämpningsmedel mot skadeinsekter. Efter några år fungerar medlet sämre, trots att samma mängd används. Förklara med hjälp av evolutionens principer varför medlet fungerar sämre. I ditt svar ska du föra ett naturvetenskapligt resonemang i minst tre led (steg).",
+      "modelAnswer": "Individerna i insektspopulationen varierar, och några har egenskaper (genetiska förändringar) som gör dem tåligare mot giftet → vid besprutning dör de känsliga, medan de tåliga överlever (naturligt urval) → de överlevande förökar sig och för över egenskapen till avkomman → efter flera generationer består populationen mest av tåliga individer → medlet fungerar sämre."
+    },
+    {
+      "id": "resonera9-9",
+      "type": "open",
+      "points": 3,
+      "text": "För länge sedan hamnade en grupp fåglar på en avlägsen ö, långt från fastlandet. Efter många generationer har fåglarna på ön blivit en egen art som skiljer sig från fastlandsfåglarna. Förklara hur nya arter kan uppstå på detta sätt. I ditt svar ska du föra ett naturvetenskapligt resonemang i minst tre led (steg).",
+      "modelAnswer": "En del av populationen isoleras på ön och kan inte para sig med fastlandsfåglarna → mutationer och variation uppstår slumpmässigt i varje grupp → miljön på ön skiljer sig från fastlandets, så olika egenskaper gynnas och sprids genom naturligt urval → efter många generationer har grupperna blivit så olika att de inte längre kan få fertil avkomma → de har blivit olika arter."
     }
   ],
 
