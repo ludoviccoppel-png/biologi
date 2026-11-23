@@ -123,6 +123,7 @@ const Lax = (() => {
 
     el("lax-type-tag").textContent = typeLabel(q.type);
     el("lax-q-text").textContent = q.text;
+    paintQMeta(q);
     el("lax-q-body").innerHTML = "";
 
     if (q.type === "mc")         paintMC(r);
@@ -149,6 +150,32 @@ const Lax = (() => {
     paintActions(r);
     renderPips();
     renderScorebar();
+  }
+
+  // Bild och källhänvisning (valfria fält `image` och `source` i frågan)
+  function paintQMeta(q) {
+    let box = el("lax-q-meta");
+    if (!box) {
+      box = document.createElement("div");
+      box.id = "lax-q-meta";
+      el("lax-q-body").parentNode.insertBefore(box, el("lax-q-body"));
+    }
+    box.innerHTML = "";
+    if (q.image) {
+      const wrap = document.createElement("div");
+      wrap.className = "q-image-wrap";
+      const img = document.createElement("img");
+      img.src = "public/images/" + q.image;
+      img.alt = "Bild till frågan";
+      wrap.appendChild(img);
+      box.appendChild(wrap);
+    }
+    if (q.source) {
+      const n = document.createElement("div");
+      n.className = "q-source-note";
+      n.textContent = "Källa: " + q.source;
+      box.appendChild(n);
+    }
   }
 
   // ── Kryssfråga (kryssa i ALLA rätta påståenden) ──────

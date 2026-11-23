@@ -704,3 +704,7 @@ main {
 .force-note { font-size: 12px; line-height: 1.4; }
 .force-note.good { color: var(--green); }
 .force-note.bad { color: var(--red); }
+
+.q-source-note { font-size: 0.8rem; color: var(--muted, #8d9bbb); margin: -6px 0 16px; }
+#lax-q-meta .q-image-wrap { margin-bottom: 12px; }
+#lax-q-meta .q-image-wrap img { max-height: 340px; }
