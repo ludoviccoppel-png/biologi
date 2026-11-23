@@ -553,6 +553,8 @@ const Lax = (() => {
   ];
   const FW = 600, FH = 340, FSTEP = 28, FBASE = 20;
   const arrowLen = k => FBASE + FSTEP * k;
+  // Uppåtriktade pilar startar vid lampans övre kant (tråden), men normalkraften startar i kontaktytan mot golvet (lampans underkant)
+  const upStart = (cs, label) => (cs.key === "c" || label === "normal") ? cs.y + 20 : cs.y - 20;
 
   function paintForces(r) {
     const done = r.status === "done";
@@ -586,9 +588,9 @@ const Lax = (() => {
         const a = st[dir];
         if (!a) return;
         const len = arrowLen(a.k), sgn = dir === "up" ? -1 : 1;
-        const y2 = cs.y + sgn * len;
+        const y0 = dir === "up" ? upStart(cs, a.label) : cs.y;
+        const y2 = y0 + sgn * len;
         const g = mk("g", { style: done ? "" : "cursor:pointer" });
-        const y0 = dir === "up" ? cs.y - 20 : cs.y;
         g.appendChild(mk("line", { x1: cs.x, y1: y0, x2: cs.x, y2: y2 - sgn * 8, stroke: col, "stroke-width": 4 }));
         g.appendChild(mk("polygon", { points: `${cs.x},${y2} ${cs.x - 8},${y2 - sgn * 14} ${cs.x + 8},${y2 - sgn * 14}`, fill: col }));
         g.appendChild(mk("line", { x1: cs.x, y1: y0, x2: cs.x, y2, stroke: "transparent", "stroke-width": 22 }));
@@ -641,7 +643,7 @@ const Lax = (() => {
     hint.className = "mol-hint";
     hint.textContent = done
       ? "Grön = rätt, röd = fel. Pilens längd visar kraftens storlek."
-      : "Dra från lampan uppåt eller nedåt för att rita en kraftpil – ju längre drag, desto större kraft. Välj sedan under bilden vad kraften heter. Klicka på en pil för att ta bort den.";
+      : "Dra från lampan uppåt eller nedåt för att rita en kraftpil – ju längre drag, desto större kraft. Välj sedan under bilden vad kraften heter. Normalkraften startar i kontaktytan mot golvet. Klicka på en pil för att ta bort den.";
     wrap.appendChild(hint);
     el("lax-q-body").appendChild(wrap);
   }
@@ -665,8 +667,9 @@ const Lax = (() => {
     const move = m => {
       const c = calc(m);
       if (!c.show) { prev.setAttribute("y1", cs.y); prev.setAttribute("y2", cs.y); return; }
-      prev.setAttribute("y1", cs.y);
-      prev.setAttribute("y2", cs.y + (c.dir === "up" ? -1 : 1) * arrowLen(c.k));
+      const start = c.dir === "up" ? upStart(cs, (r.forces[cs.key].up || {}).label) : cs.y;
+      prev.setAttribute("y1", start);
+      prev.setAttribute("y2", start + (c.dir === "up" ? -1 : 1) * arrowLen(c.k));
     };
     const up = m => {
       hit.removeEventListener("pointermove", move);
