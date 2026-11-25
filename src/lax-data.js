@@ -704,6 +704,128 @@ const LAX_DATA = {
     }
   ],
 
+  elektronskal9: [
+    {
+      "id": "elektronskal9-1",
+      "type": "open",
+      "text": "Vilka partiklar finns i en atom? Ange laddning.",
+      "modelAnswer": "Protoner (positiv laddning, +1) och neutroner (ingen laddning) finns i atomkärnan. Elektroner (negativ laddning, −1) finns utanför kärnan i elektronskal."
+    },
+    {
+      "id": "elektronskal9-2",
+      "type": "open",
+      "text": "Vad är elektronskal?",
+      "modelAnswer": "Elektronskal är områden (banor) runt atomkärnan där elektronerna rör sig. Varje skal rymmer ett begränsat antal elektroner: K-skalet 2, L-skalet 8 och M-skalet 8 (för de första 20 ämnena). Skalen fylls inifrån och ut, och elektronerna i det yttersta skalet kallas valenselektroner."
+    },
+    {
+      "id": "elektronskal9-fluor",
+      "type": "shells",
+      "z": 9,
+      "sym": "F",
+      "name": "fluor",
+      "text": "Fluor: använd periodiska systemet för att hitta kemisk beteckning och atomnummer. Placera sedan elektronerna i K-, L-, M- och N-skalen. Tänk också på vad kärnan har för laddning och hur många valenselektroner atomen har.",
+      "modelAnswer": "Fluor: beteckning F, atomnummer 9. Kärnan har 9 protoner (laddning +9). Elektronfördelning: 2, 7. Antal valenselektroner: 7."
+    },
+    {
+      "id": "elektronskal9-natrium",
+      "type": "shells",
+      "z": 11,
+      "sym": "Na",
+      "name": "natrium",
+      "text": "Natrium: använd periodiska systemet för att hitta kemisk beteckning och atomnummer. Placera sedan elektronerna i K-, L-, M- och N-skalen. Tänk också på vad kärnan har för laddning och hur många valenselektroner atomen har.",
+      "modelAnswer": "Natrium: beteckning Na, atomnummer 11. Kärnan har 11 protoner (laddning +11). Elektronfördelning: 2, 8, 1. Antal valenselektroner: 1."
+    },
+    {
+      "id": "elektronskal9-helium",
+      "type": "shells",
+      "z": 2,
+      "sym": "He",
+      "name": "helium",
+      "text": "Helium: använd periodiska systemet för att hitta kemisk beteckning och atomnummer. Placera sedan elektronerna i K-, L-, M- och N-skalen. Tänk också på vad kärnan har för laddning och hur många valenselektroner atomen har.",
+      "modelAnswer": "Helium: beteckning He, atomnummer 2. Kärnan har 2 protoner (laddning +2). Elektronfördelning: 2. Antal valenselektroner: 2."
+    },
+    {
+      "id": "elektronskal9-kalcium",
+      "type": "shells",
+      "z": 20,
+      "sym": "Ca",
+      "name": "kalcium",
+      "text": "Kalcium: använd periodiska systemet för att hitta kemisk beteckning och atomnummer. Placera sedan elektronerna i K-, L-, M- och N-skalen. Tänk också på vad kärnan har för laddning och hur många valenselektroner atomen har.",
+      "modelAnswer": "Kalcium: beteckning Ca, atomnummer 20. Kärnan har 20 protoner (laddning +20). Elektronfördelning: 2, 8, 8, 2. Antal valenselektroner: 2."
+    },
+    {
+      "id": "elektronskal9-kol",
+      "type": "shells",
+      "z": 6,
+      "sym": "C",
+      "name": "kol",
+      "text": "Kol: använd periodiska systemet för att hitta kemisk beteckning och atomnummer. Placera sedan elektronerna i K-, L-, M- och N-skalen. Tänk också på vad kärnan har för laddning och hur många valenselektroner atomen har.",
+      "modelAnswer": "Kol: beteckning C, atomnummer 6. Kärnan har 6 protoner (laddning +6). Elektronfördelning: 2, 4. Antal valenselektroner: 4."
+    },
+    {
+      "id": "elektronskal9-argon",
+      "type": "shells",
+      "z": 18,
+      "sym": "Ar",
+      "name": "argon",
+      "text": "Argon: använd periodiska systemet för att hitta kemisk beteckning och atomnummer. Placera sedan elektronerna i K-, L-, M- och N-skalen. Tänk också på vad kärnan har för laddning och hur många valenselektroner atomen har.",
+      "modelAnswer": "Argon: beteckning Ar, atomnummer 18. Kärnan har 18 protoner (laddning +18). Elektronfördelning: 2, 8, 8. Antal valenselektroner: 8."
+    },
+    {
+      "id": "elektronskal9-syre",
+      "type": "shells",
+      "z": 8,
+      "sym": "O",
+      "name": "syre",
+      "text": "Syre: använd periodiska systemet för att hitta kemisk beteckning och atomnummer. Placera sedan elektronerna i K-, L-, M- och N-skalen. Tänk också på vad kärnan har för laddning och hur många valenselektroner atomen har.",
+      "modelAnswer": "Syre: beteckning O, atomnummer 8. Kärnan har 8 protoner (laddning +8). Elektronfördelning: 2, 6. Antal valenselektroner: 6."
+    },
+    {
+      "id": "elektronskal9-neon",
+      "type": "shells",
+      "z": 10,
+      "sym": "Ne",
+      "name": "neon",
+      "text": "Neon: använd periodiska systemet för att hitta kemisk beteckning och atomnummer. Placera sedan elektronerna i K-, L-, M- och N-skalen. Tänk också på vad kärnan har för laddning och hur många valenselektroner atomen har.",
+      "modelAnswer": "Neon: beteckning Ne, atomnummer 10. Kärnan har 10 protoner (laddning +10). Elektronfördelning: 2, 8. Antal valenselektroner: 8."
+    },
+    {
+      "id": "elektronskal9-fosfor",
+      "type": "shells",
+      "z": 15,
+      "sym": "P",
+      "name": "fosfor",
+      "text": "Fosfor: använd periodiska systemet för att hitta kemisk beteckning och atomnummer. Placera sedan elektronerna i K-, L-, M- och N-skalen. Tänk också på vad kärnan har för laddning och hur många valenselektroner atomen har.",
+      "modelAnswer": "Fosfor: beteckning P, atomnummer 15. Kärnan har 15 protoner (laddning +15). Elektronfördelning: 2, 8, 5. Antal valenselektroner: 5."
+    },
+    {
+      "id": "elektronskal9-bor",
+      "type": "shells",
+      "z": 5,
+      "sym": "B",
+      "name": "bor",
+      "text": "Bor: använd periodiska systemet för att hitta kemisk beteckning och atomnummer. Placera sedan elektronerna i K-, L-, M- och N-skalen. Tänk också på vad kärnan har för laddning och hur många valenselektroner atomen har.",
+      "modelAnswer": "Bor: beteckning B, atomnummer 5. Kärnan har 5 protoner (laddning +5). Elektronfördelning: 2, 3. Antal valenselektroner: 3."
+    },
+    {
+      "id": "elektronskal9-magnesium",
+      "type": "shells",
+      "z": 12,
+      "sym": "Mg",
+      "name": "magnesium",
+      "text": "Magnesium: använd periodiska systemet för att hitta kemisk beteckning och atomnummer. Placera sedan elektronerna i K-, L-, M- och N-skalen. Tänk också på vad kärnan har för laddning och hur många valenselektroner atomen har.",
+      "modelAnswer": "Magnesium: beteckning Mg, atomnummer 12. Kärnan har 12 protoner (laddning +12). Elektronfördelning: 2, 8, 2. Antal valenselektroner: 2."
+    },
+    {
+      "id": "elektronskal9-klor",
+      "type": "shells",
+      "z": 17,
+      "sym": "Cl",
+      "name": "klor",
+      "text": "Klor: använd periodiska systemet för att hitta kemisk beteckning och atomnummer. Placera sedan elektronerna i K-, L-, M- och N-skalen. Tänk också på vad kärnan har för laddning och hur många valenselektroner atomen har.",
+      "modelAnswer": "Klor: beteckning Cl, atomnummer 17. Kärnan har 17 protoner (laddning +17). Elektronfördelning: 2, 8, 7. Antal valenselektroner: 7."
+    }
+  ],
   evolution7: [
     {
       id: "evolution7-1",
