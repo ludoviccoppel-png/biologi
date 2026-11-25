@@ -67,8 +67,12 @@ const Lax = (() => {
       c.style.borderColor = PT_COL[cat];
       c.title = name;
       c.innerHTML = '<span class="pt-z">' + z + '</span><strong style="color:' + PT_COL[cat] + '">' + sym + '</strong><span class="pt-n">' + name + '</span><span class="pt-m">' + mass + '</span>';
+      c.addEventListener("mouseenter", () => showPTZoom(c, [z, sym, name, mass, cat]));
+      c.addEventListener("mouseleave", hidePTZoom);
+      c.addEventListener("click", () => showPTZoom(c, [z, sym, name, mass, cat]));   // tryck på mobil
       grid.appendChild(c);
     });
+    grid.addEventListener("mouseleave", hidePTZoom);
     box.appendChild(grid);
     const note = document.createElement("p");
     note.className = "pt-note";
@@ -76,7 +80,23 @@ const Lax = (() => {
     box.appendChild(note);
   }
 
+  function showPTZoom(cell, d) {
+    let zb = document.getElementById("pt-zoom");
+    if (!zb) { zb = document.createElement("div"); zb.id = "pt-zoom"; zb.className = "pt-zoom"; document.body.appendChild(zb); }
+    const [z, sym, name, mass, cat] = d;
+    zb.style.borderColor = PT_COL[cat];
+    zb.innerHTML = '<span class="pz-z">' + z + '</span><strong style="color:' + PT_COL[cat] + '">' + sym + '</strong><span class="pz-n">' + name + '</span><span class="pz-m">' + mass + '</span>';
+    zb.hidden = false;
+    const r = cell.getBoundingClientRect(), w = 110, h = 130;
+    let x = r.left + r.width / 2 - w / 2, y = r.top + r.height / 2 - h / 2;
+    x = Math.max(6, Math.min(window.innerWidth - w - 6, x));
+    y = Math.max(6, Math.min(window.innerHeight - h - 6, y));
+    zb.style.left = x + "px"; zb.style.top = y + "px";
+  }
+  function hidePTZoom() { const zb = document.getElementById("pt-zoom"); if (zb) zb.hidden = true; }
+
   function togglePT(force) {
+    hidePTZoom();
     const open = force !== undefined ? force : !document.body.classList.contains("pt-open");
     document.body.classList.toggle("pt-open", open);
     el("lax-pt").hidden = !open;
