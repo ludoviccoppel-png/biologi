@@ -35,6 +35,62 @@ const Lax = (() => {
     if (card && card.classList.contains("ready")) card.click();
   }
 
+
+  // ── Periodiskt system bredvid frågan (kemiämnen) ──
+  const PT_TOPICS = ["elektronskal9", "periodiska9"];
+  const PT_EL = [
+    [1,"H","Väte",1,1,1,"icke"],[2,"He","Helium",18,1,4,"adel"],[3,"Li","Litium",1,2,7,"alkali"],[4,"Be","Beryllium",2,2,9,"jord"],
+    [5,"B","Bor",13,2,11,"halvm"],[6,"C","Kol",14,2,12,"icke"],[7,"N","Kväve",15,2,14,"icke"],[8,"O","Syre",16,2,16,"icke"],
+    [9,"F","Fluor",17,2,19,"halogen"],[10,"Ne","Neon",18,2,20,"adel"],[11,"Na","Natrium",1,3,23,"alkali"],[12,"Mg","Magnesium",2,3,24,"jord"],
+    [13,"Al","Aluminium",13,3,27,"metall"],[14,"Si","Kisel",14,3,28,"halvm"],[15,"P","Fosfor",15,3,31,"icke"],[16,"S","Svavel",16,3,32,"icke"],
+    [17,"Cl","Klor",17,3,35,"halogen"],[18,"Ar","Argon",18,3,40,"adel"],[19,"K","Kalium",1,4,39,"alkali"],[20,"Ca","Kalcium",2,4,40,"jord"]
+  ];
+  const PT_COL = { alkali: "#e8845a", jord: "#e8c75a", metall: "#9aa7c7", halvm: "#5ecfa0", icke: "#5ab0e8", halogen: "#c58af0", adel: "#f08ab4" };
+
+  function buildPT() {
+    const box = el("lax-pt");
+    if (box.dataset.built) return;
+    box.dataset.built = "1";
+    const grid = document.createElement("div");
+    grid.className = "pt-grid";
+    for (let g = 1; g <= 18; g++) {
+      const h = document.createElement("div");
+      h.className = "pt-head";
+      h.style.gridColumn = g; h.style.gridRow = 1;
+      h.textContent = g;
+      grid.appendChild(h);
+    }
+    PT_EL.forEach(([z, sym, name, group, period, mass, cat]) => {
+      const c = document.createElement("div");
+      c.className = "pt-cell";
+      c.style.gridColumn = group; c.style.gridRow = period + 1;
+      c.style.borderColor = PT_COL[cat];
+      c.title = name;
+      c.innerHTML = '<span class="pt-z">' + z + '</span><strong style="color:' + PT_COL[cat] + '">' + sym + '</strong><span class="pt-n">' + name + '</span><span class="pt-m">' + mass + '</span>';
+      grid.appendChild(c);
+    });
+    box.appendChild(grid);
+    const note = document.createElement("p");
+    note.className = "pt-note";
+    note.textContent = "Siffran uppe till vänster är atomnumret (antal protoner). Siffran längst ned är masstalet. Siffrorna överst är grupper.";
+    box.appendChild(note);
+  }
+
+  function togglePT(force) {
+    const open = force !== undefined ? force : !document.body.classList.contains("pt-open");
+    document.body.classList.toggle("pt-open", open);
+    el("lax-pt").hidden = !open;
+    const b = el("lax-pt-btn");
+    if (b) b.textContent = open ? "🧪 Dölj periodiska systemet" : "🧪 Periodiska systemet";
+    if (open) buildPT();
+  }
+
+  function setupPT(topic) {
+    const on = PT_TOPICS.includes(topic);
+    el("lax-pt-btn").hidden = !on;
+    togglePT(false);
+  }
+
   function startTopic(topic, card) {
     document.querySelectorAll(".lax-card").forEach(c => c.classList.remove("active"));
     card.classList.add("active");
@@ -45,6 +101,7 @@ const Lax = (() => {
     records = [];
     view = -1;
 
+    setupPT(topic);
     el("lax-area-tag").textContent = card.querySelector(".lax-name").textContent;
     el("lax-panel").style.display = "";
     el("lax-panel").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -52,6 +109,7 @@ const Lax = (() => {
   }
 
   function close() {
+    togglePT(false);
     el("lax-panel").style.display = "none";
     document.querySelectorAll(".lax-card").forEach(c => c.classList.remove("active"));
     records = []; view = -1;
@@ -1175,7 +1233,7 @@ POÄNG: [ett heltal: ${scaleText}]
     return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
-  return { init, close };
+  return { init, close, togglePT };
 })();
 
 // Används av onclick i HTML

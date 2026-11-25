@@ -19,6 +19,8 @@
 
 <main>
 
+  <aside id="lax-pt" class="pt-box" hidden aria-label="Periodiska systemet"></aside>
+
   <!-- Delad quiz-panel för läxförhör (aktiveras när frågor finns) -->
   <div id="lax-panel" style="display:none;margin-bottom:32px">
     <div class="scorebar" style="margin-top:20px">
@@ -27,6 +29,7 @@
         <span>Rätt: <strong id="lax-score">0</strong><span class="muted"> / </span><strong id="lax-max">0</strong></span>
       </div>
       <div class="pips" id="lax-pips"></div>
+      <button class="btn-ghost" id="lax-pt-btn" hidden onclick="Lax.togglePT()">🧪 Periodiska systemet</button>
       <button class="btn-ghost" onclick="closeLax()">✕ Stäng</button>
     </div>
     <div class="q-card" id="lax-q-card">

@@ -708,3 +708,24 @@ main {
 .q-source-note { font-size: 0.8rem; color: var(--muted, #8d9bbb); margin: -6px 0 16px; }
 #lax-q-meta .q-image-wrap { margin-bottom: 12px; }
 #lax-q-meta .q-image-wrap img { max-height: 340px; }
+
+/* Periodiskt system bredvid frågan */
+.pt-box{position:fixed;z-index:50;background:var(--card,#141a2e);border:1px solid #2a3558;border-radius:12px;padding:10px;box-shadow:0 8px 30px rgba(0,0,0,.45);
+  right:16px;top:70px;width:min(620px,calc(100vw - 32px));max-height:calc(100vh - 90px);overflow:auto}
+.pt-box[hidden]{display:none}
+.pt-grid{display:grid;grid-template-columns:repeat(18,minmax(0,1fr));gap:3px}
+.pt-head{font-size:10px;color:#8d9bbb;text-align:center}
+.pt-cell{border:1.5px solid;border-radius:5px;padding:2px 1px;display:flex;flex-direction:column;align-items:center;line-height:1.1;background:rgba(255,255,255,.03);min-width:0}
+.pt-cell strong{font-size:14px}
+.pt-z{font-size:9px;align-self:flex-start;padding-left:2px;color:#8d9bbb}
+.pt-n{font-size:7px;color:#8d9bbb;max-width:100%;overflow:hidden;text-overflow:clip;white-space:nowrap}
+.pt-m{font-size:8px;color:#8d9bbb}
+.pt-note{font-size:11px;color:#8d9bbb;margin:8px 2px 0}
+@media (min-width:1250px){
+  body.pt-open main{margin-left:max(16px,calc((100vw - 1420px)/2));margin-right:auto}
+  body.pt-open .pt-box{width:600px}
+}
+@media (max-width:1249px){
+  .pt-box{top:auto;bottom:0;right:0;left:0;width:auto;border-radius:12px 12px 0 0;max-height:48vh}
+  body.pt-open{padding-bottom:50vh}
+}
