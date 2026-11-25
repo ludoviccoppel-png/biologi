@@ -65,7 +65,6 @@ const Lax = (() => {
       c.className = "pt-cell";
       c.style.gridColumn = group; c.style.gridRow = period + 1;
       c.style.borderColor = PT_COL[cat];
-      c.title = name;
       c.innerHTML = '<span class="pt-z">' + z + '</span><strong style="color:' + PT_COL[cat] + '">' + sym + '</strong><span class="pt-n">' + name + '</span><span class="pt-m">' + mass + '</span>';
       c.addEventListener("mouseenter", () => showPTZoom(c, [z, sym, name, mass, cat]));
       c.addEventListener("mouseleave", hidePTZoom);
