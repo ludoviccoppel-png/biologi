@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Newtons första lag och tröghet</title>
+<link rel="stylesheet" href="kemi.css">
+<style>
+canvas{display:block;width:100%;height:auto;background:#0e1424;border-radius:8px;border:1px solid var(--border)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.ctrl .name{width:150px}
+input[type=range]{accent-color:var(--blue);flex:1 1 140px;min-width:100px}
+.law{border-left:3px solid var(--accent);padding:8px 12px;background:var(--surface2);border-radius:0 8px 8px 0;font-size:13px;margin-bottom:14px}
+.law b{color:var(--accent);font-weight:500}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.big{font-size:20px;color:var(--text)}
+.ctrl button,.seg button{width:auto;padding:7px 11px;white-space:nowrap}
+.ctrl{align-items:center}
+.ctrl .name{flex:0 0 100%;width:auto}
+.row{align-items:flex-start}
+</style></head><body><div class="app">
+
+<h1>🛷 Newtons första lag och tröghet</h1>
+<p class="lead">Utforska vad som händer med en rörelse när krafterna tar ut varandra – och när de inte gör det.</p>
+
+<div class="law"><b>Newtons första lag:</b> Om ingen kraft verkar på ett föremål, eller om krafterna tar ut varandra (resulterande kraft = 0 N), fortsätter föremålet att stå still eller röra sig med konstant hastighet i rät linje.<br>
+<b>Tröghet:</b> föremålets motstånd mot att ändra sin rörelse. Ju större massa, desto större tröghet.</div>
+
+<div class="tabs" id="tabs">
+  <button data-s="0" class="on">1. Skjut och glid</button>
+  <button data-s="1">2. Bilen bromsar</button>
+  <button data-s="2">3. Duken dras bort</button>
+</div>
+
+<div class="row">
+  <div class="panel grow" style="flex:2 1 480px"><canvas id="cv" width="900" height="340"></canvas>
+    <div class="legend" id="legend"></div></div>
+  <div class="panel grow" style="flex:1 1 260px">
+    <div id="controls"></div>
+    <div class="label" style="margin-top:12px">Mätvärden</div>
+    <div id="stats"></div>
+    <div class="msg info" id="msg"></div>
+  </div>
+</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const cv=$("cv"),ctx=cv.getContext("2d"),W=900,H=340;
+const C={bg:"#0e1424",line:"#263050",text:"#dde4f0",muted:"#8d9bbb",blue:"#5ab0e8",red:"#e85a5a",green:"#5ecfa0",yellow:"#e8c75a",orange:"#e8845a",surf:"#1a2235"};
+const g=9.82;
+let scene=0, speed=1, last=0;
+
+/* ---------- gemensamma hjälpare ---------- */
+function arrow(x1,y1,x2,y2,col,label,lo){
+  const dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy); if(L<3)return;
+  const a=Math.atan2(dy,dx),h=Math.min(11,L*.5);
+  ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2-Math.cos(a)*h*.6,y2-Math.sin(a)*h*.6);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-Math.cos(a-.4)*h,y2-Math.sin(a-.4)*h);ctx.lineTo(x2-Math.cos(a+.4)*h,y2-Math.sin(a+.4)*h);ctx.closePath();ctx.fill();
+  if(label){ctx.font="12px DM Mono, monospace";ctx.textAlign="center";ctx.fillText(label,(x1+x2)/2+(lo?.x||0),(y1+y2)/2+(lo?.y??-8));}
+}
+function txt(s,x,y,col,size,al){ctx.fillStyle=col||C.text;ctx.font=(size||12)+"px DM Mono, monospace";ctx.textAlign=al||"left";ctx.fillText(s,x,y);}
+function rr(x,y,w,h,r,fill,stroke){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke();}}
+function setStats(rows){$("stats").innerHTML=rows.map(r=>`<div class="stat"><span>${r[0]}</span><span>${r[1]}</span></div>`).join("");}
+function msg(t,cls){const m=$("msg");m.className="msg "+(cls||"info");m.innerHTML=t;}
+const f1=x=>(Math.abs(x)<0.005?0:x).toFixed(1).replace(".",",");
+function ctl(name,id,min,max,step,val,unit){return `<div class="ctrl"><span class="name">${name}</span><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}"><span class="val" id="${id}v" style="min-width:64px;font-size:13px">${val} ${unit}</span></div>`;}
+function bindRange(id,unit,cb){const e=$(id);const u=()=>{$(id+"v").textContent=(+e.value).toString().replace(".",",")+" "+unit;cb&&cb(+e.value);};e.oninput=u;u();return e;}
+function timeCtl(def){return `<div class="ctrl"><span class="name">Tidsförlopp</span><div class="seg" id="tscale">
+ <button data-v="0.25">Slow motion</button><button data-v="1">Normal</button><button data-v="3">Snabbspola</button></div></div>`;}
+function bindTime(def){speed=def;document.querySelectorAll("#tscale button").forEach(b=>{b.classList.toggle("on",+b.dataset.v===speed);b.onclick=()=>{speed=+b.dataset.v;document.querySelectorAll("#tscale button").forEach(x=>x.classList.toggle("on",x===b));};});}
+
+/* ---------- Scen 1: skjut och glid ---------- */
+const S1={m:2,mu:0.03,F:20,x:0,v:0,push:0,t:0};
+const SURF=[["Luftkuddebana",0],["Is",0.03],["Trägolv",0.2],["Grus",0.5]];
+function init1(){
+  S1.x=0;S1.v=0;S1.push=0;S1.t=0;
+  $("controls").innerHTML=
+    `<div class="label">Underlag (friktion)</div><div class="seg" id="surf">${SURF.map(s=>`<button data-mu="${s[1]}">${s[0]}</button>`).join("")}</div>`+
+    ctl("Massa","m",1,10,1,S1.m,"kg")+ctl("Skjutkraft","F",5,50,5,S1.F,"N")+
+    `<div class="ctrl"><button class="primary" id="pushb">Skjut (0,5 s)</button><button id="stopb">Börja om</button></div>`+timeCtl();
+  document.querySelectorAll("#surf button").forEach(b=>{b.classList.toggle("on",+b.dataset.mu===S1.mu);b.onclick=()=>{S1.mu=+b.dataset.mu;document.querySelectorAll("#surf button").forEach(x=>x.classList.toggle("on",x===b));};});
+  bindRange("m","kg",v=>S1.m=v);bindRange("F","N",v=>S1.F=v);
+  $("pushb").onclick=()=>{S1.push=0.5;};
+  $("stopb").onclick=()=>{S1.x=0;S1.v=0;S1.push=0;};
+  bindTime(1);
+  $("legend").innerHTML=`<span><i style="background:${C.blue}"></i>skjutkraft</span><span><i style="background:${C.red}"></i>friktion</span><span><i style="background:${C.green}"></i>tyngdkraft / normalkraft</span><span><i style="background:${C.yellow}"></i>resulterande kraft</span>`;
+}
+function step1(dt){
+  const m=S1.m,Fp=S1.push>0?S1.F:0,N=m*g;
+  let fr=0;
+  const Fmax=S1.mu*N;
+  // friktion: motverkar rörelse; i vila hålls föremålet kvar om pushen är mindre än maxfriktionen
+  if(Math.abs(S1.v)>1e-3) fr=-Math.sign(S1.v)*Fmax;
+  else if(Math.abs(Fp)<=Fmax) fr=-Fp;
+  else fr=-Fmax;
+  let net=Fp+fr;
+  let a=net/m,nv=S1.v+a*dt;
+  if(S1.v*nv<0)nv=0;
+  if(Math.abs(nv)<1e-3&&Math.abs(net)<1e-6)nv=0;
+  S1.v=nv;S1.x+=S1.v*dt;
+  if(S1.push>0)S1.push=Math.max(0,S1.push-dt);
+  S1.fr=fr;S1.Fp=Fp;S1.net=net;
+}
+function draw1(){
+  ctx.clearRect(0,0,W,H);
+  const gy=250,px=100,off=-(S1.x*px)%60;
+  // underlag
+  ctx.fillStyle=S1.mu===0?"#12203a":S1.mu<0.1?"#17304f":S1.mu<0.3?"#3a2f22":"#4a3a2a";ctx.fillRect(0,gy,W,H-gy);
+  ctx.strokeStyle="#ffffff22";ctx.lineWidth=2;
+  for(let x=off-60;x<W+60;x+=60){ctx.beginPath();ctx.moveTo(x,gy);ctx.lineTo(x,H);ctx.stroke();}
+  ctx.strokeStyle=C.muted;ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();
+  txt(SURF.find(s=>s[1]===S1.mu)[0]+"  (μ = "+String(S1.mu).replace(".",",")+")",12,H-12,C.muted,12);
+  // föremål
+  const bw=70+S1.m*6,bh=50+S1.m*3,bx=330-bw/2,by=gy-bh;
+  rr(bx,by,bw,bh,6,"#2a3a66",C.blue);txt(S1.m+" kg",bx+8,by+18,C.text,13,"left");
+  // krafter (horisontella, 4 px/N). Normalkraft startar i kontaktytan, tyngd i tyngdpunkten.
+  const cx=bx+bw/2,cy=by+bh/2,k=4,kv=1.3,Nn=S1.m*g;
+  if(S1.Fp>0.1)arrow(bx-S1.Fp*k-4,cy,bx-4,cy,C.blue,S1.Fp+" N",{y:-10});
+  if(Math.abs(S1.fr)>0.1){const dir=Math.sign(S1.fr);arrow(dir<0?bx+bw+Math.abs(S1.fr)*k:bx-Math.abs(S1.fr)*k,by+bh-12,dir<0?bx+bw:bx,by+bh-12,C.red,f1(Math.abs(S1.fr))+" N",{y:-8});}
+  arrow(cx-10,gy,cx-10,gy-Nn*kv,C.green,"N",{x:-18,y:0});
+  arrow(cx+10,cy,cx+10,cy+Nn*kv,C.green,"G",{x:16,y:4});
+  const net=S1.net||0;
+  if(Math.abs(net)>0.1)arrow(cx,by-14,cx+net*k,by-14,C.yellow,"Σ "+f1(net)+" N",{y:-8});
+  else txt("Σ F = 0 N",cx,by-16,C.yellow,13,"center");
+  // hastighetsmarkör
+  txt("v = "+f1(S1.v)+" m/s",W-12,28,C.text,16,"right");
+  if(Math.abs(S1.v)>0.05)arrow(W-170,48,W-170+Math.min(S1.v*30,150),48,C.orange,"",{});
+  const done=S1;
+  setStats([["Skjutkraft",f1(S1.Fp||0)+" N"],["Friktion",f1(Math.abs(S1.fr||0))+" N"],["Resulterande kraft",f1(net)+" N"],["Hastighet",f1(S1.v)+" m/s"],["Sträcka",f1(S1.x)+" m"],["Acceleration",f1((net)/S1.m)+" m/s²"]]);
+  if(Math.abs(net)<0.05&&Math.abs(S1.v)<0.02)msg("Stilla och Σ F = 0 N → föremålet <b>fortsätter att stå stilla</b>. Tryck på <b>Skjut</b>!");
+  else if(Math.abs(net)<0.05)msg(`Σ F = 0 N men föremålet rör sig → <b>konstant hastighet</b> ${f1(S1.v)} m/s. Det behövs ingen kraft för att hålla en rörelse igång. På "Luftkuddebana" fortsätter det för evigt.`,"good");
+  else msg(`Σ F ≠ 0 → hastigheten <b>ändras</b> (a = F/m = ${f1(net/S1.m)} m/s²). Prova större massa: större tröghet ger mindre hastighetsändring.`);
+}
+
+/* ---------- Scen 2: bilen bromsar ---------- */
+const S2={v0:50,belt:false,state:"idle",x:0,v:0,vp:0,r:0,t:0,crash:0,mark:0};
+const GAP=0.65,A2=8;
+function init2(){
+  resetCar();
+  $("controls").innerHTML=
+    ctl("Starthastighet","v0",20,90,10,S2.v0,"km/h")+
+    `<div class="ctrl"><span class="name">Bilbälte</span><div class="seg"><button id="beltoff">Av</button><button id="belton">På</button></div></div>
+     <div class="ctrl"><button class="primary" id="brake">Bromsa!</button><button id="rst">Börja om</button></div>`+timeCtl();
+  bindRange("v0","km/h",v=>{S2.v0=v;if(S2.state==="idle")resetCar();});
+  const bs=()=>{$("beltoff").classList.toggle("on",!S2.belt);$("belton").classList.toggle("on",S2.belt);};
+  $("beltoff").onclick=()=>{if(S2.state==="idle"){S2.belt=false;bs();}};
+  $("belton").onclick=()=>{if(S2.state==="idle"){S2.belt=true;bs();}};bs();
+  $("brake").onclick=()=>{if(S2.state==="idle"){S2.state="brake";S2.mark=S2.x;}};
+  $("rst").onclick=resetCar;
+  bindTime(0.25);
+  $("legend").innerHTML=`<span><i style="background:${C.red}"></i>bromskraft på bilen</span><span><i style="background:${C.blue}"></i>kraft på passageraren (bälte / instrumentbräda)</span><span><i style="background:#ffffff66"></i>markering vid platsen där bromsningen börjar</span>`;
+}
+function resetCar(){S2.state="idle";S2.x=0;S2.v=S2.v0/3.6;S2.vp=S2.v;S2.r=0;S2.t=0;S2.crash=0;S2.fp=0;S2.fc=0;S2.sx=0;}
+function step2(dt){
+  if(S2.state==="idle"){S2.x+=S2.v*dt;return;}
+  // bilen bromsas av friktion mot vägen
+  const a=S2.v>0?A2:0;S2.fc=a?-A2*1200:0;
+  S2.v=Math.max(0,S2.v-a*dt);S2.x+=S2.v*dt;
+  S2.fp=0;
+  if(S2.belt){S2.vp=S2.v;S2.fp=a?-A2*70:0;}
+  else{
+    if(S2.r<GAP){S2.r+=(S2.vp-S2.v)*dt;}   // ingen kraft på passageraren: hastigheten ändras inte
+    if(S2.r>=GAP){S2.r=GAP;if(S2.vp>S2.v+0.05){S2.crash=1;}S2.vp=S2.v;S2.fp=-A2*70*3;}
+  }
+  if(S2.v===0){S2.fp=0;S2.fc=0;}
+  if(S2.v===0&&S2.vp===0&&S2.state==="brake")S2.state="done";
+}
+function draw2(){
+  ctx.clearRect(0,0,W,H);
+  const gy=260,px=40;
+  ctx.fillStyle="#1c2233";ctx.fillRect(0,gy,W,H-gy);
+  ctx.strokeStyle="#ffffff44";ctx.lineWidth=3;ctx.setLineDash([30,26]);
+  const off=-(S2.x*px)%56;ctx.beginPath();ctx.moveTo(off-56,gy+40);ctx.lineTo(W+56,gy+40);ctx.stroke();ctx.setLineDash([]);
+  ctx.strokeStyle=C.muted;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();
+  // markering vid bromsstart (rör sig med marken)
+  if(S2.state!=="idle"){const mx=330-(S2.x-S2.mark)*px+ (0);ctx.strokeStyle="#ffffff66";ctx.lineWidth=2;ctx.setLineDash([5,5]);ctx.beginPath();ctx.moveTo(mx+ -0,gy-130);ctx.lineTo(mx,gy);ctx.stroke();ctx.setLineDash([]);txt("här började bromsningen",mx+4,gy-134,C.muted,11);}
+  // bil
+  const cx=330,cy=gy-10;
+  rr(cx-150,cy-60,300,52,10,"#34508a",C.blue);              // kaross
+  rr(cx-85,cy-108,175,52,14,"#2a3f70",C.blue);                // hytt
+  ctx.fillStyle="#0e1424";ctx.beginPath();ctx.roundRect(cx-70,cy-100,70,36,6);ctx.fill();ctx.beginPath();ctx.roundRect(cx+8,cy-100,70,36,6);ctx.fill();
+  [-90,90].forEach(dx=>{ctx.fillStyle="#111";ctx.beginPath();ctx.arc(cx+dx,cy,24,0,7);ctx.fill();ctx.strokeStyle="#777";ctx.lineWidth=3;ctx.stroke();});
+  // instrumentbräda / ratt (framtill = höger)
+  rr(cx+50,cy-82,12,36,3,"#8d9bbb");
+  // sits
+  rr(cx-62,cy-92,12,50,4,"#5a4a3a");
+  // passagerare (position i m → px)
+  const pxm=140;const sx=cx-36+S2.r*pxm*0.9;   // 1 m = ~126 px i bilen
+  const hy=cy-72;
+  ctx.fillStyle=C.yellow;ctx.beginPath();ctx.arc(sx,hy-24,13,0,7);ctx.fill();
+  ctx.strokeStyle=C.yellow;ctx.lineWidth=9;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(sx,hy-10);ctx.lineTo(sx,hy+22);ctx.stroke();ctx.lineCap="butt";
+  if(S2.belt){ctx.strokeStyle=C.green;ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(cx-56,cy-92);ctx.lineTo(sx+3,hy+10);ctx.stroke();}
+  if(S2.crash&&S2.state!=="idle"){txt("💥 aj!",sx+30,hy-30,C.red,18);}
+  // krafter
+  if(S2.state==="brake"&&S2.fc)arrow(cx+10,gy+28,cx-120,gy+28,C.red,"bromskraft",{y:-8});
+  if(S2.fp){const L=Math.min(120,Math.abs(S2.fp)/2.4);arrow(sx+10,hy+30,sx+10-L,hy+30,C.blue,S2.belt?"bältet":"instrumentbräda",{y:20});}
+  else if(S2.state!=="idle"&&S2.state!=="done"&&!S2.belt&&S2.v>0)txt("ingen kraft på passageraren → fortsätter framåt!",12,30,C.blue,13,"left");
+  txt("v = "+f1(S2.v*3.6)+" km/h",W-12,28,C.text,16,"right");
+  setStats([["Bilens hastighet",f1(S2.v*3.6)+" km/h"],["Passagerarens hastighet",f1(S2.vp*3.6)+" km/h"],["Passagerare framåt i bilen",f1(S2.r*100)+" cm"],["Bromskraft på bilen",f1(Math.abs(S2.fc)/1000)+" kN"],["Kraft på passageraren",f1(Math.abs(S2.fp||0))+" N"]]);
+  if(S2.state==="idle")msg("Bilen kör i konstant hastighet. Passageraren åker med – <b>samma hastighet</b>. Välj bälte av/på och tryck på <b>Bromsa!</b>");
+  else if(S2.belt)msg("Bältet ger en kraft bakåt på passageraren, så passageraren bromsas <b>tillsammans med bilen</b>. Utan någon kraft hade tröghet gjort att kroppen fortsatte framåt.","good");
+  else if(S2.crash)msg("Bilen bromsade, men <b>ingen kraft</b> verkade på passageraren, så den fortsatte framåt med oförändrad hastighet (<b>tröghet</b>) tills instrumentbrädan stoppade den. Därför behövs bilbälte!","bad");
+  else msg("Bilen bromsar. Passageraren har ingen kraft bakåt på sig – <b>Newtons första lag</b>: den fortsätter med samma hastighet.");
+}
+
+/* ---------- Scen 3: duken dras bort ---------- */
+const S3={vc:3,state:"idle",t:0,cl:0,mugx:0,mugv:0,locked:false,left:false,fall:0,fy:0,fvy:0};
+const MU3=0.4,MUT=0.3,D3=0.3,EDGE=0.5,PX3=200;
+function init3(){
+  $("controls").innerHTML=
+    ctl("Dragfart på duken","vc",0.5,5,0.5,S3.vc,"m/s")+
+    `<div class="ctrl"><button class="primary" id="pull">Dra duken!</button><button id="rst3">Börja om</button></div>`+timeCtl();
+  bindRange("vc","m/s",v=>{S3.vc=v;});
+  $("pull").onclick=()=>{if(S3.state==="idle"){S3.state="pull";}};
+  $("rst3").onclick=reset3;reset3();
+  bindTime(0.25);
+  $("legend").innerHTML=`<span><i style="background:${C.red}"></i>friktionskraft på muggen</span><span><i style="background:${C.green}"></i>tyngdkraft / normalkraft</span>`;
+}
+function reset3(){Object.assign(S3,{state:"idle",t:0,cl:0,mugx:0,mugv:0,locked:false,left:false,fall:0,fy:0,fvy:0,fr:0});}
+function step3(dt){
+  if(S3.state==="idle"||S3.state==="done")return;
+  let fr=0;
+  if(S3.fall){S3.fvy+=g*dt;S3.fy+=S3.fvy*dt;S3.mugx+=S3.mugv*dt;if(S3.fy>0.6)S3.state="done";S3.fr=0;return;}
+  S3.cl+=S3.vc*dt;
+  if(!S3.left){
+    if(!S3.locked){
+      if(S3.mugv<S3.vc){fr=MU3*g;S3.mugv=Math.min(S3.vc,S3.mugv+fr*dt);if(S3.mugv>=S3.vc)S3.locked=true;}
+    } else S3.mugv=S3.vc;
+    S3.mugx+=S3.mugv*dt;
+    if(S3.cl-S3.mugx>=D3&&!S3.locked)S3.left=true;
+    if(S3.locked)S3.left=false;
+  } else {
+    // muggen lämnat duken: glider på bordet
+    const a=MUT*g;fr=S3.mugv>0?-a:0;S3.mugv=Math.max(0,S3.mugv-a*dt);S3.mugx+=S3.mugv*dt;
+    if(S3.mugv===0&&S3.cl>EDGE+1.5)S3.state="done";
+  }
+  S3.fr=fr;
+  if(S3.mugx>EDGE){S3.fall=1;}
+  if(S3.cl>3.5&&!S3.fall&&S3.mugv===0)S3.state="done";
+}
+function draw3(){
+  ctx.clearRect(0,0,W,H);
+  const tx0=130,mx0=430,ty=230;                      // bordsyta
+  const edge=mx0+EDGE*PX3;
+  // bord
+  ctx.fillStyle="#5a4630";ctx.fillRect(tx0,ty,edge-tx0,16);ctx.fillRect(tx0+20,ty+16,14,H-ty-16);ctx.fillRect(edge-34,ty+16,14,H-ty-16);
+  ctx.fillStyle="#12182a";ctx.fillRect(0,H-6,W,6);
+  // duk
+  const cl=S3.cl*PX3,cx0=mx0-D3*PX3+cl,cx1=edge+60+cl;
+  ctx.save();ctx.beginPath();ctx.rect(0,0,W,H);ctx.clip();
+  const cl0=Math.max(cx0,tx0),cl1=Math.min(cx1,edge);
+  if(cl1>cl0){ctx.fillStyle="#c8506e";ctx.fillRect(cl0,ty-4,cl1-cl0,4);}
+  // hängande del utanför bordskanten
+  if(cx1>edge){ctx.fillStyle="#c8506e";ctx.beginPath();ctx.moveTo(edge,ty-4);ctx.lineTo(Math.min(cx1,edge+70)+0,ty-4);ctx.lineTo(Math.min(cx1,edge+70),ty+10);ctx.lineTo(edge,ty+70);ctx.closePath();ctx.fill();}
+  if(cx1>edge+70){ctx.fillStyle="#c8506e";ctx.fillRect(edge+70,ty-4,Math.min(cx1,W+300)-(edge+70),4);}
+  ctx.restore();
+  // hand
+  const hx=Math.min(edge+75+cl,W-30);if(S3.state!=="idle"||true){txt("✋",hx,ty+20,C.text,26,"center");}
+  // mugg
+  const mw=44,mh=56,mx=mx0+S3.mugx*PX3,my=(S3.fall?ty+S3.fy*PX3:ty)-4;
+  ctx.save();ctx.translate(mx,my);if(S3.fall)ctx.rotate(Math.min(1.4,S3.fy*2));
+  rr(-mw/2,-mh,mw,mh,6,"#e8c75a",C.yellow);ctx.strokeStyle=C.yellow;ctx.lineWidth=4;ctx.beginPath();ctx.arc(mw/2+2,-mh/2,10,-1.5,1.5);ctx.stroke();ctx.restore();
+  txt("mugg 0,3 kg",mx0,H-14,C.muted,11,"center");
+  // krafter på muggen
+  if(!S3.fall){
+    arrow(mx-8,my,mx-8,my-60,C.green,"N",{x:-14,y:0});arrow(mx+8,my-mh/2,mx+8,my-mh/2+60,C.green,"G",{x:14,y:4});
+    if(Math.abs(S3.fr)>0.01)arrow(mx,my+18,mx+(S3.fr>0?1:-1)*Math.min(110,Math.abs(S3.fr)*30)+0,my+18,C.red,"friktion",{y:-8});
+  }
+  const rel=S3.mugx*100,vm=S3.mugv;
+  txt("duk: "+f1(S3.state==="idle"?0:S3.vc)+" m/s",W-12,28,C.text,15,"right");
+  setStats([["Dukens hastighet",f1(S3.state==="idle"?0:S3.vc)+" m/s"],["Muggens hastighet",f1(vm)+" m/s"],["Mugg har flyttat sig",f1(rel)+" cm"],["Friktionskraft på muggen",f1(Math.abs(S3.fr||0)*0.3)+" N"],["Tröghet","mugg: 0,3 kg"]]);
+  if(S3.state==="idle")msg(`Muggen står stilla på duken. Välj dragfart och tryck på <b>Dra duken!</b> (gränsen ligger vid cirka 1,5 m/s).`);
+  else if(S3.fall)msg("Duken drogs så långsamt att friktionen hann få upp muggen i dukens fart. Muggen följde med och <b>ramlade av bordet</b>.","bad");
+  else if(S3.state==="done"&&S3.left)msg("Duken drogs så snabbt att friktionen bara verkade en <b>mycket kort stund</b> på muggen. Muggens <b>tröghet</b> gjorde att den nästan stod kvar. Σ F ≈ 0 horisontellt efter att duken lämnat den.","good");
+  else if(S3.left)msg("Duken är borta under muggen. Nu verkar bara en liten friktionskraft från bordet.","good");
+  else msg("Duken glider under muggen. Friktionen försöker dra med muggen, men <b>tröghet</b> gör att muggen ändrar sin hastighet långsamt.");
+}
+
+/* ---------- loop ---------- */
+const SC=[{init:init1,step:step1,draw:draw1},{init:init2,step:step2,draw:draw2},{init:init3,step:step3,draw:draw3}];
+function loop(ts){
+  const dt=Math.min(0.05,(ts-last)/1000||0);last=ts;
+  const s=SC[scene];
+  const sub=Math.max(1,Math.ceil(dt*speed/0.004)),h=dt*speed/sub;
+  for(let i=0;i<sub;i++)s.step(h);
+  s.draw();
+  requestAnimationFrame(loop);
+}
+function go(i){scene=i;document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",+b.dataset.s===i));SC[i].init();}
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>go(+b.dataset.s));
+go(0);requestAnimationFrame(loop);
+</script></body></html>
