@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Newtons andra och tredje lag</title>
+<link rel="stylesheet" href="kemi.css">
+<style>
+canvas{display:block;width:100%;height:auto;background:#0e1424;border-radius:8px;border:1px solid var(--border)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+input[type=range]{accent-color:var(--blue);flex:1 1 140px;min-width:100px}
+.law{border-left:3px solid var(--accent);padding:8px 12px;background:var(--surface2);border-radius:0 8px 8px 0;font-size:13px;margin-bottom:14px}
+.law b{color:var(--accent);font-weight:500}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.ctrl button,.seg button{width:auto;padding:7px 11px;white-space:nowrap}
+.ctrl{align-items:center}
+.ctrl .name{flex:0 0 100%;width:auto}
+.row{align-items:flex-start}
+.formula{font-size:15px;color:var(--green);margin:8px 0 2px}
+.q{font-size:15px;margin-bottom:12px}
+.opt{display:block;width:100%;text-align:left;margin:6px 0;white-space:normal}
+.qnum{color:var(--muted);font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}
+</style></head><body><div class="app">
+
+<h1>🚀 Newtons andra och tredje lag</h1>
+<p class="lead">Se hur kraft, massa och acceleration hänger ihop – och hur krafter alltid kommer i par.</p>
+
+<div class="law"><b>Newtons andra lag:</b> Resulterande kraft = massa · acceleration, alltså <b>ΣF = m · a</b> eller <b>a = F / m</b>. Samma kraft ger mindre acceleration på en större massa.<br>
+<b>Newtons tredje lag (kraft och motkraft):</b> Om kropp A verkar med en kraft på kropp B, verkar B med en lika stor kraft åt motsatt håll på A. Krafterna verkar på <b>olika</b> kroppar.</div>
+
+<div class="tabs" id="tabs">
+  <button data-s="0" class="on">1. Samma kraft, olika massa</button>
+  <button data-s="1">2. Resulterande kraft</button>
+  <button data-s="2">3. Kraft och motkraft</button>
+  <button data-s="3">4. Quiz</button>
+</div>
+
+<div class="row">
+  <div class="panel grow" style="flex:2 1 480px">
+    <div id="cvwrap"><canvas id="cv" width="900" height="340"></canvas><div class="legend" id="legend"></div></div>
+    <div id="quiz" style="display:none"></div>
+  </div>
+  <div class="panel grow" style="flex:1 1 260px">
+    <div id="controls"></div>
+    <div id="statwrap"><div class="label" style="margin-top:12px">Mätvärden</div><div id="stats"></div></div>
+    <div class="msg info" id="msg"></div>
+  </div>
+</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const cv=$("cv"),ctx=cv.getContext("2d"),W=900,H=340;
+const C={bg:"#0e1424",text:"#dde4f0",muted:"#8d9bbb",blue:"#5ab0e8",red:"#e85a5a",green:"#5ecfa0",yellow:"#e8c75a",orange:"#e8845a"};
+let scene=0,speed=1,last=0;
+
+/* ---------- hjälpare ---------- */
+function arrow(x1,y1,x2,y2,col,label,lo){
+  const dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy); if(L<3)return;
+  const a=Math.atan2(dy,dx),h=Math.min(11,L*.5);
+  ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2-Math.cos(a)*h*.6,y2-Math.sin(a)*h*.6);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-Math.cos(a-.4)*h,y2-Math.sin(a-.4)*h);ctx.lineTo(x2-Math.cos(a+.4)*h,y2-Math.sin(a+.4)*h);ctx.closePath();ctx.fill();
+  if(label){ctx.font="12px DM Mono, monospace";ctx.textAlign="center";ctx.fillText(label,(x1+x2)/2+(lo?.x||0),(y1+y2)/2+(lo?.y??-8));}
+}
+function txt(s,x,y,col,size,al){ctx.fillStyle=col||C.text;ctx.font=(size||12)+"px DM Mono, monospace";ctx.textAlign=al||"left";ctx.fillText(s,x,y);}
+function rr(x,y,w,h,r,fill,stroke,dash){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.setLineDash(dash||[]);ctx.stroke();ctx.setLineDash([]);}}
+function setStats(rows){$("stats").innerHTML=rows.map(r=>`<div class="stat"><span>${r[0]}</span><span>${r[1]}</span></div>`).join("");}
+function msg(t,cls){const m=$("msg");m.className="msg "+(cls||"info");m.innerHTML=t;}
+const f1=x=>(Math.abs(x)<0.005?0:x).toFixed(1).replace(".",",");
+const f2=x=>(Math.abs(x)<0.005?0:x).toFixed(2).replace(".",",");
+function ctl(name,id,min,max,step,val,unit){return `<div class="ctrl"><span class="name">${name}</span><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}"><span class="val" id="${id}v" style="min-width:64px;font-size:13px">${val} ${unit}</span></div>`;}
+function bindRange(id,unit,cb){const e=$(id);const u=()=>{$(id+"v").textContent=(+e.value).toString().replace(".",",")+" "+unit;cb&&cb(+e.value);};e.oninput=u;u();return e;}
+function timeCtl(){return `<div class="ctrl"><span class="name">Tidsförlopp</span><div class="seg" id="tscale"><button data-v="0.25">Slow motion</button><button data-v="1">Normal</button><button data-v="3">Snabbspola</button></div></div>`;}
+function bindTime(def){speed=def;document.querySelectorAll("#tscale button").forEach(b=>{b.classList.toggle("on",+b.dataset.v===speed);b.onclick=()=>{speed=+b.dataset.v;document.querySelectorAll("#tscale button").forEach(x=>x.classList.toggle("on",x===b));};});}
+function ground(y,off){
+  ctx.fillStyle="#17304f";ctx.fillRect(0,y,W,H-y);
+  ctx.strokeStyle="#ffffff22";ctx.lineWidth=2;
+  for(let x=off-60;x<W+60;x+=60){ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,H);ctx.stroke();}
+  ctx.strokeStyle=C.muted;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+}
+
+/* ---------- Scen 1: samma kraft, olika massa ---------- */
+const S1={F:10,mA:2,mB:4,run:false,t:0,ghosts:[[],[]],nextG:1};
+const PX1=25,X0=150,FIN=870;
+function init1(){
+  $("controls").innerHTML=ctl("Kraft på båda","F",2,40,2,S1.F,"N")+ctl("Massa, röd kloss","mA",1,10,1,S1.mA,"kg")+ctl("Massa, blå kloss","mB",1,10,1,S1.mB,"kg")+
+    `<div class="ctrl"><button class="primary" id="go1">Starta</button><button id="rs1">Börja om</button></div>`+timeCtl();
+  bindRange("F","N",v=>{S1.F=v;});bindRange("mA","kg",v=>{S1.mA=v;});bindRange("mB","kg",v=>{S1.mB=v;});
+  $("go1").onclick=()=>{if(!S1.run&&S1.t===0)S1.run=true;};$("rs1").onclick=reset1;reset1();bindTime(1);
+  $("legend").innerHTML=`<span><i style="background:${C.blue}"></i>kraft</span><span><i style="background:${C.orange}"></i>acceleration</span><span><i style="background:#ffffff55"></i>var klossen var efter 1, 2, 3 … sekunder</span>`;
+}
+function reset1(){S1.run=false;S1.t=0;S1.ghosts=[[],[]];S1.nextG=1;}
+const pos1=(m,t)=>0.5*(S1.F/m)*t*t;
+function step1(dt){
+  if(!S1.run)return;
+  const t2=S1.t+dt;
+  const bw=m=>40+m*5;
+  const maxS=Math.max(pos1(S1.mA,t2)*PX1+bw(S1.mA),pos1(S1.mB,t2)*PX1+bw(S1.mB));
+  if(X0+maxS>=FIN){S1.run=false;return;}
+  S1.t=t2;
+  while(S1.t>=S1.nextG){S1.ghosts[0].push(pos1(S1.mA,S1.nextG));S1.ghosts[1].push(pos1(S1.mB,S1.nextG));S1.nextG++;}
+}
+function draw1(){
+  ctx.clearRect(0,0,W,H);
+  const lanes=[{y:150,m:S1.mA,col:"#e85a5a",name:"röd"},{y:290,m:S1.mB,col:"#5ab0e8",name:"blå"}];
+  ctx.strokeStyle="#ffffff44";ctx.setLineDash([6,6]);ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X0-2,20);ctx.lineTo(X0-2,H-10);ctx.stroke();ctx.setLineDash([]);
+  txt("start",X0-2,16,C.muted,11,"center");
+  lanes.forEach((L,i)=>{
+    ctx.strokeStyle=C.muted;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(30,L.y);ctx.lineTo(W-20,L.y);ctx.stroke();
+    const bw=40+L.m*5,bh=54;
+    S1.ghosts[i].forEach(s=>rr(X0+s*PX1,L.y-bh,bw,bh,6,null,"#ffffff44",[4,4]));
+    const s=pos1(L.m,S1.t),bx=X0+s*PX1;
+    rr(bx,L.y-bh,bw,bh,6,L.col+"cc",L.col);txt(L.m+" kg",bx+bw/2,L.y-bh/2+5,"#fff",13,"center");
+    const a=S1.F/L.m;
+    arrow(bx-4-S1.F*3,L.y-bh/2,bx-4,L.y-bh/2,C.blue,S1.F+" N",{y:-10});
+    arrow(bx+bw/2,L.y-bh-14,bx+bw/2+a*14,L.y-bh-14,C.orange,"a = "+f1(a),{y:-8});
+  });
+  txt("t = "+f1(S1.t)+" s",W-12,28,C.text,16,"right");
+  const aA=S1.F/S1.mA,aB=S1.F/S1.mB;
+  setStats([["Tid",f1(S1.t)+" s"],["Acceleration röd (a = F/m)",f2(aA)+" m/s²"],["Acceleration blå (a = F/m)",f2(aB)+" m/s²"],["Sträcka röd",f1(pos1(S1.mA,S1.t))+" m"],["Sträcka blå",f1(pos1(S1.mB,S1.t))+" m"],["Hastighet röd",f1(aA*S1.t)+" m/s"],["Hastighet blå",f1(aB*S1.t)+" m/s"]]);
+  const r=S1.mA/S1.mB;
+  if(S1.t===0)msg("Samma kraft verkar på båda klossarna. Ändra kraften och massorna och tryck på <b>Starta</b>. Vilken kloss hinner längst?");
+  else if(!S1.run)msg(`Efter ${f1(S1.t)} s har den lättare klossen flyttat sig längre. Med samma kraft är <b>a = F/m</b> mindre för den tyngre klossen. Förhållandet mellan accelerationerna är ${f2(aA/aB)} (massorna ${S1.mA} kg och ${S1.mB} kg).`,"good");
+  else msg(`Kraften är ${S1.F} N hela tiden. Röd: a = ${S1.F}/${S1.mA} = ${f2(aA)} m/s². Blå: a = ${S1.F}/${S1.mB} = ${f2(aB)} m/s². Konstant acceleration ger <b>ökande</b> hastighet.`);
+}
+
+/* ---------- Scen 2: resulterande kraft ---------- */
+const S2={m:2,F:12,Ff:4,run:false,t:0,x:0,v:0};
+const PX2=30;
+function init2(){
+  $("controls").innerHTML=ctl("Massa","m2",1,10,1,S2.m,"kg")+ctl("Dragkraft","F2",0,40,1,S2.F,"N")+ctl("Friktionskraft","Ff",0,30,1,S2.Ff,"N")+
+    `<div class="ctrl"><button class="primary" id="go2">Starta</button><button id="rs2">Börja om</button></div>`+timeCtl()+`<div class="formula" id="form2"></div>`;
+  bindRange("m2","kg",v=>S2.m=v);bindRange("F2","N",v=>S2.F=v);bindRange("Ff","N",v=>S2.Ff=v);
+  $("go2").onclick=()=>{S2.run=true;};$("rs2").onclick=reset2;reset2();bindTime(1);
+  $("legend").innerHTML=`<span><i style="background:${C.blue}"></i>dragkraft</span><span><i style="background:${C.red}"></i>friktionskraft</span><span><i style="background:${C.yellow}"></i>resulterande kraft ΣF</span>`;
+}
+function reset2(){S2.run=false;S2.t=0;S2.x=0;S2.v=0;}
+function net2(){
+  if(S2.v<=1e-6&&S2.F<=S2.Ff)return {net:0,fr:S2.F>0?-Math.min(S2.F,S2.Ff):0};
+  return {net:S2.F-S2.Ff,fr:-S2.Ff};
+}
+function step2(dt){
+  if(!S2.run)return;
+  const n=net2();
+  S2.v=Math.max(0,S2.v+n.net/S2.m*dt);S2.x+=S2.v*dt;S2.t+=dt;
+}
+function draw2(){
+  ctx.clearRect(0,0,W,H);
+  const gy=250;ground(gy,-(S2.x*PX2)%60);
+  const bw=70+S2.m*6,bh=50+S2.m*3,bx=330-bw/2,by=gy-bh,cy=by+bh/2;
+  rr(bx,by,bw,bh,6,"#2a3a66",C.blue);txt(S2.m+" kg",bx+bw/2,cy+5,C.text,14,"center");
+  const n=net2(),k=5;
+  if(S2.F>0)arrow(bx-S2.F*k-4,cy,bx-4,cy,C.blue,S2.F+" N",{y:-10});
+  if(n.fr<0)arrow(bx+bw+Math.abs(n.fr)*k,by+bh-14,bx+bw,by+bh-14,C.red,f1(Math.abs(n.fr))+" N",{y:-8});
+  if(Math.abs(n.net)>0.01)arrow(bx+bw/2,by-16,bx+bw/2+n.net*k,by-16,C.yellow,"ΣF = "+f1(n.net)+" N",{y:-8});
+  else txt("ΣF = 0 N",bx+bw/2,by-18,C.yellow,13,"center");
+  txt("v = "+f1(S2.v)+" m/s",W-12,28,C.text,16,"right");
+  const a=n.net/S2.m;
+  setStats([["Dragkraft",f1(S2.F)+" N"],["Friktionskraft",f1(Math.abs(n.fr))+" N"],["Resulterande kraft ΣF",f1(n.net)+" N"],["Massa",S2.m+" kg"],["Acceleration a = ΣF/m",f2(a)+" m/s²"],["Hastighet",f1(S2.v)+" m/s"],["Sträcka",f1(S2.x)+" m"]]);
+  $("form2").textContent=`a = ΣF / m = ${f1(n.net)} / ${S2.m} = ${f2(a)} m/s²`;
+  if(!S2.run&&S2.t===0)msg("Det är den <b>resulterande kraften</b> ΣF (dragkraft minus friktion) som ger accelerationen. Prova att göra friktionen lika stor som dragkraften.");
+  else if(Math.abs(n.net)<0.01&&S2.v<0.01)msg("Dragkraften är inte större än friktionen. ΣF = 0 N, så klossen <b>står stilla</b>.");
+  else if(Math.abs(n.net)<0.01)msg("ΣF = 0 N → ingen acceleration. Klossen fortsätter med <b>konstant hastighet</b> (Newtons första lag).","good");
+  else msg(`ΣF = ${f1(S2.F)} − ${f1(Math.abs(n.fr))} = ${f1(n.net)} N → a = ${f2(a)} m/s². Dubbla massan och accelerationen halveras.`);
+}
+
+/* ---------- Scen 3: kraft och motkraft ---------- */
+const S3={mA:40,mB:80,F:100,state:"idle",t:0,xA:0,xB:0,vA:0,vB:0};
+const TP=0.5,PX3=40,CX=450;
+function init3(){
+  $("controls").innerHTML=ctl("Anna, massa","mAn",20,100,5,S3.mA,"kg")+ctl("Bo, massa","mBo",20,100,5,S3.mB,"kg")+ctl("Tryckkraft","F3",50,300,10,S3.F,"N")+
+    `<div class="ctrl"><button class="primary" id="go3">Tryck!</button><button id="rs3">Börja om</button></div>`+timeCtl();
+  bindRange("mAn","kg",v=>{S3.mA=v;});bindRange("mBo","kg",v=>{S3.mB=v;});bindRange("F3","N",v=>{S3.F=v;});
+  $("go3").onclick=()=>{if(S3.state==="idle")S3.state="push";};$("rs3").onclick=reset3;reset3();bindTime(0.25);
+  $("legend").innerHTML=`<span><i style="background:${C.blue}"></i>kraft (verkar på den kropp pilen sitter vid)</span><span><i style="background:${C.orange}"></i>hastighet</span>`;
+}
+function reset3(){Object.assign(S3,{state:"idle",t:0,xA:0,xB:0,vA:0,vB:0});}
+function step3(dt){
+  if(S3.state==="idle")return;
+  S3.t+=dt;
+  if(S3.state==="push"){
+    const a1=-S3.F/S3.mA,a2=S3.F/S3.mB;
+    S3.vA+=a1*dt;S3.vB+=a2*dt;
+    if(S3.t>=TP)S3.state="free";
+  }
+  S3.xA+=S3.vA*dt;S3.xB+=S3.vB*dt;
+  if(S3.t>8)S3.state="done";
+}
+function person(x,gy,m,col,name,facing){
+  const w=36+m*0.35,h=70+m*0.5;
+  rr(x-w/2,gy-h,w,h,10,col+"cc",col);
+  ctx.fillStyle=col;ctx.beginPath();ctx.arc(x,gy-h-16,14,0,7);ctx.fill();
+  txt(name,x,gy-h/2+2,"#fff",13,"center");txt(m+" kg",x,gy-h/2+18,"#fff",12,"center");
+}
+function draw3(){
+  ctx.clearRect(0,0,W,H);
+  const gy=270;
+  ctx.fillStyle="#12203a";ctx.fillRect(0,gy,W,H-gy);ctx.strokeStyle=C.muted;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();
+  for(let x=0;x<W;x+=60){ctx.strokeStyle="#ffffff14";ctx.beginPath();ctx.moveTo(x,gy);ctx.lineTo(x,H);ctx.stroke();}
+  const wA=(36+S3.mA*0.35)/2,wB=(36+S3.mB*0.35)/2;
+  const ax=CX-wA+S3.xA*PX3,bx=CX+wB+S3.xB*PX3;
+  person(ax,gy,S3.mA,"#e85a5a","Anna");person(bx,gy,S3.mB,"#5ab0e8","Bo");
+  const hA=70+S3.mA*0.5,hB=70+S3.mB*0.5;
+  if(S3.state==="push"){
+    const k=1.1,L=S3.F*k;
+    // kraft på Bo: åt höger, kraft på Anna: åt vänster (båda i kontaktpunkten)
+    const cx=ax+wA,ay=gy-Math.min(hA,hB)*0.4,ty=gy-Math.max(hA,hB)-52;
+    arrow(cx,ay,cx+L,ay,C.blue);
+    arrow(cx,ay+14,cx-L,ay+14,C.blue);
+    txt("Kraft på Bo: "+S3.F+" N",cx+10,ty,C.blue,14,"left");
+    txt("Kraft på Anna: "+S3.F+" N",cx-10,ty,C.blue,14,"right");
+  }
+  if(S3.vA<-0.02)arrow(ax,gy+22,ax+S3.vA*60,gy+22,C.orange,"v = "+f2(Math.abs(S3.vA))+" m/s",{y:16});
+  if(S3.vB>0.02)arrow(bx,gy+22,bx+S3.vB*60,gy+22,C.orange,"v = "+f2(S3.vB)+" m/s",{y:16});
+  txt("t = "+f2(S3.t)+" s",W-12,28,C.text,16,"right");
+  const aA=S3.F/S3.mA,aB=S3.F/S3.mB;
+  const inPush=S3.state==="push";
+  setStats([["Kraft på Bo (från Anna)",S3.F+" N"],["Kraft på Anna (från Bo)",S3.F+" N"],["Acceleration Anna (F/m)",f2(aA)+" m/s²"],["Acceleration Bo (F/m)",f2(aB)+" m/s²"],["Fart Anna efter tryck",f2(S3.F*TP/S3.mA)+" m/s"],["Fart Bo efter tryck",f2(S3.F*TP/S3.mB)+" m/s"]]);
+  if(S3.state==="idle")msg("Anna och Bo står stilla på isen. När Anna trycker på Bo trycker Bo lika mycket tillbaka. Tryck på <b>Tryck!</b> (tryckandet pågår i 0,5 s).");
+  else if(inPush)msg(`Anna trycker på Bo med ${S3.F} N, och Bo trycker på Anna med <b>${S3.F} N åt motsatt håll</b> (Newtons 3:e lag). Krafterna verkar på <b>olika kroppar</b>, så de tar inte ut varandra.`);
+  else msg(`Krafterna var lika stora, men massorna olika. Enligt <b>a = F/m</b> fick Anna a = ${f2(aA)} m/s² och Bo a = ${f2(aB)} m/s², så den lättare åker iväg <b>fortast</b> åt motsatt håll.`,"good");
+}
+
+/* ---------- Scen 4: quiz ---------- */
+const QS=[
+ {q:"Du står stilla på marken. Tyngdkraften är jordens dragning på dig. Vilken kraft är dess motkraft (Newtons 3:e lag)?",o:["Marken trycker upp på dig (normalkraften)","Du drar på jorden uppåt med lika stor kraft","Luften trycker på dig"],c:1,e:"Motkraften verkar på <b>den andra kroppen</b>: jorden drar på dig, och du drar lika mycket på jorden. Normalkraften verkar på dig, precis som tyngdkraften, så den är inte motkraften. Här tar de två krafterna på dig ut varandra (Newtons 1:a lag)."},
+ {q:"En häst drar en vagn framåt. Vagnen drar lika mycket bakåt på hästen. Hur kan vagnen ändå komma igång?",o:["Motkraften är mindre än kraften","Krafterna tar ut varandra, så vagnen rör sig inte","Krafterna verkar på olika kroppar, och hästen skjuter sig framåt mot marken"],c:2,e:"Kraft och motkraft verkar på <b>olika kroppar</b> och tar därför inte ut varandra. Vagnen accelererar när dragkraften på den är större än friktionen. Hästen kommer framåt för att hovarna trycker bakåt på marken och marken trycker framåt på hästen."},
+ {q:"En astronaut (80 kg) tryckte på ett verktyg (2 kg) med 100 N i rymden. Vilken kraft verkar på astronauten, och vad blir hens acceleration?",o:["100 N åt motsatt håll, a = 1,25 m/s²","100 N åt samma håll, a = 50 m/s²","0 N, för astronauten är större"],c:0,e:"Motkraften är lika stor (100 N) men åt motsatt håll. a = F/m = 100/80 = 1,25 m/s² för astronauten, men 100/2 = 50 m/s² för verktyget."},
+ {q:"En lastbil krockar med en myra. Vilken kraft är störst?",o:["Lastbilen på myran","Myran på lastbilen","Lika stora"],c:2,e:"Kraft och motkraft är alltid lika stora. Myran slås sönder eftersom dess massa är så liten att samma kraft ger en enorm acceleration (a = F/m)."},
+ {q:"Samma kraft verkar på en kloss på 2 kg och en kloss på 4 kg. Hur förhåller sig accelerationerna?",o:["Klossen på 2 kg får dubbelt så stor acceleration","Klossarna får lika stor acceleration","Klossen på 4 kg får dubbelt så stor acceleration"],c:0,e:"a = F/m. Dubbelt så stor massa ger hälften så stor acceleration vid samma kraft."}
+];
+const Q={i:0,score:0,answered:false};
+function initQ(){Q.i=0;Q.score=0;Q.answered=false;showQ();}
+function showQ(){
+  const q=QS[Q.i];
+  $("controls").innerHTML=`<div class="label">Poäng</div><div class="big" style="font-size:20px">${Q.score} / ${QS.length}</div><div class="ctrl"><button id="rsq">Börja om</button></div>`;
+  $("rsq").onclick=initQ;
+  if(Q.i>=QS.length){
+    $("quiz").innerHTML=`<div class="qnum">Klart</div><div class="q">Du fick ${Q.score} av ${QS.length} rätt.</div><button class="primary" id="again">Försök igen</button>`;
+    $("again").onclick=initQ;msg(Q.score===QS.length?"Perfekt! Du kan Newtons andra och tredje lag.":"Läs förklaringarna och försök igen!",Q.score===QS.length?"good":"info");return;
+  }
+  $("quiz").innerHTML=`<div class="qnum">Fråga ${Q.i+1} av ${QS.length}</div><div class="q">${q.q}</div>`+q.o.map((t,i)=>`<button class="opt" data-i="${i}">${t}</button>`).join("")+`<div id="next"></div>`;
+  document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answerQ(+b.dataset.i));
+  Q.answered=false;msg("Välj det svar du tror är rätt.");
+}
+function answerQ(i){
+  if(Q.answered)return;Q.answered=true;const q=QS[Q.i];
+  document.querySelectorAll(".opt").forEach((b,j)=>{b.disabled=true;if(j===q.c)b.classList.add("good");else if(j===i)b.classList.add("bad");});
+  if(i===q.c){Q.score++;msg("<b>Rätt!</b> "+q.e,"good");}else msg("<b>Inte riktigt.</b> "+q.e,"bad");
+  $("next").innerHTML=`<button class="primary" id="nb" style="margin-top:10px">${Q.i+1<QS.length?"Nästa fråga":"Visa resultat"}</button>`;
+  $("nb").onclick=()=>{Q.i++;showQ();};
+  $("controls").querySelector(".big").textContent=Q.score+" / "+QS.length;
+}
+
+/* ---------- loop ---------- */
+const SC=[{init:init1,step:step1,draw:draw1},{init:init2,step:step2,draw:draw2},{init:init3,step:step3,draw:draw3},{init:initQ,step(){},draw(){}}];
+function loop(ts){
+  const dt=Math.min(0.05,(ts-last)/1000||0);last=ts;
+  if(scene<3){
+    const s=SC[scene],sub=Math.max(1,Math.ceil(dt*speed/0.004)),h=dt*speed/sub;
+    for(let i=0;i<sub;i++)s.step(h);
+    s.draw();
+  }
+  requestAnimationFrame(loop);
+}
+function go(i){
+  scene=i;document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",+b.dataset.s===i));
+  const quiz=i===3;$("cvwrap").style.display=quiz?"none":"block";$("quiz").style.display=quiz?"block":"none";$("statwrap").style.display=quiz?"none":"block";
+  SC[i].init();
+}
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>go(+b.dataset.s));
+go(0);requestAnimationFrame(loop);
+</script></body></html>
